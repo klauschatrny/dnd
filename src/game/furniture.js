@@ -204,20 +204,19 @@ export const COLOR_ARGS = {
 // do construtor (dimensões/cores). O editor edita pos/ry/y e exporta este array.
 export const FURNITURE_LAYOUT = [
   // --- Sala (x[-6,0], z[-4.5,0]) ---
-  { type: 'rug', pos: [-3.0, -2.0], args: [3.4, 2.8, 0x2c313d] },
-  { type: 'sofa', pos: [-2.0, -2.3], ry: -HALF, args: [1.8, 0x455066] },
-  { type: 'sofa', pos: [-2.3, -0.7], ry: -HALF * 0.7, args: [0.95, 0x4a5a63] },
-  { type: 'table', pos: [-3.7, -2.3], args: [1.1, 0.6, 0.4, 0x6b4f34] },
-  { type: 'cabinet', pos: [-5.74, -2.0], ry: HALF, args: [2.0, 0.4, 0.4, 0x4a3b2a] },
+  { type: 'rug', pos: [-3, -2.6], args: [3.4, 2.8, 0x2c313d] },
+  { type: 'sofa', pos: [-3.2, -4], args: [1.8, 0x455066] },
+  { type: 'sofa', pos: [-1.2, -3.1], ry: -HALF * 0.7, args: [0.95, 0x4a5a63] },
+  { type: 'table', pos: [-3, -2.5], args: [1.1, 0.6, 0.4, 0x6b4f34] },
+  { type: 'cabinet', pos: [-5.74, -2], ry: HALF, args: [2, 0.4, 0.4, 0x4a3b2a] },
   { type: 'cabinet', pos: [-5.6, -3.6], ry: HALF, args: [0.55, 0.9, 0.4, 0x6b4f34] },
-  { type: 'bookshelf', pos: [-0.35, -3.7], ry: -HALF, args: [0x5a4632] },
+  { type: 'bookshelf', pos: [-0.9, -0.2], args: [0x5a4632] },
 
   // --- Quarto (x[0,6], z[-4.5,0]) ---
-  { type: 'rug', pos: [3.4, -2.0], args: [3.4, 2.8, 0x2c313d] },
-  { type: 'bed', pos: [4.7, -2.3], ry: -HALF },
-  { type: 'cabinet', pos: [3.95, -4.05], args: [1.25, 0.86, 0.42, 0x6b4f34] },
-  { type: 'dresser', pos: [0.4, -3.6], ry: HALF, args: [1.4, 0x6b4f34] },
-  { type: 'cabinet', pos: [3.5, -1.3], args: [1.3, 0.45, 0.4, 0x8a7a5a] },
+  { type: 'rug', pos: [4.1, -2.7], ry: HALF, args: [3.4, 2.8, 0x2c313d] },
+  { type: 'bed', pos: [4.1, -3.4] },
+  { type: 'cabinet', pos: [2.4, -4.3], args: [1.25, 0.86, 0.42, 0x6b4f34] },
+  { type: 'dresser', pos: [0.9, -0.3], args: [1.4, 0x6b4f34] },
 
   // --- Cozinha (x[-6,0], z[0,4.5]) ---
   { type: 'cabinet', pos: [-5.72, 2.5], ry: HALF, args: [3.2, 0.85, 0.55, 0x878d96, 0x2a2d33] },
@@ -231,8 +230,8 @@ export const FURNITURE_LAYOUT = [
   // --- Banheiro (x[0,6], z[0,4.5]) ---
   { type: 'vanity', pos: [5.64, 2.4], ry: -HALF },
   { type: 'toilet', pos: [4.8, 4.05], ry: Math.PI },
-  { type: 'bathtub', pos: [1.55, 4.0] },
-  { type: 'rug', pos: [3.9, 2.2], args: [1.3, 1.0, 0x33384a] },
+  { type: 'bathtub', pos: [1.55, 4] },
+  { type: 'rug', pos: [1.6, 3], args: [1.3, 1, 0x33384a] },
 ];
 
 /** Constrói o grupo de um item de mobília (com vínculo ao dado, para o editor). */

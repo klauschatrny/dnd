@@ -39,14 +39,14 @@ export const APARTMENT_01 = {
     { id: 'router_sala', room: 'sala', objectType: 'router', position: [-5.5, 0.92, -3.6], facing: [0, 0, 1], anchor: 'surface' },
     { id: 'outlet_sala', room: 'sala', objectType: 'outlet', position: [-5.88, 0.4, -0.7], facing: [1, 0, 0], anchor: 'wall' },
     { id: 'smoke_sala', room: 'sala', objectType: 'smokeDetector', position: [-3.0, 2.75, -2.2], facing: [0, -1, 0], anchor: 'ceiling' },
-    { id: 'plant_sala', room: 'sala', objectType: 'plant', position: [-5.4, 0.3, -0.8], facing: [1, 0, 0], anchor: 'floor' },
+    { id: 'plant_sala', room: 'sala', objectType: 'plant', position: [-5.8, 0.7, -1.2], facing: [1, 0, 0], anchor: 'floor' },
 
     // --- Quarto ---
     { id: 'clock_quarto', room: 'quarto', objectType: 'clock', position: [5.88, 1.7, -2.6], facing: [-1, 0, 0], anchor: 'wall' },
-    { id: 'mirror_quarto', room: 'quarto', objectType: 'mirror', position: [5.88, 1.2, -0.9], facing: [-1, 0, 0], anchor: 'wall' },
-    { id: 'lamp_quarto', room: 'quarto', objectType: 'lamp', position: [4.3, 0.92, -4.0], facing: [0, 0, 1], anchor: 'surface' },
-    { id: 'radio_quarto', room: 'quarto', objectType: 'radio', position: [3.6, 0.92, -4.0], facing: [0, 0, 1], anchor: 'surface' },
-    { id: 'wardrobe_quarto', room: 'quarto', objectType: 'wardrobe', position: [1.3, 1.0, -4.1], facing: [0, 0, 1], anchor: 'floor' },
+    { id: 'mirror_quarto', room: 'quarto', objectType: 'mirror', position: [0.9, 1.6, -0.1], facing: [0, 0, -1], anchor: 'wall' },
+    { id: 'lamp_quarto', room: 'quarto', objectType: 'lamp', position: [2.7, 1.1, -4.3], facing: [0, 0, 1], anchor: 'surface' },
+    { id: 'radio_quarto', room: 'quarto', objectType: 'radio', position: [2.1, 0.9, -4.3], facing: [0, 0, 1], anchor: 'surface' },
+    { id: 'wardrobe_quarto', room: 'quarto', objectType: 'wardrobe', position: [0.9, 1, -4.2], facing: [0, 0, 1], anchor: 'floor' },
     { id: 'usb_quarto', room: 'quarto', objectType: 'usbCharger', position: [2.5, 0.5, -4.38], facing: [0, 0, 1], anchor: 'wall' },
     { id: 'smoke_quarto', room: 'quarto', objectType: 'smokeDetector', position: [3.5, 2.75, -2.2], facing: [0, -1, 0], anchor: 'ceiling' },
 
