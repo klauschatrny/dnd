@@ -67,6 +67,7 @@ function removeInspectables() {
 }
 
 function startCase(opts = {}) {
+  ui.hideMenu();
   removeInspectables();
   sessionDifficulty = opts.difficulty ?? sessionDifficulty;
   const gen = generateCase({ seed: opts.seed, difficulty: sessionDifficulty });
