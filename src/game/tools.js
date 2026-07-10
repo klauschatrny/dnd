@@ -5,7 +5,8 @@ import { EVIDENCE, TOOLS, TOOL_LABELS } from '../domain/data/index.js';
 // sem upgrades. Cada ferramenta revela um tipo diferente de evidência e tem um
 // efeito visual próprio. A troca é feita pelas teclas 1–5.
 
-export const TOOL_ORDER = [TOOLS.ZOOM, TOOLS.FLASHLIGHT, TOOLS.UV, TOOLS.RF, TOOLS.THERMAL];
+// Lanterna como ferramenta padrão (visão ampla); Zoom estreita o FOV quando ativo.
+export const TOOL_ORDER = [TOOLS.FLASHLIGHT, TOOLS.ZOOM, TOOLS.UV, TOOLS.RF, TOOLS.THERMAL];
 
 // Ferramenta que revela cada evidência (índice inverso da biblioteca).
 const EVIDENCE_BY_TOOL = {};
@@ -24,7 +25,7 @@ export function createToolSystem({ camera }) {
   camera.add(spot);
   camera.add(spot.target);
 
-  let current = TOOLS.ZOOM;
+  let current = TOOL_ORDER[0];
   let targetFov = BASE_FOV;
 
   function setTool(toolId) {
@@ -33,6 +34,8 @@ export function createToolSystem({ camera }) {
     targetFov = toolId === TOOLS.ZOOM ? ZOOM_FOV : BASE_FOV;
     spot.intensity = toolId === TOOLS.FLASHLIGHT ? 22 : 0;
   }
+
+  setTool(current); // aplica o estado inicial (lanterna acesa)
 
   function cycle(dir) {
     const i = TOOL_ORDER.indexOf(current);

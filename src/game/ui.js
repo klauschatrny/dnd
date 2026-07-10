@@ -4,9 +4,9 @@ import { TOOL_LABELS, CONCLUSIONS, CONCLUSION_LABELS, EVIDENCE } from '../domain
 // Camada de UI (HUD + caderneta). Mantém o HUD mínimo (GDD §17): ferramenta atual,
 // alvo/interação e anotações. Sem minimapa, marcadores ou indicadores da solução.
 
-const TOOL_KEYS = { ZOOM: '1', FLASHLIGHT: '2', UV: '3', RF: '4', THERMAL: '5' };
+const toolKey = (t) => TOOL_ORDER.indexOf(t) + 1;
 
-export function createUI(app, { inspectables, onConclusion, onFinish }) {
+export function createUI(app, { getInspectables, onConclusion, onFinish }) {
   const hud = el('div', 'hud');
   app.appendChild(hud);
 
@@ -29,7 +29,7 @@ export function createUI(app, { inspectables, onConclusion, onFinish }) {
   const chips = {};
   for (const t of TOOL_ORDER) {
     const chip = el('div', 'chip');
-    chip.innerHTML = `<b>${TOOL_KEYS[t]}</b> ${TOOL_LABELS[t]}`;
+    chip.innerHTML = `<b>${toolKey(t)}</b> ${TOOL_LABELS[t]}`;
     toolbar.appendChild(chip);
     chips[t] = chip;
   }
@@ -86,7 +86,7 @@ export function createUI(app, { inspectables, onConclusion, onFinish }) {
   }
 
   function renderNotebook() {
-    const examined = inspectables.filter((i) => i.mesh.userData.inspect.examined);
+    const examined = getInspectables().filter((i) => i.mesh.userData.inspect.examined);
     const rows = examined
       .map((i) => {
         const st = i.mesh.userData.inspect;
@@ -200,6 +200,57 @@ export function createUI(app, { inspectables, onConclusion, onFinish }) {
     results.classList.add('hidden');
   }
 
+  // --- Menu principal ---
+  const menu = el('div', 'screen menu hidden');
+  app.appendChild(menu);
+
+  function showMenu({ onStart }) {
+    menu.innerHTML = `
+      <div class="screen-inner">
+        <h1>My Hotel Spy</h1>
+        <p class="tag">Inspetor de imóveis — encontre os dispositivos ilegais e emita o laudo.</p>
+        <div class="field"><label>Seed (opcional)</label><input id="menu-seed" placeholder="aleatória" /></div>
+        <div class="field"><label>Dificuldade</label>
+          <select id="menu-diff">
+            <option value="">Aleatória</option>
+            <option value="facil">Fácil</option>
+            <option value="medio">Médio</option>
+            <option value="dificil">Difícil</option>
+          </select>
+        </div>
+        <button class="btn-primary" id="menu-start">Nova inspeção</button>
+      </div>`;
+    menu.querySelector('#menu-start').addEventListener('click', () => {
+      const seed = menu.querySelector('#menu-seed').value.trim();
+      const difficulty = menu.querySelector('#menu-diff').value;
+      onStart({ seed: seed || undefined, difficulty: difficulty || undefined });
+    });
+    menu.classList.remove('hidden');
+  }
+  const hideMenu = () => menu.classList.add('hidden');
+
+  // --- Briefing do caso ---
+  const briefing = el('div', 'screen briefing hidden');
+  app.appendChild(briefing);
+  const DIFF_LABEL = { facil: 'Fácil', medio: 'Médio', dificil: 'Difícil' };
+
+  function showBriefing(instance, caseNumber, mapLabel, { onEnter }) {
+    hideResults();
+    briefing.innerHTML = `
+      <div class="screen-inner brief">
+        <div class="stamp">Caso #${String(caseNumber).padStart(3, '0')}</div>
+        <h2>${mapLabel}</h2>
+        <div class="meta">Dificuldade: ${DIFF_LABEL[instance.difficulty]} · Seed: ${instance.seed}</div>
+        <div class="denuncia"><span>Denúncia</span><p>“${instance.denuncia}”</p></div>
+        <p class="brief-hint">Investigue o imóvel e cruze as evidências. Você nunca saberá quantas
+        irregularidades existem — decida quando encerrar e emitir o laudo.</p>
+        <button class="btn-primary" id="brief-enter">Entrar no imóvel</button>
+      </div>`;
+    briefing.querySelector('#brief-enter').addEventListener('click', () => onEnter());
+    briefing.classList.remove('hidden');
+  }
+  const hideBriefing = () => briefing.classList.add('hidden');
+
   return {
     setTool,
     setTarget,
@@ -213,6 +264,10 @@ export function createUI(app, { inspectables, onConclusion, onFinish }) {
     showHud,
     showResults,
     hideResults,
+    showMenu,
+    hideMenu,
+    showBriefing,
+    hideBriefing,
     notebookEl: notebook,
   };
 }
