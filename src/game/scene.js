@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { buildWalls, wallToAABB } from './layout.js';
 import { buildFurniture, furnitureFor } from './furniture.js';
-import { loadModel } from './modelLoader.js';
 
 // Constrói o ambiente 3D a partir dos dados do mapa (CDIS: o mapa é só o cenário).
 // Retorna a cena, a lista de colisores (paredes) e as luzes de teto por cômodo.
@@ -25,48 +24,32 @@ export function buildScene(map) {
   const cx = (minX + maxX) / 2;
   const cz = (minZ + maxZ) / 2;
 
-  // Colisão sempre vem dos dados do mapa (paredes de layout.js). Para mapas com
-  // modelo 3D, isso são só os limites externos (contenção) — a colisão interna
-  // precisa ou continuar em `map.walls`, ou ser derivada do modelo mais tarde.
-  const colliders = buildWalls(map).map(wallToAABB);
+  // Piso e teto
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(w, d),
+    new THREE.MeshStandardMaterial({ color: FLOOR_COLOR, roughness: 0.95 }),
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.set(cx, 0, cz);
+  scene.add(floor);
 
-  if (map.model) {
-    // A casca/decoração vem do arquivo .glb (carregado de forma assíncrona).
-    loadModel(map.model)
-      .then((obj) => {
-        obj.name = 'model';
-        scene.add(obj);
-      })
-      .catch((e) => console.error('Falha ao carregar modelo', map.model, e));
-  } else {
-    // Piso e teto procedurais
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(w, d),
-      new THREE.MeshStandardMaterial({ color: FLOOR_COLOR, roughness: 0.95 }),
-    );
-    floor.rotation.x = -Math.PI / 2;
-    floor.position.set(cx, 0, cz);
-    scene.add(floor);
+  const ceiling = new THREE.Mesh(
+    new THREE.PlaneGeometry(w, d),
+    new THREE.MeshStandardMaterial({ color: CEIL_COLOR, roughness: 1 }),
+  );
+  ceiling.rotation.x = Math.PI / 2;
+  ceiling.position.set(cx, h, cz);
+  ceiling.name = 'ceiling';
+  scene.add(ceiling);
 
-    const ceiling = new THREE.Mesh(
-      new THREE.PlaneGeometry(w, d),
-      new THREE.MeshStandardMaterial({ color: CEIL_COLOR, roughness: 1 }),
-    );
-    ceiling.rotation.x = Math.PI / 2;
-    ceiling.position.set(cx, h, cz);
-    ceiling.name = 'ceiling';
-    scene.add(ceiling);
-
-    // Paredes procedurais (visual) a partir da geometria compartilhada em layout.js.
-    const wallMat = new THREE.MeshStandardMaterial({ color: WALL_COLOR, roughness: 0.9 });
-    for (const def of buildWalls(map)) {
-      const mesh = new THREE.Mesh(new THREE.BoxGeometry(def.hx * 2, h, def.hz * 2), wallMat);
-      mesh.position.set(def.cx, h / 2, def.cz);
-      scene.add(mesh);
-    }
-
-    // Mobília decorativa (não interativa, não colide).
-    scene.add(buildFurniture(furnitureFor(map.id)));
+  // Paredes (visual + colisão) a partir da geometria compartilhada em layout.js.
+  const wallMat = new THREE.MeshStandardMaterial({ color: WALL_COLOR, roughness: 0.9 });
+  const colliders = [];
+  for (const def of buildWalls(map)) {
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(def.hx * 2, h, def.hz * 2), wallMat);
+    mesh.position.set(def.cx, h / 2, def.cz);
+    scene.add(mesh);
+    colliders.push(wallToAABB(def));
   }
 
   // Iluminação: ambiente baixo (a lanterna importa) + uma luz suave por cômodo.
@@ -83,6 +66,9 @@ export function buildScene(map) {
     scene.add(light);
     ceilingLights.push(light);
   }
+
+  // Mobília decorativa (não interativa, não colide).
+  scene.add(buildFurniture(furnitureFor(map.id)));
 
   return { scene, colliders, ceilingLights, ambient };
 }

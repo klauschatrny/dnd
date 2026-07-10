@@ -6,5 +6,5 @@ dist-ssr/
 .DS_Store
 *.log
 
-# Texturas extraídas redundantes (já estão embutidas no .glb; o jogo não as usa)
-public/models/**/textures/
+# Assets 3D pesados de imóveis — mantidos localmente, fora do git
+public/models/
