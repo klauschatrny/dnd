@@ -12,6 +12,12 @@ export function createPlayer({ camera, domElement, colliders, spawn, bounds }) {
   const controls = new PointerLockControls(camera, domElement);
   const obj = controls.object; // objeto que contém a câmera
 
+  // Ambiente de colisão atual (trocável ao mudar de mapa/level).
+  let env = { colliders, bounds };
+  const setEnvironment = (nextColliders, nextBounds) => {
+    env = { colliders: nextColliders, bounds: nextBounds };
+  };
+
   obj.position.set(spawn.position[0], EYE, spawn.position[2]);
   // Orientação inicial olhando para lookAt.
   camera.lookAt(new THREE.Vector3(...spawn.lookAt));
@@ -49,8 +55,8 @@ export function createPlayer({ camera, domElement, colliders, spawn, bounds }) {
     const nz = obj.position.z + (dz / len) * step;
 
     // Colisão eixo a eixo (permite deslizar ao longo das paredes).
-    obj.position.x = resolveAxis(nx, obj.position.z, 'x', colliders, bounds);
-    obj.position.z = resolveAxis(obj.position.x, nz, 'z', colliders, bounds);
+    obj.position.x = resolveAxis(nx, obj.position.z, 'x', env.colliders, env.bounds);
+    obj.position.z = resolveAxis(obj.position.x, nz, 'z', env.colliders, env.bounds);
     obj.position.y = EYE;
   }
 
@@ -60,7 +66,7 @@ export function createPlayer({ camera, domElement, colliders, spawn, bounds }) {
     controls.disconnect?.();
   }
 
-  return { controls, object: obj, move, dispose };
+  return { controls, object: obj, move, setEnvironment, dispose };
 }
 
 function resolveAxis(x, z, axis, colliders, bounds) {

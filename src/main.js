@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { generateCase } from './domain/caseGenerator.js';
 import { evaluateReport } from './domain/report.js';
 import { MAPS } from './domain/data/index.js';
+import { createRng, randomSeed } from './domain/rng.js';
 import { buildScene } from './game/scene.js';
 import { spawnObjects } from './game/objectSpawner.js';
 import { createPlayer } from './game/player.js';
@@ -20,11 +21,45 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 app.appendChild(renderer.domElement);
 
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.05, 100);
-const map = MAPS.apartment_01;
-const { scene, colliders } = buildScene(map);
-scene.add(camera); // a lanterna (spotlight) fica presa à câmera
 
-const player = createPlayer({ camera, domElement: renderer.domElement, colliders, spawn: map.spawn, bounds: map.bounds });
+// Mapa/cena atuais — trocáveis por caso (cada level tem sua própria planta).
+let map;
+let scene;
+let colliders;
+let player = null;
+
+/** Descarta a GPU da cena anterior antes de montar a próxima. */
+function disposeScene(old) {
+  if (!old) return;
+  old.remove(camera);
+  old.traverse((o) => {
+    if (!o.isMesh) return;
+    o.geometry?.dispose();
+    if (Array.isArray(o.material)) o.material.forEach((m) => m.dispose());
+    else o.material?.dispose();
+  });
+}
+
+/** (Re)constrói a cena a partir de um mapa e reconecta câmera/colisão. */
+function mountMap(next) {
+  if (next === map) return;
+  const previous = scene;
+  map = next;
+  const built = buildScene(map);
+  scene = built.scene;
+  colliders = built.colliders;
+  scene.add(camera); // a lanterna (spotlight) fica presa à câmera
+  if (player) player.setEnvironment(colliders, map.bounds);
+  disposeScene(previous);
+}
+
+/** Escolhe um level de forma determinística a partir da seed (tour pelos levels). */
+function pickMapId(seed) {
+  return createRng(`${seed}:map`).pick(Object.keys(MAPS));
+}
+
+mountMap(MAPS.apartment_01);
+player = createPlayer({ camera, domElement: renderer.domElement, colliders, spawn: map.spawn, bounds: map.bounds });
 const tools = createToolSystem({ camera });
 
 // --- Estado do caso atual ---
@@ -69,9 +104,15 @@ function removeInspectables() {
 
 function startCase(opts = {}) {
   ui.hideMenu();
-  removeInspectables();
   sessionDifficulty = opts.difficulty ?? sessionDifficulty;
-  const gen = generateCase({ seed: opts.seed, difficulty: sessionDifficulty });
+
+  // Escolhe o level (tour determinístico pelos levels) e (re)monta a cena.
+  const seed = opts.seed ?? randomSeed();
+  const mapId = opts.mapId ?? pickMapId(seed);
+  mountMap(MAPS[mapId]);
+
+  removeInspectables();
+  const gen = generateCase({ seed, mapId, difficulty: sessionDifficulty });
   current.instance = gen.instance;
   current.solution = gen.solution;
   current.inspectables = spawnObjects(scene, gen.instance);
@@ -216,7 +257,15 @@ renderer.setAnimationLoop(() => {
 });
 
 // Hook de depuração (apenas em desenvolvimento) para inspeção/testes.
-if (import.meta.env.DEV) window.__game = { camera, scene, renderer };
+if (import.meta.env.DEV) {
+  window.__game = {
+    camera,
+    renderer,
+    get scene() { return scene; },
+    get map() { return map; },
+    get instance() { return current.instance; },
+  };
+}
 
 // --- Início ---
 ui.showMenu({ onStart: (opts) => startCase(opts) });
