@@ -31,17 +31,19 @@ export function buildExterior(map) {
   // --- Chão (grama escura), cobrindo bem além da clareira ---
   g.add(slab((b.maxX - b.minX) + 40, (b.maxZ - b.minZ) + 40, 0x15251a, -0.02, cx, cz, { rough: 1 }));
 
-  // --- Rua + calçada a oeste (frente da casa) ---
-  const zLen = b.maxZ - b.minZ;
-  g.add(slab(2.2, zLen, 0x191b21, 0.006, -12.4, cz, { rough: 1 })); // asfalto
-  g.add(slab(1.0, zLen, 0x3b3f47, 0.012, -11.0, cz, { rough: 0.95 })); // calçada
-  // Faixa central tracejada
-  for (let z = b.minZ + 1; z < b.maxZ - 1; z += 2.2) {
-    g.add(slab(0.14, 1.1, 0xcaa63c, 0.02, -12.4, z, { rough: 0.8 }));
+  // --- Rua + calçada ao norte (frente da casa) ---
+  const at = map.exterior.approach.at; // x da porta (norte)
+  const wallZ = map.bounds.minZ; // parede norte da casa
+  const width = b.maxX - b.minX; // rua/calçada correm ao longo de X
+  g.add(slab(width, 2.2, 0x191b21, 0.006, cx, -10.2, { rough: 1 })); // asfalto
+  g.add(slab(width, 1.0, 0x3b3f47, 0.012, cx, -8.6, { rough: 0.95 })); // calçada
+  // Faixa central tracejada (segmentos alongados no sentido da rua, X)
+  for (let x = b.minX + 1; x < b.maxX - 1; x += 2.2) {
+    g.add(slab(1.1, 0.14, 0xcaa63c, 0.02, x, -10.2, { rough: 0.8 }));
   }
 
-  // --- Caminho da calçada até a porta (alinhado ao vão oeste, z≈-2.1) ---
-  g.add(slab(4.6, 1.5, 0x4a4a52, 0.02, -8.2, -2.1, { rough: 0.95 }));
+  // --- Caminho da calçada até a porta (ao longo de Z, alinhado ao vão x≈-1) ---
+  g.add(slab(1.5, 3.6, 0x4a4a52, 0.02, at, wallZ - 1.8, { rough: 0.95 }));
 
   // --- Telhado simples (pirâmide de base retangular sobre a casa) ---
   const roofH = 1.5;
@@ -55,15 +57,15 @@ export function buildExterior(map) {
   );
   g.add(roof);
 
-  // --- Iluminação noturna ---
-  const moon = new THREE.DirectionalLight(0x9fb0d8, 0.35);
+  // --- Iluminação noturna (~20% mais clara) ---
+  const moon = new THREE.DirectionalLight(0x9fb0d8, 0.42);
   moon.position.set(-22, 30, -14);
   g.add(moon);
 
-  // Poste na entrada do caminho + luz da porta (aconchegam a chegada à casa)
-  g.add(streetLamp(-10.4, -2.1));
-  const doorLight = new THREE.PointLight(0xffca7a, 6, 6, 2);
-  doorLight.position.set(-6.4, 2.2, -2.1);
+  // Poste ao lado do caminho + luz da porta (aconchegam a chegada à casa)
+  g.add(streetLamp(at + 1.4, -8.3));
+  const doorLight = new THREE.PointLight(0xffca7a, 7.2, 6, 2);
+  doorLight.position.set(at, 2.2, wallZ - 0.3);
   g.add(doorLight);
 
   // --- Floresta escura (instanciada) cercando a clareira ---
@@ -79,7 +81,7 @@ function streetLamp(x, z) {
   post.position.set(x, 1.6, z);
   const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 10, 8), new THREE.MeshStandardMaterial({ color: 0xffe6b0, emissive: 0xffd27a, emissiveIntensity: 1.4, roughness: 0.6 }));
   head.position.set(x, 3.25, z);
-  const light = new THREE.PointLight(0xffd9a0, 9, 10, 2);
+  const light = new THREE.PointLight(0xffd9a0, 10.8, 10, 2);
   light.position.set(x, 3.2, z);
   lamp.add(post, head, light);
   return lamp;

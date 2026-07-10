@@ -37,13 +37,16 @@ export const APARTMENT_01 = {
     { id: 'banheiro', label: 'Banheiro', rect: { minX: 0, maxX: 6, minZ: 0, maxZ: 4.5 } },
   ],
   spawn: { position: [-4.5, 1.6, -3.4], lookAt: [0, 1.6, 0] },
-  // Porta da frente: vão na parede oeste (x=-6), abrindo para a sala.
-  openings: [{ side: 'west', from: -2.8, to: -1.4 }],
+  // Porta da frente: vão na parede norte (z=-4.5), em x≈-1 — trecho da sala livre de
+  // POIs e móveis (a parede oeste está tomada por armários/cozinha e pela TV).
+  openings: [{ side: 'north', from: -1.6, to: -0.4 }],
   // Ambiente externo (rua/calçada/caminho/floresta). `bounds` é a clareira em que o
-  // jogador anda; a casa continua sendo o obstáculo central. Spawn na rua, a oeste.
+  // jogador anda; a casa é o obstáculo central. Spawn na rua, ao norte, de frente
+  // para a porta. `approach` orienta a geometria da chegada (lado + posição na parede).
   exterior: {
-    bounds: { minX: -14, maxX: 9, minZ: -12, maxZ: 12 },
-    spawn: { position: [-12, 1.6, -2.1], lookAt: [0, 1.6, -2.1] },
+    bounds: { minX: -11, maxX: 11, minZ: -14, maxZ: 9 },
+    approach: { side: 'north', at: -1.0 },
+    spawn: { position: [-1, 1.6, -10.4], lookAt: [-1, 1.6, 0] },
   },
   // Partição vertical (x=0) com vãos em z∈(-2.2,-1.0) e z∈(1.0,2.2);
   // partição horizontal (z=0) com vãos em x∈(-4.5,-3.3) e x∈(3.3,4.5).

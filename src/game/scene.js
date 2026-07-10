@@ -60,10 +60,10 @@ export function buildScene(map) {
   // À noite (exterior), o céu fica mais frio e fraco — a atmosfera escura importa.
   scene.add(
     outdoor
-      ? new THREE.HemisphereLight(0x2a3550, 0x080a0f, 0.3)
+      ? new THREE.HemisphereLight(0x2a3550, 0x080a0f, 0.36)
       : new THREE.HemisphereLight(0x8090a0, 0x202028, 0.5),
   );
-  const ambient = new THREE.AmbientLight(0xffffff, outdoor ? 0.1 : 0.18);
+  const ambient = new THREE.AmbientLight(0xffffff, outdoor ? 0.12 : 0.18);
   scene.add(ambient);
 
   const ceilingLights = [];
