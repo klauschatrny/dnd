@@ -37,6 +37,14 @@ export const APARTMENT_01 = {
     { id: 'banheiro', label: 'Banheiro', rect: { minX: 0, maxX: 6, minZ: 0, maxZ: 4.5 } },
   ],
   spawn: { position: [-4.5, 1.6, -3.4], lookAt: [0, 1.6, 0] },
+  // Porta da frente: vão na parede oeste (x=-6), abrindo para a sala.
+  openings: [{ side: 'west', from: -2.8, to: -1.4 }],
+  // Ambiente externo (rua/calçada/caminho/floresta). `bounds` é a clareira em que o
+  // jogador anda; a casa continua sendo o obstáculo central. Spawn na rua, a oeste.
+  exterior: {
+    bounds: { minX: -14, maxX: 9, minZ: -12, maxZ: 12 },
+    spawn: { position: [-12, 1.6, -2.1], lookAt: [0, 1.6, -2.1] },
+  },
   // Partição vertical (x=0) com vãos em z∈(-2.2,-1.0) e z∈(1.0,2.2);
   // partição horizontal (z=0) com vãos em x∈(-4.5,-3.3) e x∈(3.3,4.5).
   walls: [
@@ -285,10 +293,8 @@ export const LOFT_05 = {
   ],
 };
 
+// Apenas o apartamento por enquanto (teste de ambiente externo). Os demais levels
+// continuam definidos acima — basta reincluí-los aqui para reativá-los.
 export const MAPS = {
   apartment_01: APARTMENT_01,
-  studio_02: STUDIO_02,
-  suite_hotel_03: SUITE_HOTEL_03,
-  casa_04: CASA_04,
-  loft_05: LOFT_05,
 };

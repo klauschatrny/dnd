@@ -9,21 +9,48 @@ export const WALL_T = 0.06; // meia-espessura padrão das paredes (para autorar 
 const T = WALL_T;
 
 /**
- * Retângulos das paredes {cx,cz,hx,hz}: externas (dos limites) + internas (map.walls).
+ * Limites em que o jogador anda. Com exterior, é a clareira externa; sem, o próprio
+ * imóvel. (As paredes da casa continuam derivadas de `map.bounds`.)
+ */
+export function worldBounds(map) {
+  return map.exterior?.bounds ?? map.bounds;
+}
+
+/**
+ * Segmenta uma parede de perímetro deixando vãos (aberturas) — ex.: a porta da
+ * frente. `orient='x'` = parede vertical (x fixo, varia z); `'z'` = horizontal.
+ */
+function sideSegments(fixed, spanMin, spanMax, openings, orient) {
+  const gaps = openings.map((o) => [o.from, o.to]).sort((a, b) => a[0] - b[0]);
+  const segs = [];
+  let cursor = spanMin;
+  for (const [f, t] of gaps) {
+    if (f > cursor) segs.push([cursor, Math.min(f, spanMax)]);
+    cursor = Math.max(cursor, t);
+  }
+  if (cursor < spanMax) segs.push([cursor, spanMax]);
+  return segs.map(([a, b]) => {
+    const c = (a + b) / 2;
+    const half = (b - a) / 2;
+    return orient === 'x' ? { cx: fixed, cz: c, hx: T, hz: half } : { cx: c, cz: fixed, hx: half, hz: T };
+  });
+}
+
+/**
+ * Retângulos das paredes {cx,cz,hx,hz}: externas (dos limites, com aberturas de
+ * `map.openings`) + internas (map.walls).
  * @param {object} map
  */
 export function buildWalls(map) {
   const { minX, maxX, minZ, maxZ } = map.bounds;
-  const w = maxX - minX;
-  const d = maxZ - minZ;
-  const cx = (minX + maxX) / 2;
-  const cz = (minZ + maxZ) / 2;
+  const openings = map.openings ?? [];
+  const onSide = (s) => openings.filter((o) => o.side === s);
 
   const external = [
-    { cx, cz: minZ, hx: w / 2, hz: T },
-    { cx, cz: maxZ, hx: w / 2, hz: T },
-    { cx: minX, cz, hx: T, hz: d / 2 },
-    { cx: maxX, cz, hx: T, hz: d / 2 },
+    ...sideSegments(minZ, minX, maxX, onSide('north'), 'z'),
+    ...sideSegments(maxZ, minX, maxX, onSide('south'), 'z'),
+    ...sideSegments(minX, minZ, maxZ, onSide('west'), 'x'),
+    ...sideSegments(maxX, minZ, maxZ, onSide('east'), 'x'),
   ];
 
   return external.concat(map.walls ?? []);

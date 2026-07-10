@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildColliders, PLAYER_RADIUS } from '../src/game/layout.js';
+import { buildColliders, PLAYER_RADIUS, worldBounds } from '../src/game/layout.js';
 import { MAPS } from '../src/domain/data/index.js';
 
 // Flood-fill numa grade do piso para garantir que todos os cômodos são acessíveis
@@ -11,7 +11,7 @@ const R = PLAYER_RADIUS;
 const CELL = 0.1;
 
 function makeBlocked(map, colliders) {
-  const { minX, maxX, minZ, maxZ } = map.bounds;
+  const { minX, maxX, minZ, maxZ } = worldBounds(map);
   return (x, z) => {
     if (x < minX + R || x > maxX - R || z < minZ + R || z > maxZ - R) return true;
     for (const c of colliders) {
@@ -22,7 +22,7 @@ function makeBlocked(map, colliders) {
 }
 
 function reachableFrom(map, blocked, sx, sz) {
-  const { minX, maxX, minZ, maxZ } = map.bounds;
+  const { minX, maxX, minZ, maxZ } = worldBounds(map);
   const cols = Math.round((maxX - minX) / CELL);
   const rows = Math.round((maxZ - minZ) / CELL);
   const key = (i, j) => `${i},${j}`;
@@ -58,7 +58,8 @@ for (const map of Object.values(MAPS)) {
   describe(`conectividade — ${map.id}`, () => {
     const colliders = buildColliders(map);
     const blocked = makeBlocked(map, colliders);
-    const [sx, , sz] = map.spawn.position;
+    // Com exterior, o spawn é na rua; sem, é dentro do imóvel.
+    const [sx, , sz] = (map.exterior?.spawn ?? map.spawn).position;
 
     it('o ponto de spawn é caminhável', () => {
       expect(blocked(sx, sz)).toBe(false);
@@ -66,7 +67,7 @@ for (const map of Object.values(MAPS)) {
 
     it('o centro de todos os cômodos é alcançável a partir do spawn', () => {
       const reachable = reachableFrom(map, blocked, sx, sz);
-      const { minX, minZ } = map.bounds;
+      const { minX, minZ } = worldBounds(map);
       const toKey = (x, z) => `${Math.round((x - minX) / CELL)},${Math.round((z - minZ) / CELL)}`;
       for (const room of map.rooms) {
         const rcx = (room.rect.minX + room.rect.maxX) / 2;

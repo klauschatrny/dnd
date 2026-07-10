@@ -8,6 +8,7 @@ import { isUnlocked, getCompleted, markCompleted } from './game/progress.js';
 import { buildScene } from './game/scene.js';
 import { spawnObjects } from './game/objectSpawner.js';
 import { createPlayer } from './game/player.js';
+import { worldBounds } from './game/layout.js';
 import { createToolSystem, TOOL_ORDER } from './game/tools.js';
 import { createInspection } from './game/inspection.js';
 import { createRevealSystem } from './game/reveal.js';
@@ -50,8 +51,13 @@ function mountMap(next) {
   scene = built.scene;
   colliders = built.colliders;
   scene.add(camera); // a lanterna (spotlight) fica presa à câmera
-  if (player) player.setEnvironment(colliders, map.bounds);
+  if (player) player.setEnvironment(colliders, worldBounds(map));
   disposeScene(previous);
+}
+
+/** Ponto de partida efetivo: na rua (exterior) quando há ambiente externo. */
+function spawnOf(m) {
+  return m.exterior?.spawn ?? m.spawn;
 }
 
 /** Escolhe um level de forma determinística a partir da seed (tour pelos levels). */
@@ -60,7 +66,7 @@ function pickMapId(seed) {
 }
 
 mountMap(MAPS.apartment_01);
-player = createPlayer({ camera, domElement: renderer.domElement, colliders, spawn: map.spawn, bounds: map.bounds });
+player = createPlayer({ camera, domElement: renderer.domElement, colliders, spawn: spawnOf(map), bounds: worldBounds(map) });
 const tools = createToolSystem({ camera });
 
 // --- Estado do caso atual ---
@@ -135,9 +141,10 @@ function startCase(opts = {}) {
   crosshair.classList.add('hidden');
   pause.classList.add('hidden');
 
-  // Player de volta ao ponto inicial
-  player.object.position.set(map.spawn.position[0], 1.6, map.spawn.position[2]);
-  camera.lookAt(new THREE.Vector3(...map.spawn.lookAt));
+  // Player de volta ao ponto inicial (na rua, quando há exterior)
+  const spawn = spawnOf(map);
+  player.object.position.set(spawn.position[0], 1.6, spawn.position[2]);
+  camera.lookAt(new THREE.Vector3(...spawn.lookAt));
 
   ui.showBriefing(current.instance, caseNumber, map.label, { onEnter: enterInspection });
 }

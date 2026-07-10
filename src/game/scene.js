@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { buildWalls, wallToAABB } from './layout.js';
 import { buildFurniture, furnitureFor } from './furniture.js';
+import { buildExterior } from './exterior.js';
 
 // Constrói o ambiente 3D a partir dos dados do mapa (CDIS: o mapa é só o cenário).
 // Retorna a cena, a lista de colisores (paredes) e as luzes de teto por cômodo.
@@ -8,14 +9,17 @@ import { buildFurniture, furnitureFor } from './furniture.js';
 const WALL_COLOR = 0x2a2f3a;
 const FLOOR_COLOR = 0x1b1e26;
 const CEIL_COLOR = 0x14171d;
+const NIGHT = 0x05070d;
 
 /**
  * @param {object} map  Definição de mapa (ver domain/data/maps.js).
  */
 export function buildScene(map) {
+  const outdoor = !!map.exterior;
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0b0d11);
-  scene.fog = new THREE.Fog(0x0b0d11, 6, 16);
+  scene.background = new THREE.Color(outdoor ? NIGHT : 0x0b0d11);
+  // Com exterior, a névoa vai mais longe (para revelar a clareira) e some no escuro.
+  scene.fog = outdoor ? new THREE.Fog(NIGHT, 7, 32) : new THREE.Fog(0x0b0d11, 6, 16);
 
   const { minX, maxX, minZ, maxZ } = map.bounds;
   const w = maxX - minX;
@@ -53,8 +57,13 @@ export function buildScene(map) {
   }
 
   // Iluminação: ambiente baixo (a lanterna importa) + uma luz suave por cômodo.
-  scene.add(new THREE.HemisphereLight(0x8090a0, 0x202028, 0.5));
-  const ambient = new THREE.AmbientLight(0xffffff, 0.18);
+  // À noite (exterior), o céu fica mais frio e fraco — a atmosfera escura importa.
+  scene.add(
+    outdoor
+      ? new THREE.HemisphereLight(0x2a3550, 0x080a0f, 0.3)
+      : new THREE.HemisphereLight(0x8090a0, 0x202028, 0.5),
+  );
+  const ambient = new THREE.AmbientLight(0xffffff, outdoor ? 0.1 : 0.18);
   scene.add(ambient);
 
   const ceilingLights = [];
@@ -69,6 +78,9 @@ export function buildScene(map) {
 
   // Mobília decorativa (não interativa, não colide).
   scene.add(buildFurniture(furnitureFor(map.id)));
+
+  // Ambiente externo (rua/calçada/caminho/floresta), quando o mapa o define.
+  if (outdoor) scene.add(buildExterior(map));
 
   return { scene, colliders, ceilingLights, ambient };
 }
