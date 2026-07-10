@@ -18,3 +18,54 @@ body,
 canvas {
   display: block;
 }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 10, 14, 0.82);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  z-index: 20;
+}
+
+.overlay-card {
+  text-align: center;
+  padding: 2.5rem 3rem;
+  border: 1px solid #2c333f;
+  border-radius: 12px;
+  background: #12151b;
+}
+
+.overlay-card h1 {
+  font-size: 2rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.75rem;
+}
+
+.overlay-card p {
+  color: #aeb6c2;
+  margin: 0.25rem 0;
+}
+
+.overlay-card .hint {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #6b7481;
+}
+
+.crosshair {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 10;
+}
