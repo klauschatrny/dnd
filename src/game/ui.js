@@ -90,10 +90,10 @@ export function createUI(app, { getInspectables, onConclusion, onFinish }) {
   }
 
   function renderNotebook() {
-    const examined = getInspectables().filter((i) => i.mesh.userData.inspect.examined);
+    const examined = getInspectables().filter((i) => i.root.userData.inspect.examined);
     const rows = examined
       .map((i) => {
-        const st = i.mesh.userData.inspect;
+        const st = i.root.userData.inspect;
         const evs = [...st.foundEvidence].map((e) => EVIDENCE[e].nome).join(', ') || '<i>nenhuma</i>';
         const options = Object.values(CONCLUSIONS)
           .map(

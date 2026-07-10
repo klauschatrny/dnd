@@ -11,15 +11,17 @@ export function createInspection({ camera, inspectables }) {
   const raycaster = new THREE.Raycaster();
   raycaster.far = MAX_DIST;
   const center = new THREE.Vector2(0, 0);
-  const meshes = inspectables.map((i) => i.mesh);
+  // Coleta todos os meshes (modelos têm vários) para o raycast.
+  const meshes = [];
+  for (const i of inspectables) i.root.traverse((o) => o.isMesh && meshes.push(o));
   let targeted = null;
 
-  /** Atualiza o objeto mirado. Retorna o mesh mirado (ou null). O realce visual
-   *  do alvo é responsabilidade do sistema de revelação (reveal.js). */
+  /** Atualiza o objeto mirado. Retorna o grupo-raiz mirado (ou null). O realce
+   *  visual do alvo é responsabilidade do sistema de revelação (reveal.js). */
   function update() {
     raycaster.setFromCamera(center, camera);
     const hit = raycaster.intersectObjects(meshes, false)[0];
-    targeted = hit ? hit.object : null;
+    targeted = hit ? hit.object.userData.inspectRoot : null;
     return targeted;
   }
 

@@ -38,14 +38,14 @@ export function createRevealSystem({ inspectables, camera }) {
     const glow = TOOL_GLOW[tool];
     const pulse = 0.75 + 0.25 * Math.sin(time * 6);
 
-    for (const { mesh, data } of inspectables) {
+    for (const { root, data, materials } of inspectables) {
       let color = 0x000000;
       let intensity = 1;
 
       if (glow) {
         const evs = EV_BY_TOOL[tool] ?? [];
         if (data.evidences.some((e) => evs.includes(e))) {
-          dir.copy(mesh.position).sub(camPos);
+          dir.copy(root.position).sub(camPos);
           const dist = dir.length();
           if (dist <= glow.range) {
             let aimOk = true;
@@ -62,10 +62,12 @@ export function createRevealSystem({ inspectables, camera }) {
       }
 
       // Realce sutil do objeto mirado (quando não há revelação de ferramenta).
-      if (mesh === target && color === 0x000000) color = TARGET_TINT;
+      if (root === target && color === 0x000000) color = TARGET_TINT;
 
-      mesh.material.emissive.setHex(color);
-      mesh.material.emissiveIntensity = intensity;
+      for (const m of materials) {
+        m.emissive.setHex(color);
+        m.emissiveIntensity = intensity;
+      }
     }
   }
 

@@ -38,7 +38,7 @@ const ui = createUI(app, {
   getInspectables: () => current.inspectables,
   onConclusion: (poiId, conclusion) => {
     const item = current.inspectables.find((i) => i.data.poiId === poiId);
-    if (item) item.mesh.userData.inspect.conclusion = conclusion;
+    if (item) item.root.userData.inspect.conclusion = conclusion;
   },
   onFinish: () => emitReport(),
 });
@@ -106,8 +106,8 @@ function enterInspection() {
 
 function emitReport() {
   const marks = {};
-  for (const { mesh, data } of current.inspectables) {
-    if (mesh.userData.inspect.conclusion) marks[data.poiId] = mesh.userData.inspect.conclusion;
+  for (const { root, data } of current.inspectables) {
+    if (root.userData.inspect.conclusion) marks[data.poiId] = root.userData.inspect.conclusion;
   }
   const time = startTime ? (performance.now() - startTime) / 1000 : 0;
   const result = evaluateReport(current.solution, marks, time);
@@ -189,9 +189,9 @@ function updateRf() {
   if (tools.current !== 'RF') return;
   camera.getWorldPosition(camPos);
   let intensity = 0;
-  for (const { mesh, data } of current.inspectables) {
+  for (const { root, data } of current.inspectables) {
     if (!data.evidences.includes('RF_SIGNAL')) continue;
-    intensity = Math.max(intensity, Math.max(0, 1 - camPos.distanceTo(mesh.position) / 4.5));
+    intensity = Math.max(intensity, Math.max(0, 1 - camPos.distanceTo(root.position) / 4.5));
   }
   ui.setRf(intensity);
 }
