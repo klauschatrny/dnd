@@ -33,6 +33,8 @@ Organização do código:
 
 Controles: **WASD** mover · **mouse** olhar · **1–5** trocar ferramenta (Lanterna/Zoom/UV/RF/Térmico) · **E** ou clique esquerdo inspecionar · **TAB** caderneta/laudo · **ESC** pausar.
 
+**Editor de ambiente** (`editor.html`, link no menu): página separada que reaproveita a cena para posicionar objetos visualmente. Orbitar (arrastar fundo) · clicar para selecionar · gizmo para mover/girar (G/R) · Snap · Apagar (Del) · **Exportar** gera o array `pois` (para `maps.js`) e `FURNITURE_LAYOUT` (para `furniture.js`) prontos para colar. É assim que os ambientes são editados sem calcular coordenadas na mão. Móveis são declarativos em `furniture.js` (`FURNITURE_LAYOUT`: `type` + `pos`/`ry`/`args`); POIs ficam em `maps.js`.
+
 Ao evoluir: mantenha `src/domain/` puro (nada de import de `three` nem de DOM) para preservar a portabilidade e a testabilidade. Novo objeto/evidência/estado/denúncia = editar dados em `src/domain/data/` (mais um prefab visual via `visual` no objeto); o gerador não muda.
 
 Verificação em navegador: dá para usar Playwright pontualmente (`npm i -D playwright && npx playwright install chromium`) para carregar a página, exercitar o fluxo e capturar erros de console/screenshots. Não fica como dependência fixa.

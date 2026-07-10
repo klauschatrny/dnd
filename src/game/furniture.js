@@ -173,49 +173,81 @@ function bathtub() {
 
 const HALF = Math.PI / 2;
 
-// Layout do apartamento (posições [x,z] no piso, ry = rotação em torno de Y).
-const LAYOUT = [
+// Registro de construtores por tipo (permite layout declarativo + edição/export).
+const BUILDERS = {
+  rug: (a) => rug(a[0], a[1], a[2]),
+  sofa: (a) => upholstered(a[0], a[1]),
+  table: (a) => table(a[0], a[1], a[2], a[3]),
+  chair: (a) => chair(a[0]),
+  cabinet: (a) => cabinet(a[0], a[1], a[2], a[3], a[4]),
+  dresser: (a) => dresser(a[0], a[1]),
+  bookshelf: (a) => bookshelf(a[0]),
+  bed: () => bed(),
+  fridge: () => fridge(),
+  vanity: () => vanity(),
+  toilet: () => toilet(),
+  bathtub: () => bathtub(),
+};
+
+// Índices de argumentos que são cores (para o editor exportar como 0xhex).
+export const COLOR_ARGS = {
+  rug: [2],
+  sofa: [1],
+  table: [3],
+  chair: [0],
+  cabinet: [3, 4],
+  dresser: [1],
+  bookshelf: [0],
+};
+
+// Layout declarativo do apartamento. pos=[x,z] no piso; ry=giro em Y; args=parâmetros
+// do construtor (dimensões/cores). O editor edita pos/ry/y e exporta este array.
+export const FURNITURE_LAYOUT = [
   // --- Sala (x[-6,0], z[-4.5,0]) ---
-  { build: () => rug(3.4, 2.8, 0x2c313d), pos: [-3.0, -2.0] },
-  { build: () => upholstered(1.8, 0x455066), pos: [-2.0, -2.3], ry: -HALF }, // sofá de frente p/ TV
-  { build: () => upholstered(0.95, 0x4a5a63), pos: [-2.3, -0.7], ry: -HALF * 0.7 }, // poltrona
-  { build: () => table(1.1, 0.6, 0.4, 0x6b4f34), pos: [-3.7, -2.3] }, // mesa de centro
-  { build: () => cabinet(2.0, 0.4, 0.4, 0x4a3b2a), pos: [-5.74, -2.0], ry: HALF }, // rack da TV
-  { build: () => cabinet(0.55, 0.9, 0.4, 0x6b4f34), pos: [-5.6, -3.6], ry: HALF }, // aparador (roteador)
-  { build: () => bookshelf(0x5a4632), pos: [-0.35, -3.7], ry: -HALF }, // estante
+  { type: 'rug', pos: [-3.0, -2.0], args: [3.4, 2.8, 0x2c313d] },
+  { type: 'sofa', pos: [-2.0, -2.3], ry: -HALF, args: [1.8, 0x455066] },
+  { type: 'sofa', pos: [-2.3, -0.7], ry: -HALF * 0.7, args: [0.95, 0x4a5a63] },
+  { type: 'table', pos: [-3.7, -2.3], args: [1.1, 0.6, 0.4, 0x6b4f34] },
+  { type: 'cabinet', pos: [-5.74, -2.0], ry: HALF, args: [2.0, 0.4, 0.4, 0x4a3b2a] },
+  { type: 'cabinet', pos: [-5.6, -3.6], ry: HALF, args: [0.55, 0.9, 0.4, 0x6b4f34] },
+  { type: 'bookshelf', pos: [-0.35, -3.7], ry: -HALF, args: [0x5a4632] },
 
   // --- Quarto (x[0,6], z[-4.5,0]) ---
-  { build: () => rug(3.4, 2.8, 0x2c313d), pos: [3.4, -2.0] },
-  { build: () => bed(), pos: [4.7, -2.3], ry: -HALF }, // cabeceira na parede leste
-  { build: () => cabinet(1.25, 0.86, 0.42, 0x6b4f34), pos: [3.95, -4.05] }, // criado (abajur/rádio)
-  { build: () => dresser(1.4, 0x6b4f34), pos: [0.4, -3.6], ry: HALF }, // cômoda
-  { build: () => cabinet(1.3, 0.45, 0.4, 0x8a7a5a), pos: [3.5, -1.3] }, // banqueta/baú aos pés da cama
+  { type: 'rug', pos: [3.4, -2.0], args: [3.4, 2.8, 0x2c313d] },
+  { type: 'bed', pos: [4.7, -2.3], ry: -HALF },
+  { type: 'cabinet', pos: [3.95, -4.05], args: [1.25, 0.86, 0.42, 0x6b4f34] },
+  { type: 'dresser', pos: [0.4, -3.6], ry: HALF, args: [1.4, 0x6b4f34] },
+  { type: 'cabinet', pos: [3.5, -1.3], args: [1.3, 0.45, 0.4, 0x8a7a5a] },
 
   // --- Cozinha (x[-6,0], z[0,4.5]) ---
-  { build: () => cabinet(3.2, 0.85, 0.55, 0x878d96, 0x2a2d33), pos: [-5.72, 2.5], ry: HALF }, // bancada
-  { build: () => cabinet(2.8, 0.5, 0.3, 0x9aa0a8), pos: [-5.82, 2.5], ry: HALF, y: 1.95 }, // armários altos
-  { build: () => fridge(), pos: [-1.4, 4.06], ry: Math.PI }, // geladeira rente à parede sul
-  { build: () => rug(1.9, 1.7, 0x2c313d), pos: [-2.7, 1.9] },
-  { build: () => table(1.2, 0.85, 0.75, 0x6b4f34), pos: [-2.7, 1.9] }, // mesa de jantar
-  { build: () => chair(0x5a4632), pos: [-2.7, 1.05] },
-  { build: () => chair(0x5a4632), pos: [-2.7, 2.75], ry: Math.PI },
+  { type: 'cabinet', pos: [-5.72, 2.5], ry: HALF, args: [3.2, 0.85, 0.55, 0x878d96, 0x2a2d33] },
+  { type: 'cabinet', pos: [-5.82, 2.5], ry: HALF, y: 1.95, args: [2.8, 0.5, 0.3, 0x9aa0a8] },
+  { type: 'fridge', pos: [-1.4, 4.06], ry: Math.PI },
+  { type: 'rug', pos: [-2.7, 1.9], args: [1.9, 1.7, 0x2c313d] },
+  { type: 'table', pos: [-2.7, 1.9], args: [1.2, 0.85, 0.75, 0x6b4f34] },
+  { type: 'chair', pos: [-2.7, 1.05], args: [0x5a4632] },
+  { type: 'chair', pos: [-2.7, 2.75], ry: Math.PI, args: [0x5a4632] },
 
   // --- Banheiro (x[0,6], z[0,4.5]) ---
-  { build: () => vanity(), pos: [5.64, 2.4], ry: -HALF }, // gabinete sob o espelho
-  { build: () => toilet(), pos: [4.8, 4.05], ry: Math.PI }, // vaso rente à parede sul
-  { build: () => bathtub(), pos: [1.55, 4.0] }, // banheira rente à parede sul
-  { build: () => rug(1.3, 1.0, 0x33384a), pos: [3.9, 2.2] },
+  { type: 'vanity', pos: [5.64, 2.4], ry: -HALF },
+  { type: 'toilet', pos: [4.8, 4.05], ry: Math.PI },
+  { type: 'bathtub', pos: [1.55, 4.0] },
+  { type: 'rug', pos: [3.9, 2.2], args: [1.3, 1.0, 0x33384a] },
 ];
+
+/** Constrói o grupo de um item de mobília (com vínculo ao dado, para o editor). */
+export function buildFurnitureItem(item) {
+  const m = BUILDERS[item.type](item.args ?? []);
+  m.position.set(item.pos[0], item.y ?? 0, item.pos[1]);
+  m.rotation.y = item.ry ?? 0;
+  m.userData.item = item;
+  return m;
+}
 
 /** Grupo com toda a mobília decorativa do mapa. */
 export function buildFurniture() {
   const g = new THREE.Group();
   g.name = 'furniture';
-  for (const item of LAYOUT) {
-    const m = item.build();
-    m.position.set(item.pos[0], item.y ?? 0, item.pos[1]);
-    m.rotation.y = item.ry ?? 0;
-    g.add(m);
-  }
+  for (const item of FURNITURE_LAYOUT) g.add(buildFurnitureItem(item));
   return g;
 }

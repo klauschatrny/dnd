@@ -223,6 +223,7 @@ export function createUI(app, { getInspectables, onConclusion, onFinish }) {
           </select>
         </div>
         <button class="btn-primary" id="menu-start">Nova inspeção</button>
+        <a class="menu-link" href="./editor.html">Editor de ambiente →</a>
       </div>`;
     menu.querySelector('#menu-start').addEventListener('click', () => {
       const seed = menu.querySelector('#menu-seed').value.trim();
