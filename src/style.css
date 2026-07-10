@@ -303,3 +303,100 @@ canvas {
 .btn-secondary:hover {
   background: #222833;
 }
+
+/* ---- Resultado ---- */
+.results {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 8, 12, 0.9);
+}
+.results-inner {
+  width: min(720px, 92vw);
+  max-height: 88vh;
+  overflow: auto;
+  text-align: center;
+  background: #12151b;
+  border: 1px solid #2c333f;
+  border-radius: 14px;
+  padding: 1.8rem;
+}
+.grade {
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+.grade-S {
+  color: #f0c674;
+}
+.grade-A {
+  color: #6fd08c;
+}
+.grade-B {
+  color: #6fb3e0;
+}
+.grade-C {
+  color: #d0a06f;
+}
+.grade-D {
+  color: #d06f6f;
+}
+.results-inner h2 {
+  margin-bottom: 1.2rem;
+  color: #c7cdd6;
+  font-weight: 500;
+}
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.4rem;
+  margin-bottom: 1.4rem;
+}
+.stats div {
+  display: flex;
+  flex-direction: column;
+}
+.stats b {
+  font-size: 1.5rem;
+}
+.stats span {
+  color: #7f8794;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.results table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.4rem;
+  font-size: 0.88rem;
+}
+.results th,
+.results td {
+  text-align: left;
+  padding: 0.5rem;
+  border-bottom: 1px solid #232a34;
+}
+.results th {
+  color: #8b93a1;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.results .oc.ok {
+  color: #6fd08c;
+}
+.results .oc.bad {
+  color: #e08a8a;
+}
+.results .oc.muted {
+  color: #6b7481;
+}
+.results-actions {
+  display: flex;
+  justify-content: center;
+}

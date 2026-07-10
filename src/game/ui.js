@@ -144,6 +144,62 @@ export function createUI(app, { inspectables, onConclusion, onFinish }) {
     hud.classList.remove('hidden');
   }
 
+  // --- Tela de resultado (laudo) ---
+  const results = el('div', 'results hidden');
+  app.appendChild(results);
+
+  const OUTCOME = {
+    acerto: { txt: 'Irregularidade encontrada', cls: 'ok' },
+    perdida: { txt: 'Irregularidade perdida', cls: 'bad' },
+    falso_positivo: { txt: 'Falso positivo', cls: 'bad' },
+    ok: { txt: '—', cls: 'muted' },
+  };
+
+  function showResults(r, { onNext }) {
+    toggleNotebook(false);
+    hideHud();
+    const rows = r.breakdown
+      .filter((b) => b.relevant)
+      .map((b) => {
+        const oc = OUTCOME[b.outcome];
+        return `<tr>
+          <td>${b.label}</td>
+          <td>${b.stateLabel}</td>
+          <td>${CONCLUSION_LABELS[b.playerConclusion]}</td>
+          <td class="oc ${oc.cls}">${oc.txt}</td>
+        </tr>`;
+      })
+      .join('');
+    const mins = Math.floor(r.timeSeconds / 60);
+    const secs = String(Math.floor(r.timeSeconds % 60)).padStart(2, '0');
+
+    results.innerHTML = `
+      <div class="results-inner">
+        <div class="grade grade-${r.grade}">${r.grade}</div>
+        <h2>Laudo emitido</h2>
+        <div class="stats">
+          <div><b>${r.stats.encontradas}/${r.stats.totalIrregular}</b><span>irregularidades</span></div>
+          <div><b>${r.stats.perdidas}</b><span>perdidas</span></div>
+          <div><b>${r.stats.falsosPositivos}</b><span>falsos positivos</span></div>
+          <div><b>${Math.round(r.score * 100)}%</b><span>precisão</span></div>
+          <div><b>${mins}:${secs}</b><span>tempo</span></div>
+        </div>
+        <table>
+          <thead><tr><th>Objeto</th><th>Estado real</th><th>Seu laudo</th><th>Resultado</th></tr></thead>
+          <tbody>${rows || '<tr><td colspan="4"><i>Nada relevante a exibir.</i></td></tr>'}</tbody>
+        </table>
+        <div class="results-actions">
+          <button class="btn-primary" id="res-next">Próximo caso</button>
+        </div>
+      </div>`;
+    results.querySelector('#res-next').addEventListener('click', () => onNext?.());
+    results.classList.remove('hidden');
+  }
+
+  function hideResults() {
+    results.classList.add('hidden');
+  }
+
   return {
     setTool,
     setTarget,
@@ -155,6 +211,8 @@ export function createUI(app, { inspectables, onConclusion, onFinish }) {
     renderNotebook,
     hideHud,
     showHud,
+    showResults,
+    hideResults,
     notebookEl: notebook,
   };
 }

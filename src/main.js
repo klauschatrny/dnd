@@ -8,6 +8,7 @@ import { createPlayer } from './game/player.js';
 import { createToolSystem, TOOL_ORDER } from './game/tools.js';
 import { createInspection } from './game/inspection.js';
 import { createUI } from './game/ui.js';
+import { evaluateReport } from './domain/report.js';
 
 const app = document.getElementById('app');
 
@@ -20,7 +21,9 @@ const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerH
 
 // Caso atual (seed fixa até termos menu/briefing no passo 7)
 const map = MAPS.apartment_01;
-const { instance } = generateCase({ seed: 84723191 });
+const { instance, solution } = generateCase({ seed: 84723191 });
+let startTime = null;
+let resultsShown = false;
 
 const { scene, colliders } = buildScene(map);
 scene.add(camera); // necessário para a lanterna (spotlight) presa à câmera
@@ -41,9 +44,7 @@ const ui = createUI(app, {
     const item = inspectables.find((i) => i.data.poiId === poiId);
     if (item) item.mesh.userData.inspect.conclusion = conclusion;
   },
-  onFinish: () => {
-    ui.toast('Emissão de laudo chega no próximo passo do desenvolvimento.', 'muted');
-  },
+  onFinish: () => emitReport(),
 });
 ui.setTool(tools.current);
 
@@ -63,10 +64,26 @@ crosshair.className = 'crosshair';
 app.appendChild(crosshair);
 
 overlay.addEventListener('click', () => player.controls.lock());
-player.controls.addEventListener('lock', () => overlay.classList.add('hidden'));
-player.controls.addEventListener('unlock', () => {
-  if (!ui.isNotebookOpen()) overlay.classList.remove('hidden');
+player.controls.addEventListener('lock', () => {
+  overlay.classList.add('hidden');
+  if (startTime === null) startTime = performance.now();
 });
+player.controls.addEventListener('unlock', () => {
+  if (!ui.isNotebookOpen() && !resultsShown) overlay.classList.remove('hidden');
+});
+
+function emitReport() {
+  const marks = {};
+  for (const { mesh, data } of inspectables) {
+    if (mesh.userData.inspect.conclusion) marks[data.poiId] = mesh.userData.inspect.conclusion;
+  }
+  const time = startTime ? (performance.now() - startTime) / 1000 : 0;
+  const result = evaluateReport(solution, marks, time);
+  resultsShown = true;
+  crosshair.classList.add('hidden');
+  player.controls.unlock();
+  ui.showResults(result, { onNext: () => window.location.reload() });
+}
 
 // --- Entradas ---
 function inspectNow() {
@@ -84,6 +101,7 @@ function closeNotebook() {
 }
 
 document.addEventListener('keydown', (e) => {
+  if (resultsShown) return;
   if (e.code === 'Tab') {
     e.preventDefault();
     ui.isNotebookOpen() ? closeNotebook() : openNotebook();
