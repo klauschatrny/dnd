@@ -285,10 +285,47 @@ export const LOFT_05 = {
   ],
 };
 
+// Apartamento com MODELO 3D (.glb). A casca e a mobília vêm do arquivo; os POIs
+// (objetos inspecionáveis) continuam vindo daqui. Bounds/rooms/spawn alinhados ao
+// bounding box real do modelo. Piso em y≈0, teto ~2,5m. Colisão interna ainda não
+// definida (só os limites externos) — a ser derivada do modelo/afinada depois.
+export const APTO_3D = {
+  id: 'apto3d',
+  label: 'Apartamento (3D)',
+  bounds: { minX: -6.76, maxX: 0.29, minZ: -6.27, maxZ: 4.39 },
+  height: 2.5,
+  model: '/models/appartement/source/appartement.glb',
+  rooms: [
+    { id: 'sala_cozinha', label: 'Sala/Cozinha', rect: { minX: -6.76, maxX: 0.29, minZ: -0.33, maxZ: 4.39 } },
+    { id: 'quartos', label: 'Quartos', rect: { minX: -3.8, maxX: 0.29, minZ: -6.27, maxZ: -0.38 } },
+    { id: 'banheiro', label: 'Banheiro/Corredor', rect: { minX: -6.76, maxX: -3.77, minZ: -5.08, maxZ: 0.75 } },
+  ],
+  spawn: { position: [-3.3, 1.6, 2.0], lookAt: [-2, 1.6, -3] },
+  walls: [], // sem colisão interna ainda (validação do pipeline do modelo)
+  /** @type {Poi[]} */
+  pois: [
+    // --- Sala/Cozinha (sul) — POIs nas paredes externas (posição confiável) ---
+    { id: 'tv_sala', room: 'sala_cozinha', objectType: 'tv', position: [-6.6, 1.3, 2.0], facing: [1, 0, 0], anchor: 'wall' },
+    { id: 'outlet_sala', room: 'sala_cozinha', objectType: 'outlet', position: [-2.5, 0.5, 4.2], facing: [0, 0, -1], anchor: 'wall' },
+    { id: 'router_sala', room: 'sala_cozinha', objectType: 'router', position: [-6.4, 0.9, 3.8], facing: [1, 0, 0], anchor: 'surface' },
+    { id: 'smoke_sala', room: 'sala_cozinha', objectType: 'smokeDetector', position: [-3.3, 2.4, 2.0], facing: [0, -1, 0], anchor: 'ceiling' },
+
+    // --- Quartos (nordeste) ---
+    { id: 'clock_quarto', room: 'quartos', objectType: 'clock', position: [0.1, 1.7, -2.2], facing: [-1, 0, 0], anchor: 'wall' },
+    { id: 'smoke_quarto', room: 'quartos', objectType: 'smokeDetector', position: [-2.0, 2.4, -3.0], facing: [0, -1, 0], anchor: 'ceiling' },
+    { id: 'usb_quarto', room: 'quartos', objectType: 'usbCharger', position: [-3.0, 0.5, -6.1], facing: [0, 0, 1], anchor: 'wall' },
+
+    // --- Banheiro/Corredor (oeste) ---
+    { id: 'mirror_banheiro', room: 'banheiro', objectType: 'mirror', position: [-6.6, 1.4, -2.5], facing: [1, 0, 0], anchor: 'wall' },
+    { id: 'outlet_banheiro', room: 'banheiro', objectType: 'outlet', position: [-6.6, 1.0, -4.0], facing: [1, 0, 0], anchor: 'wall' },
+  ],
+};
+
 export const MAPS = {
   apartment_01: APARTMENT_01,
   studio_02: STUDIO_02,
   suite_hotel_03: SUITE_HOTEL_03,
   casa_04: CASA_04,
   loft_05: LOFT_05,
+  apto3d: APTO_3D,
 };

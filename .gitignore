@@ -5,3 +5,6 @@ dist-ssr/
 .vite/
 .DS_Store
 *.log
+
+# Texturas extraídas redundantes (já estão embutidas no .glb; o jogo não as usa)
+public/models/**/textures/
