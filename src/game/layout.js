@@ -23,15 +23,15 @@ export function buildWalls(map) {
     { cx: minX, cz, hx: T, hz: d / 2 },
     { cx: maxX, cz, hx: T, hz: d / 2 },
 
-    // Partição vertical (x=0), com dois vãos: z∈(-1,0) e z∈(1.6,2.6)
-    { cx: 0, cz: -2.0, hx: T, hz: 1.0 },
-    { cx: 0, cz: 0.8, hx: T, hz: 0.8 },
-    { cx: 0, cz: 2.8, hx: T, hz: 0.2 },
+    // Partição vertical (x=0), com dois vãos: z∈(-2.2,-1.0) e z∈(1.0,2.2)
+    { cx: 0, cz: -3.35, hx: T, hz: 1.15 },
+    { cx: 0, cz: 0, hx: T, hz: 1.0 },
+    { cx: 0, cz: 3.35, hx: T, hz: 1.15 },
 
-    // Partição horizontal (z=1), com dois vãos: x∈(-3.1,-2.1) e x∈(2.1,3.1)
-    { cx: -3.55, cz: 1, hx: 0.45, hz: T },
-    { cx: 0, cz: 1, hx: 2.1, hz: T },
-    { cx: 3.55, cz: 1, hx: 0.45, hz: T },
+    // Partição horizontal (z=0), com dois vãos: x∈(-4.5,-3.3) e x∈(3.3,4.5)
+    { cx: -5.25, cz: 0, hx: 0.75, hz: T },
+    { cx: 0, cz: 0, hx: 3.3, hz: T },
+    { cx: 5.25, cz: 0, hx: 0.75, hz: T },
   ];
 }
 

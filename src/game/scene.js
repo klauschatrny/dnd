@@ -39,6 +39,7 @@ export function buildScene(map) {
   );
   ceiling.rotation.x = Math.PI / 2;
   ceiling.position.set(cx, h, cz);
+  ceiling.name = 'ceiling';
   scene.add(ceiling);
 
   // Paredes (visual + colisão) a partir da geometria compartilhada em layout.js.

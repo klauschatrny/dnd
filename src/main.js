@@ -215,5 +215,8 @@ renderer.setAnimationLoop(() => {
   renderer.render(scene, camera);
 });
 
+// Hook de depuração (apenas em desenvolvimento) para inspeção/testes.
+if (import.meta.env.DEV) window.__game = { camera, scene, renderer };
+
 // --- Início ---
 ui.showMenu({ onStart: (opts) => startCase(opts) });
