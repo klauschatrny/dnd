@@ -50,7 +50,7 @@ export function createUI(app, { getInspectables, onConclusion, onFinish }) {
     rfMeter.classList.toggle('visible', current === 'RF');
   }
 
-  function setTarget(mesh) {
+  function setTarget(mesh, hint, toolLabel) {
     if (!mesh) {
       prompt.classList.remove('visible');
       return;
@@ -59,7 +59,11 @@ export function createUI(app, { getInspectables, onConclusion, onFinish }) {
     const conc = st.conclusion ? ` · <span class="tag">${CONCLUSION_LABELS[st.conclusion]}</span>` : '';
     const count = st.foundEvidence.size;
     const evTxt = count ? ` · ${count} evidência(s)` : '';
-    prompt.innerHTML = `<b>${st.data.label}</b>${evTxt}${conc}<span class="act">[E] inspecionar</span>`;
+    let sig = `<span class="act">[E] inspecionar</span>`;
+    if (hint === 'signal') sig = `<span class="act signal">● sinal (${toolLabel}) — [E] registrar</span>`;
+    else if (hint === 'found') sig = `<span class="act done">✓ registrado (${toolLabel})</span>`;
+    else if (hint === 'none') sig = `<span class="act none">nada com ${toolLabel}</span>`;
+    prompt.innerHTML = `<b>${st.data.label}</b>${evTxt}${conc}${sig}`;
     prompt.classList.add('visible');
   }
 

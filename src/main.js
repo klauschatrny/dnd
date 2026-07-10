@@ -8,6 +8,7 @@ import { spawnObjects } from './game/objectSpawner.js';
 import { createPlayer } from './game/player.js';
 import { createToolSystem, TOOL_ORDER } from './game/tools.js';
 import { createInspection } from './game/inspection.js';
+import { createRevealSystem } from './game/reveal.js';
 import { createUI } from './game/ui.js';
 
 const app = document.getElementById('app');
@@ -27,7 +28,7 @@ const player = createPlayer({ camera, domElement: renderer.domElement, colliders
 const tools = createToolSystem({ camera });
 
 // --- Estado do caso atual ---
-const current = { instance: null, solution: null, inspectables: [], inspection: null };
+const current = { instance: null, solution: null, inspectables: [], inspection: null, reveal: null };
 let phase = 'menu'; // menu | briefing | inspection | results
 let startTime = null;
 let caseNumber = 0;
@@ -75,6 +76,7 @@ function startCase(opts = {}) {
   current.solution = gen.solution;
   current.inspectables = spawnObjects(scene, gen.instance);
   current.inspection = createInspection({ camera, inspectables: current.inspectables });
+  current.reveal = createRevealSystem({ inspectables: current.inspectables, camera });
 
   // Reset de estado
   caseNumber += 1;
@@ -170,6 +172,17 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// Pista da ferramenta atual sobre o objeto mirado (RF não revela objeto — GDD §6).
+function targetHint(target) {
+  if (!target || tools.current === 'RF') return undefined;
+  const evs = tools.revealSet();
+  const st = target.userData.inspect;
+  const detectable = st.data.evidences.filter((e) => evs.includes(e));
+  if (detectable.length === 0) return 'none';
+  if (detectable.every((e) => st.foundEvidence.has(e))) return 'found';
+  return 'signal';
+}
+
 // --- Medidor RF (não aponta o objeto exato — GDD §6) ---
 const camPos = new THREE.Vector3();
 function updateRf() {
@@ -189,9 +202,15 @@ renderer.setAnimationLoop(() => {
   const delta = Math.min(clock.getDelta(), 0.1);
   player.move(delta);
   tools.update(delta);
-  if (phase === 'inspection' && player.controls.isLocked) {
-    ui.setTarget(current.inspection.update());
-    updateRf();
+  if (phase === 'inspection') {
+    const target = current.inspection.update();
+    current.reveal.update(tools.current, target, clock.elapsedTime);
+    if (player.controls.isLocked) {
+      ui.setTarget(target, targetHint(target), tools.currentLabel);
+      updateRf();
+    } else {
+      ui.setTarget(null);
+    }
   }
   renderer.render(scene, camera);
 });

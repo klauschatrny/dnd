@@ -6,7 +6,6 @@ import { EVIDENCE } from '../domain/data/index.js';
 // ferramenta ativa e as acumula. Nenhuma evidência isolada prova algo (GDD §7).
 
 const MAX_DIST = 3.6;
-const HIGHLIGHT = 0x1a2740;
 
 export function createInspection({ camera, inspectables }) {
   const raycaster = new THREE.Raycaster();
@@ -15,21 +14,12 @@ export function createInspection({ camera, inspectables }) {
   const meshes = inspectables.map((i) => i.mesh);
   let targeted = null;
 
-  function setHighlight(mesh, on) {
-    if (!mesh) return;
-    mesh.material.emissive.setHex(on ? HIGHLIGHT : mesh.userData.inspect.baseEmissive);
-  }
-
-  /** Atualiza o objeto mirado. Retorna o mesh mirado (ou null). */
+  /** Atualiza o objeto mirado. Retorna o mesh mirado (ou null). O realce visual
+   *  do alvo é responsabilidade do sistema de revelação (reveal.js). */
   function update() {
     raycaster.setFromCamera(center, camera);
     const hit = raycaster.intersectObjects(meshes, false)[0];
-    const next = hit ? hit.object : null;
-    if (next !== targeted) {
-      setHighlight(targeted, false);
-      setHighlight(next, true);
-      targeted = next;
-    }
+    targeted = hit ? hit.object : null;
     return targeted;
   }
 
