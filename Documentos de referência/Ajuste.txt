@@ -1,0 +1,11 @@
+Trocar a geração totalmente aleatória por uma geração baseada em "Templates de Caso".
+
+Em vez de o algoritmo simplesmente escolher estados para objetos, ele começaria selecionando um template, por exemplo:
+
+Câmera escondida (objetivo: 1–2 câmeras, evidências ópticas fortes).
+Espionagem por áudio (microfones e poucos sinais visuais).
+Estruturas adulteradas (espelhos falsos, tomadas modificadas).
+Caso misto (combinação de categorias).
+Falso alarme (muitos objetos suspeitos, poucas irregularidades).
+
+Depois disso, o gerador apenas adapta esse template ao mapa disponível e à dificuldade. Isso faz com que cada investigação tenha uma "identidade" e um ritmo próprios, em vez de parecer apenas uma combinação aleatória de objetos.
