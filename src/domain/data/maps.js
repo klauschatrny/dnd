@@ -231,9 +231,64 @@ export const CASA_04 = {
   ],
 };
 
+// Loft de conceito aberto: um grande espaço com zonas (cozinha/sala/quarto/entrada)
+// sem paredes cheias entre elas — apenas uma "península" parcial — e um banheiro
+// fechado no canto nordeste. As zonas são cômodos lógicos (para distribuição/luz).
+export const LOFT_05 = {
+  id: 'loft_05',
+  label: 'Loft',
+  bounds: { minX: -6, maxX: 6, minZ: -4, maxZ: 4 },
+  height: 3.0,
+  rooms: [
+    { id: 'cozinha', label: 'Cozinha', rect: { minX: -6, maxX: 0, minZ: -4, maxZ: 0 } },
+    { id: 'quarto', label: 'Quarto', rect: { minX: -6, maxX: 0, minZ: 0, maxZ: 4 } },
+    { id: 'sala', label: 'Sala', rect: { minX: 0, maxX: 6, minZ: 0, maxZ: 4 } },
+    { id: 'entrada', label: 'Entrada', rect: { minX: 0, maxX: 3, minZ: -4, maxZ: 0 } },
+    { id: 'banheiro', label: 'Banheiro', rect: { minX: 3, maxX: 6, minZ: -4, maxZ: -1.5 } },
+  ],
+  spawn: { position: [-4, 1.6, 0], lookAt: [1, 1.6, 0] },
+  // Banheiro fechado no canto NE (parede oeste x=3 + parede sul z=-1.5 com porta) e
+  // uma península parcial (x=0, z∈2..4) que só sugere a divisão — não sela nada.
+  walls: [
+    { cx: 3, cz: -2.75, hx: T, hz: 1.25 },
+    { cx: 3.7, cz: -1.5, hx: 0.7, hz: T },
+    { cx: 5.8, cz: -1.5, hx: 0.2, hz: T },
+    { cx: 0, cz: 3, hx: T, hz: 1.0 },
+  ],
+  /** @type {Poi[]} */
+  pois: [
+    // --- Cozinha (NO) ---
+    { id: 'outlet_cozinha', room: 'cozinha', objectType: 'outlet', position: [-5.94, 1.0, -2.5], facing: [1, 0, 0], anchor: 'wall' },
+    { id: 'smoke_cozinha', room: 'cozinha', objectType: 'smokeDetector', position: [-3.0, 2.95, -2.0], facing: [0, -1, 0], anchor: 'ceiling' },
+    { id: 'clock_cozinha', room: 'cozinha', objectType: 'clock', position: [-4.5, 1.7, -3.94], facing: [0, 0, 1], anchor: 'wall' },
+    { id: 'router_cozinha', room: 'cozinha', objectType: 'router', position: [-5.6, 0.9, -3.6], facing: [1, 0, 0], anchor: 'surface' },
+
+    // --- Quarto (SO) ---
+    { id: 'lamp_quarto', room: 'quarto', objectType: 'lamp', position: [-5.6, 0.5, 3.6], facing: [1, 0, 0], anchor: 'surface' },
+    { id: 'radio_quarto', room: 'quarto', objectType: 'radio', position: [-5.6, 0.5, 2.4], facing: [1, 0, 0], anchor: 'surface' },
+    { id: 'wardrobe_quarto', room: 'quarto', objectType: 'wardrobe', position: [-0.4, 1.0, 3.4], facing: [-1, 0, 0], anchor: 'floor' },
+    { id: 'usb_quarto', room: 'quarto', objectType: 'usbCharger', position: [-3.0, 0.5, 3.94], facing: [0, 0, -1], anchor: 'wall' },
+
+    // --- Sala (SE) ---
+    { id: 'tv_sala', room: 'sala', objectType: 'tv', position: [5.94, 1.3, 2.0], facing: [-1, 0, 0], anchor: 'wall' },
+    { id: 'picture_sala', room: 'sala', objectType: 'picture', position: [3.0, 1.6, 3.94], facing: [0, 0, -1], anchor: 'wall' },
+    { id: 'smoke_sala', room: 'sala', objectType: 'smokeDetector', position: [3.0, 2.95, 2.0], facing: [0, -1, 0], anchor: 'ceiling' },
+    { id: 'plant_sala', room: 'sala', objectType: 'plant', position: [0.4, 0.3, 3.4], facing: [1, 0, 0], anchor: 'floor' },
+
+    // --- Entrada (N-centro) ---
+    { id: 'picture_entrada', room: 'entrada', objectType: 'picture', position: [1.5, 1.6, -3.94], facing: [0, 0, 1], anchor: 'wall' },
+    { id: 'smoke_entrada', room: 'entrada', objectType: 'smokeDetector', position: [1.5, 2.95, -2.0], facing: [0, -1, 0], anchor: 'ceiling' },
+
+    // --- Banheiro (NE) ---
+    { id: 'mirror_banheiro', room: 'banheiro', objectType: 'mirror', position: [5.94, 1.4, -2.8], facing: [-1, 0, 0], anchor: 'wall' },
+    { id: 'outlet_banheiro', room: 'banheiro', objectType: 'outlet', position: [3.06, 1.0, -3.5], facing: [1, 0, 0], anchor: 'wall' },
+  ],
+};
+
 export const MAPS = {
   apartment_01: APARTMENT_01,
   studio_02: STUDIO_02,
   suite_hotel_03: SUITE_HOTEL_03,
   casa_04: CASA_04,
+  loft_05: LOFT_05,
 };

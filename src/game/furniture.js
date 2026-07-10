@@ -295,6 +295,28 @@ export const FURNITURE_BY_MAP = {
     { type: 'toilet', pos: [-1.5, 4.5], ry: Math.PI },
     { type: 'vanity', pos: [1.5, 4.6], ry: Math.PI },
   ],
+
+  // --- Loft (bounds x[-6,6] z[-4,4]) ---
+  loft_05: [
+    // cozinha (NO)
+    { type: 'cabinet', pos: [-5.7, -2.5], ry: HALF, args: [3.0, 0.85, 0.55, 0x878d96, 0x2a2d33] },
+    { type: 'fridge', pos: [-5.6, -0.9], ry: HALF },
+    { type: 'rug', pos: [-3.2, -2.0], args: [2.4, 2.0, 0x2c313d] },
+    // sala (SE)
+    { type: 'rug', pos: [3.2, 1.8], args: [3.6, 3.0, 0x2c313d] },
+    { type: 'sofa', pos: [3.2, 3.0], ry: Math.PI, args: [2.0, 0x455066] },
+    { type: 'table', pos: [3.2, 1.8], args: [1.1, 0.6, 0.4, 0x6b4f34] },
+    { type: 'bookshelf', pos: [5.7, 3.4], ry: -HALF },
+    // quarto (SO)
+    { type: 'rug', pos: [-3.6, 2.8], args: [2.8, 2.4, 0x2c313d] },
+    { type: 'bed', pos: [-4.4, 3.2] },
+    { type: 'cabinet', pos: [-5.6, 2.0], ry: HALF, args: [0.55, 0.5, 0.4, 0x6b4f34] },
+    // entrada + banheiro
+    { type: 'cabinet', pos: [1.5, -3.7], args: [1.2, 0.85, 0.4, 0x4a3b2a] },
+    { type: 'toilet', pos: [3.6, -3.6] },
+    { type: 'vanity', pos: [5.6, -3.6], ry: -HALF },
+    { type: 'rug', pos: [4.6, -2.5], args: [1.6, 1.4, 0x33384a] },
+  ],
 };
 
 /** Layout de mobília de um mapa (vazio se não houver). */
