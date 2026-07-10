@@ -159,7 +159,7 @@ export function createUI(app, { getInspectables, onConclusion, onFinish }) {
     ok: { txt: '—', cls: 'muted' },
   };
 
-  function showResults(r, { onNext }) {
+  function showResults(r, { onNext, onLevels }) {
     toggleNotebook(false);
     hideHud();
     const rows = r.breakdown
@@ -193,10 +193,12 @@ export function createUI(app, { getInspectables, onConclusion, onFinish }) {
           <tbody>${rows || '<tr><td colspan="4"><i>Nada relevante a exibir.</i></td></tr>'}</tbody>
         </table>
         <div class="results-actions">
+          <button class="btn-secondary" id="res-levels">Trocar de imóvel</button>
           <button class="btn-primary" id="res-next">Próximo caso</button>
         </div>
       </div>`;
     results.querySelector('#res-next').addEventListener('click', () => onNext?.());
+    results.querySelector('#res-levels')?.addEventListener('click', () => onLevels?.());
     results.classList.remove('hidden');
   }
 
@@ -208,7 +210,7 @@ export function createUI(app, { getInspectables, onConclusion, onFinish }) {
   const menu = el('div', 'screen menu hidden');
   app.appendChild(menu);
 
-  function showMenu({ onStart }) {
+  function showMenu({ onOpenTree }) {
     menu.innerHTML = `
       <div class="screen-inner">
         <h1>My Hotel Spy</h1>
@@ -222,17 +224,62 @@ export function createUI(app, { getInspectables, onConclusion, onFinish }) {
             <option value="dificil">Difícil</option>
           </select>
         </div>
-        <button class="btn-primary" id="menu-start">Nova inspeção</button>
+        <button class="btn-primary" id="menu-start">Escolher imóvel →</button>
         <a class="menu-link" href="./editor.html">Editor de ambiente →</a>
       </div>`;
     menu.querySelector('#menu-start').addEventListener('click', () => {
       const seed = menu.querySelector('#menu-seed').value.trim();
       const difficulty = menu.querySelector('#menu-diff').value;
-      onStart({ seed: seed || undefined, difficulty: difficulty || undefined });
+      onOpenTree({ seed: seed || undefined, difficulty: difficulty || undefined });
     });
     menu.classList.remove('hidden');
   }
   const hideMenu = () => menu.classList.add('hidden');
+
+  // --- Árvore de levels (seleção de imóvel) ---
+  const levels = el('div', 'screen levels hidden');
+  app.appendChild(levels);
+
+  function showLevelTree({ nodes, onSelect, onRandom, onBack }) {
+    hideResults();
+    const items = nodes
+      .map((n) => {
+        const locked = !n.unlocked;
+        const grade = n.bestGrade
+          ? `<span class="lv-grade grade-${n.bestGrade}">${n.bestGrade}</span>`
+          : `<span class="lv-grade empty">—</span>`;
+        const state = locked ? '🔒' : n.bestGrade ? '✓' : '›';
+        return `
+          <button class="lv-node${locked ? ' locked' : ''}${n.bestGrade ? ' done' : ''}" data-map="${n.mapId}" ${locked ? 'disabled' : ''}>
+            <span class="lv-tier">${n.tier + 1}</span>
+            <span class="lv-body">
+              <span class="lv-name">${n.label}</span>
+              <span class="lv-meta">${n.rooms} cômodos</span>
+            </span>
+            ${grade}
+            <span class="lv-state">${state}</span>
+          </button>`;
+      })
+      .join('<div class="lv-link"></div>');
+
+    levels.innerHTML = `
+      <div class="screen-inner levels-inner">
+        <h1>Imóveis</h1>
+        <p class="tag">Em ordem crescente de tamanho. Acesso liberado a todos — na versão final a progressão abre aos poucos.</p>
+        <div class="lv-tree">${items}</div>
+        <div class="levels-actions">
+          <button class="btn-secondary" id="lv-back">← Voltar</button>
+          <button class="btn-primary" id="lv-random">Sortear imóvel</button>
+        </div>
+      </div>`;
+    levels.querySelectorAll('.lv-node').forEach((b) =>
+      b.addEventListener('click', () => onSelect(b.dataset.map)),
+    );
+    levels.querySelector('#lv-back').addEventListener('click', () => onBack());
+    levels.querySelector('#lv-random').addEventListener('click', () => onRandom());
+    levels.classList.remove('hidden');
+  }
+  const hideLevelTree = () => levels.classList.add('hidden');
 
   // --- Briefing do caso ---
   const briefing = el('div', 'screen briefing hidden');
@@ -271,6 +318,8 @@ export function createUI(app, { getInspectables, onConclusion, onFinish }) {
     hideResults,
     showMenu,
     hideMenu,
+    showLevelTree,
+    hideLevelTree,
     showBriefing,
     hideBriefing,
     notebookEl: notebook,

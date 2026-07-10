@@ -521,6 +521,104 @@ canvas {
   text-decoration: underline;
 }
 
+/* ---- Árvore de levels ---- */
+.levels-inner {
+  width: min(500px, 94vw);
+  max-height: 90vh;
+  overflow: auto;
+}
+.lv-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 1.2rem 0 1.4rem;
+}
+.lv-node {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  text-align: left;
+  background: #171b22;
+  border: 1px solid #2c333f;
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  color: #e6e8ea;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.05s;
+}
+.lv-node:hover:not(.locked) {
+  border-color: #4a90d9;
+  background: #1b2230;
+}
+.lv-node:active:not(.locked) {
+  transform: translateY(1px);
+}
+.lv-node.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.lv-node.done {
+  border-color: #37613f;
+}
+.lv-tier {
+  flex: 0 0 auto;
+  width: 1.8rem;
+  height: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #0e1116;
+  border: 1px solid #2c333f;
+  color: #9aa3b1;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.lv-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+.lv-name {
+  font-size: 1rem;
+}
+.lv-meta {
+  color: #7f8794;
+  font-size: 0.78rem;
+}
+.lv-grade {
+  flex: 0 0 auto;
+  font-weight: 800;
+  font-size: 1.1rem;
+  min-width: 1.2rem;
+  text-align: center;
+}
+.lv-grade.empty {
+  color: #3a414d;
+}
+.lv-state {
+  flex: 0 0 auto;
+  color: #6b7481;
+  width: 1.2rem;
+  text-align: center;
+}
+.lv-link {
+  width: 2px;
+  height: 0.7rem;
+  margin-left: calc(0.9rem + 0.9rem);
+  background: linear-gradient(#2c333f, #2c333f);
+}
+.levels-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+.levels-actions .btn-primary,
+.levels-actions .btn-secondary {
+  flex: 1;
+}
+
 /* ---- Editor ---- */
 .ed-bar {
   position: fixed;

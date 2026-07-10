@@ -2,8 +2,9 @@ import './style.css';
 import * as THREE from 'three';
 import { generateCase } from './domain/caseGenerator.js';
 import { evaluateReport } from './domain/report.js';
-import { MAPS } from './domain/data/index.js';
+import { MAPS, LEVEL_TREE } from './domain/data/index.js';
 import { createRng, randomSeed } from './domain/rng.js';
+import { isUnlocked, getCompleted, markCompleted } from './game/progress.js';
 import { buildScene } from './game/scene.js';
 import { spawnObjects } from './game/objectSpawner.js';
 import { createPlayer } from './game/player.js';
@@ -68,6 +69,8 @@ let phase = 'menu'; // menu | briefing | inspection | results
 let startTime = null;
 let caseNumber = 0;
 let sessionDifficulty; // mantém a dificuldade escolhida entre casos
+let menuOpts = {}; // seed/dificuldade escolhidos no menu, aplicados na seleção do imóvel
+let currentMapId = null; // level em jogo (para "próximo caso" e registro de conclusão)
 
 const ui = createUI(app, {
   getInspectables: () => current.inspectables,
@@ -104,11 +107,13 @@ function removeInspectables() {
 
 function startCase(opts = {}) {
   ui.hideMenu();
+  ui.hideLevelTree();
   sessionDifficulty = opts.difficulty ?? sessionDifficulty;
 
-  // Escolhe o level (tour determinístico pelos levels) e (re)monta a cena.
+  // Escolhe o level (o selecionado, ou sorteio determinístico) e (re)monta a cena.
   const seed = opts.seed ?? randomSeed();
   const mapId = opts.mapId ?? pickMapId(seed);
+  currentMapId = mapId;
   mountMap(MAPS[mapId]);
 
   removeInspectables();
@@ -152,10 +157,41 @@ function emitReport() {
   }
   const time = startTime ? (performance.now() - startTime) / 1000 : 0;
   const result = evaluateReport(current.solution, marks, time);
+  if (currentMapId) markCompleted(currentMapId, result.grade);
   phase = 'results';
   crosshair.classList.add('hidden');
   player.controls.unlock();
-  ui.showResults(result, { onNext: () => startCase({}) });
+  ui.showResults(result, {
+    onNext: () => startCase({ mapId: currentMapId }), // novo caso no mesmo imóvel
+    onLevels: () => openTree(),
+  });
+}
+
+// --- Navegação de telas (menu ↔ árvore de levels) ---
+function levelNodes() {
+  return LEVEL_TREE.map((n) => ({
+    ...n,
+    unlocked: isUnlocked(n.mapId),
+    bestGrade: getCompleted(n.mapId)?.bestGrade ?? null,
+  }));
+}
+
+function openMenu() {
+  phase = 'menu';
+  ui.hideResults();
+  ui.showMenu({ onOpenTree: (opts) => { menuOpts = opts; openTree(); } });
+}
+
+function openTree() {
+  phase = 'menu';
+  ui.hideMenu();
+  ui.hideResults();
+  ui.showLevelTree({
+    nodes: levelNodes(),
+    onSelect: (mapId) => { ui.hideLevelTree(); startCase({ mapId, ...menuOpts }); },
+    onRandom: () => { ui.hideLevelTree(); startCase({ ...menuOpts }); },
+    onBack: () => { ui.hideLevelTree(); openMenu(); },
+  });
 }
 
 // --- Pointer lock ---
@@ -268,4 +304,4 @@ if (import.meta.env.DEV) {
 }
 
 // --- Início ---
-ui.showMenu({ onStart: (opts) => startCase(opts) });
+openMenu();

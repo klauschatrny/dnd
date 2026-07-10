@@ -8,10 +8,12 @@ import { OBJECTS, OBJECT_IDS } from './objects.js';
 import { TEMPLATES, TEMPLATES_BY_ID } from './templates.js';
 import { DENUNCIAS } from './denuncias.js';
 import { MAPS } from './maps.js';
+import { LEVEL_TREE, LEVEL_ORDER, FIRST_LEVEL, levelNode } from './progression.js';
 
 export { EVIDENCE, EVIDENCE_IDS, TOOLS, TOOL_LABELS };
 export { STATES, STATE_IDS, IRREGULAR_STATE_IDS, CATEGORIES, CONCLUSIONS, CONCLUSION_LABELS };
 export { OBJECTS, OBJECT_IDS, TEMPLATES, TEMPLATES_BY_ID, DENUNCIAS, MAPS };
+export { LEVEL_TREE, LEVEL_ORDER, FIRST_LEVEL, levelNode };
 
 /**
  * Valida a consistência das bibliotecas de dados.
