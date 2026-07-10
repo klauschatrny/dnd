@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "PedraChao"
+albedo_color = Color(0.42, 0.4, 0.36, 1)
+metallic = 0.0
+roughness = 1.0

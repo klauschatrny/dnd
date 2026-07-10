@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/jogador/jogador.gd" id="1_jogador"]
+
+[sub_resource type="CapsuleShape3D" id="Capsula_1"]
+radius = 0.3
+height = 1.7
+
+[node name="Jogador" type="CharacterBody3D"]
+script = ExtResource("1_jogador")
+
+[node name="Colisor" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("Capsula_1")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+fov = 75.0
+
+[node name="RaioInteracao" type="RayCast3D" parent="Camera3D"]
+target_position = Vector3(0, 0, -3)

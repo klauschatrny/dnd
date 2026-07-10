@@ -1,10 +1,12 @@
-node_modules/
-dist/
-dist-ssr/
-*.local
-.vite/
+# Godot 4+
+.godot/
+
+# Exports e builds
+/build/
+/export/
+export_presets.cfg
+
+# Sistema
 .DS_Store
 *.log
-
-# Assets 3D pesados de imóveis — mantidos localmente, fora do git
-public/models/
+Thumbs.db
