@@ -76,6 +76,47 @@ export const APARTMENT_01 = {
   ],
 };
 
+// Quitinete/studio: um único ambiente grande + um banheiro no canto sudeste.
+// Planta compacta e aberta — contraste com a divisão em quatro cômodos do ap. 01.
+export const STUDIO_02 = {
+  id: 'studio_02',
+  label: 'Quitinete',
+  bounds: { minX: -4, maxX: 4, minZ: -3, maxZ: 3 },
+  height: 2.8,
+  rooms: [
+    { id: 'studio', label: 'Studio', rect: { minX: -4, maxX: 4, minZ: -3, maxZ: 3 } },
+    { id: 'banheiro', label: 'Banheiro', rect: { minX: 2, maxX: 4, minZ: 1, maxZ: 3 } },
+  ],
+  spawn: { position: [-3.2, 1.6, -2.2], lookAt: [1, 1.6, 1] },
+  // Banheiro fechado no canto SE: parede norte (z=1) inteira + parede oeste (x=2)
+  // com um vão de porta em z∈(1.5,2.5).
+  walls: [
+    { cx: 3, cz: 1, hx: 1, hz: T },
+    { cx: 2, cz: 1.25, hx: T, hz: 0.25 },
+    { cx: 2, cz: 2.75, hx: T, hz: 0.25 },
+  ],
+  /** @type {Poi[]} */
+  pois: [
+    // --- Studio ---
+    { id: 'tv_studio', room: 'studio', objectType: 'tv', position: [-2.4, 1.2, -2.94], facing: [0, 0, 1], anchor: 'wall' },
+    { id: 'picture_studio', room: 'studio', objectType: 'picture', position: [0.6, 1.6, -2.94], facing: [0, 0, 1], anchor: 'wall' },
+    { id: 'clock_studio', room: 'studio', objectType: 'clock', position: [-3.94, 1.7, -0.6], facing: [1, 0, 0], anchor: 'wall' },
+    { id: 'smoke_studio', room: 'studio', objectType: 'smokeDetector', position: [-1.2, 2.75, -0.8], facing: [0, -1, 0], anchor: 'ceiling' },
+    { id: 'lamp_studio', room: 'studio', objectType: 'lamp', position: [1.5, 0.5, -2.6], facing: [0, 0, 1], anchor: 'surface' },
+    { id: 'radio_studio', room: 'studio', objectType: 'radio', position: [-3.35, 0.95, -2.5], facing: [1, 0, 0], anchor: 'surface' },
+    { id: 'router_studio', room: 'studio', objectType: 'router', position: [-3.35, 0.95, -1.6], facing: [1, 0, 0], anchor: 'surface' },
+    { id: 'usb_studio', room: 'studio', objectType: 'usbCharger', position: [3.94, 0.5, -1.6], facing: [-1, 0, 0], anchor: 'wall' },
+    { id: 'outlet_studio', room: 'studio', objectType: 'outlet', position: [-3.94, 0.4, 1.8], facing: [1, 0, 0], anchor: 'wall' },
+    { id: 'plant_studio', room: 'studio', objectType: 'plant', position: [3.4, 0.3, -2.5], facing: [-1, 0, 0], anchor: 'floor' },
+    { id: 'wardrobe_studio', room: 'studio', objectType: 'wardrobe', position: [-3.45, 1.0, 0.4], facing: [1, 0, 0], anchor: 'floor' },
+
+    // --- Banheiro ---
+    { id: 'mirror_banheiro', room: 'banheiro', objectType: 'mirror', position: [3.2, 1.4, 1.06], facing: [0, 0, 1], anchor: 'wall' },
+    { id: 'outlet_banheiro', room: 'banheiro', objectType: 'outlet', position: [3.94, 1.0, 2.4], facing: [-1, 0, 0], anchor: 'wall' },
+  ],
+};
+
 export const MAPS = {
   apartment_01: APARTMENT_01,
+  studio_02: STUDIO_02,
 };

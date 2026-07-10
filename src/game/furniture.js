@@ -236,6 +236,20 @@ export const FURNITURE_BY_MAP = {
   { type: 'bathtub', pos: [1.55, 4] },
   { type: 'rug', pos: [1.6, 3], args: [1.3, 1, 0x33384a] },
   ],
+
+  // --- Quitinete (bounds x[-4,4] z[-3,3]) ---
+  studio_02: [
+    { type: 'rug', pos: [-1.2, -1.2], args: [3.2, 2.6, 0x2c313d] },
+    { type: 'bed', pos: [-2.4, -1.7] },
+    { type: 'sofa', pos: [-0.6, 2.2], args: [1.8, 0x455066] },
+    { type: 'table', pos: [-0.6, 1.15], args: [1.0, 0.55, 0.4, 0x6b4f34] },
+    { type: 'bookshelf', pos: [-3.5, -0.4], args: [0x5a4632] },
+    { type: 'cabinet', pos: [1.4, -2.75], ry: Math.PI, args: [1.6, 0.5, 0.45, 0x4a3b2a] },
+    { type: 'cabinet', pos: [-3.68, 1.6], ry: HALF, args: [2.0, 0.85, 0.55, 0x878d96, 0x2a2d33] },
+    { type: 'vanity', pos: [2.45, 2.6], ry: HALF },
+    { type: 'toilet', pos: [3.6, 2.7], ry: Math.PI },
+    { type: 'rug', pos: [3.0, 1.9], args: [1.2, 1.2, 0x33384a] },
+  ],
 };
 
 /** Layout de mobília de um mapa (vazio se não houver). */
