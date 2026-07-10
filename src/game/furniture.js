@@ -250,6 +250,22 @@ export const FURNITURE_BY_MAP = {
     { type: 'toilet', pos: [3.6, 2.7], ry: Math.PI },
     { type: 'rug', pos: [3.0, 1.9], args: [1.2, 1.2, 0x33384a] },
   ],
+
+  // --- Suíte de hotel (bounds x[-5,5] z[-3.5,3.5]) ---
+  suite_hotel_03: [
+    { type: 'rug', pos: [2.6, -1.4], args: [4.2, 3.2, 0x2c313d] },
+    { type: 'bed', pos: [3.5, -2.3] },
+    { type: 'cabinet', pos: [4.5, -3.05], args: [0.55, 0.5, 0.4, 0x6b4f34] },
+    { type: 'dresser', pos: [1.2, -3.1], args: [1.5, 0x6b4f34] },
+    { type: 'sofa', pos: [3.2, 3.0], ry: Math.PI, args: [1.6, 0x455066] },
+    { type: 'table', pos: [3.2, 2.05], args: [0.9, 0.5, 0.4, 0x6b4f34] },
+    { type: 'bathtub', pos: [-1.4, 3.05] },
+    { type: 'toilet', pos: [0.0, 1.7] },
+    { type: 'vanity', pos: [-2.55, 2.6], ry: HALF },
+    { type: 'rug', pos: [-1.3, 2.1], args: [1.5, 1.3, 0x33384a] },
+    { type: 'cabinet', pos: [-4.72, -1.4], ry: HALF, args: [1.4, 0.85, 0.4, 0x4a3b2a] },
+    { type: 'bookshelf', pos: [-4.8, 2.6], ry: HALF },
+  ],
 };
 
 /** Layout de mobília de um mapa (vazio se não houver). */

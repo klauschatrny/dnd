@@ -116,7 +116,55 @@ export const STUDIO_02 = {
   ],
 };
 
+// Suíte de hotel: corredor de entrada a oeste dá acesso ao quarto (em L) e ao
+// banheiro. O quarto envolve o banheiro pelo lado leste/sul (planta em L).
+export const SUITE_HOTEL_03 = {
+  id: 'suite_hotel_03',
+  label: 'Suíte de hotel',
+  bounds: { minX: -5, maxX: 5, minZ: -3.5, maxZ: 3.5 },
+  height: 2.8,
+  rooms: [
+    { id: 'corredor', label: 'Corredor', rect: { minX: -5, maxX: -3, minZ: -3.5, maxZ: 3.5 } },
+    { id: 'quarto', label: 'Quarto', rect: { minX: -3, maxX: 5, minZ: -3.5, maxZ: 1 } },
+    { id: 'banheiro', label: 'Banheiro', rect: { minX: -3, maxX: 0.5, minZ: 1, maxZ: 3.5 } },
+  ],
+  spawn: { position: [-4, 1.6, -2.6], lookAt: [1, 1.6, 1] },
+  // Parede do corredor (x=-3) com dois vãos: para o quarto (z∈-2.2..-0.8) e para o
+  // banheiro (z∈1.6..3.0). Banheiro fechado pela parede z=1 (norte) e x=0.5 (leste).
+  walls: [
+    { cx: -3, cz: -2.85, hx: T, hz: 0.65 },
+    { cx: -3, cz: 0.4, hx: T, hz: 1.2 },
+    { cx: -3, cz: 3.25, hx: T, hz: 0.25 },
+    { cx: -1.25, cz: 1, hx: 1.75, hz: T },
+    { cx: 0.5, cz: 2.25, hx: T, hz: 1.25 },
+  ],
+  /** @type {Poi[]} */
+  pois: [
+    // --- Corredor ---
+    { id: 'picture_corredor', room: 'corredor', objectType: 'picture', position: [-4.94, 1.6, -1.0], facing: [1, 0, 0], anchor: 'wall' },
+    { id: 'smoke_corredor', room: 'corredor', objectType: 'smokeDetector', position: [-4.0, 2.75, 0.0], facing: [0, -1, 0], anchor: 'ceiling' },
+    { id: 'outlet_corredor', room: 'corredor', objectType: 'outlet', position: [-4.94, 0.4, 1.8], facing: [1, 0, 0], anchor: 'wall' },
+
+    // --- Quarto (em L) ---
+    { id: 'clock_quarto', room: 'quarto', objectType: 'clock', position: [4.94, 1.7, -1.5], facing: [-1, 0, 0], anchor: 'wall' },
+    { id: 'tv_quarto', room: 'quarto', objectType: 'tv', position: [2.2, 1.2, -3.44], facing: [0, 0, 1], anchor: 'wall' },
+    { id: 'smoke_quarto', room: 'quarto', objectType: 'smokeDetector', position: [1.5, 2.75, -1.2], facing: [0, -1, 0], anchor: 'ceiling' },
+    { id: 'lamp_quarto', room: 'quarto', objectType: 'lamp', position: [4.5, 0.5, -3.0], facing: [0, 0, 1], anchor: 'surface' },
+    { id: 'radio_quarto', room: 'quarto', objectType: 'radio', position: [3.85, 0.5, -3.0], facing: [0, 0, 1], anchor: 'surface' },
+    { id: 'usb_quarto', room: 'quarto', objectType: 'usbCharger', position: [4.94, 0.5, -2.6], facing: [-1, 0, 0], anchor: 'wall' },
+    { id: 'wardrobe_quarto', room: 'quarto', objectType: 'wardrobe', position: [4.3, 1.0, 0.4], facing: [-1, 0, 0], anchor: 'floor' },
+    { id: 'plant_quarto', room: 'quarto', objectType: 'plant', position: [1.0, 0.3, -3.2], facing: [0, 0, 1], anchor: 'floor' },
+    { id: 'mirror_quarto', room: 'quarto', objectType: 'mirror', position: [0.56, 1.4, 2.4], facing: [1, 0, 0], anchor: 'wall' },
+    { id: 'router_quarto', room: 'quarto', objectType: 'router', position: [3.0, 0.5, 3.15], facing: [0, 0, -1], anchor: 'surface' },
+
+    // --- Banheiro ---
+    { id: 'mirror_banheiro', room: 'banheiro', objectType: 'mirror', position: [-1.0, 1.4, 1.06], facing: [0, 0, 1], anchor: 'wall' },
+    { id: 'outlet_banheiro', room: 'banheiro', objectType: 'outlet', position: [0.44, 1.0, 3.0], facing: [-1, 0, 0], anchor: 'wall' },
+  ],
+};
+
 export const MAPS = {
   apartment_01: APARTMENT_01,
   studio_02: STUDIO_02,
+  suite_hotel_03: SUITE_HOTEL_03,
 };
