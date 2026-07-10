@@ -69,3 +69,237 @@ canvas {
   pointer-events: none;
   z-index: 10;
 }
+
+.hidden {
+  display: none !important;
+}
+
+/* ---- HUD ---- */
+.hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 12;
+  font-size: 14px;
+}
+
+.tool-overlay {
+  position: absolute;
+  inset: 0;
+  transition: background 0.2s;
+  mix-blend-mode: screen;
+}
+.tool-overlay.uv {
+  background: radial-gradient(circle at 50% 45%, rgba(120, 60, 220, 0.28), rgba(40, 10, 90, 0.5));
+}
+.tool-overlay.thermal {
+  background: radial-gradient(circle at 50% 50%, rgba(255, 120, 0, 0.16), rgba(120, 0, 40, 0.36));
+}
+
+.target-prompt {
+  position: absolute;
+  top: calc(50% + 22px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 13, 18, 0.72);
+  border: 1px solid #2c333f;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.target-prompt.visible {
+  opacity: 1;
+}
+.target-prompt .act {
+  color: #7fd0a0;
+  margin-left: 0.6rem;
+  font-size: 0.85em;
+}
+.target-prompt .tag {
+  color: #f0c674;
+}
+
+.toast-area {
+  position: absolute;
+  top: 4.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+.toast {
+  background: rgba(12, 16, 22, 0.9);
+  border: 1px solid #2c333f;
+  border-left: 3px solid #4a90d9;
+  border-radius: 6px;
+  padding: 0.45rem 0.85rem;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: all 0.25s;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toast.found {
+  border-left-color: #5fcf8f;
+}
+.toast.muted {
+  border-left-color: #6b7481;
+  color: #aeb6c2;
+}
+
+.toolbar {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.4rem;
+}
+.chip {
+  background: rgba(12, 16, 22, 0.8);
+  border: 1px solid #2c333f;
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  color: #8b93a1;
+}
+.chip b {
+  color: #f0f3f7;
+  margin-right: 0.25rem;
+}
+.chip.active {
+  border-color: #4a90d9;
+  color: #eaf2fb;
+  background: rgba(30, 55, 90, 0.75);
+}
+
+.help {
+  position: absolute;
+  bottom: 1.1rem;
+  left: 1.1rem;
+  color: #5f6773;
+  font-size: 0.78rem;
+}
+.help b {
+  color: #99a2b0;
+}
+
+.rf-meter {
+  position: absolute;
+  bottom: 4.2rem;
+  right: 1.2rem;
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  color: #9aa3b1;
+}
+.rf-meter.visible {
+  display: flex;
+}
+.rf-bar {
+  width: 140px;
+  height: 10px;
+  background: #1a1e26;
+  border: 1px solid #2c333f;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.rf-bar i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #3a7, #6fd);
+  transition: width 0.08s linear;
+}
+
+/* ---- Caderneta / painéis ---- */
+.notebook {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 8, 12, 0.78);
+  backdrop-filter: blur(3px);
+}
+.notebook-inner {
+  width: min(760px, 92vw);
+  max-height: 86vh;
+  overflow: auto;
+  background: #12151b;
+  border: 1px solid #2c333f;
+  border-radius: 12px;
+  padding: 1.6rem 1.8rem;
+}
+.notebook-inner h2 {
+  margin-bottom: 0.3rem;
+}
+.notebook-inner .sub {
+  color: #8b93a1;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+.notebook table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.notebook th,
+.notebook td {
+  text-align: left;
+  padding: 0.55rem 0.5rem;
+  border-bottom: 1px solid #232a34;
+  vertical-align: top;
+}
+.notebook th {
+  color: #8b93a1;
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+.notebook td .room {
+  color: #6b7481;
+  font-size: 0.75rem;
+}
+.notebook td.evs {
+  color: #cfe6d6;
+  font-size: 0.85rem;
+}
+.notebook select {
+  background: #1a1e26;
+  color: #e6e8ea;
+  border: 1px solid #2c333f;
+  border-radius: 6px;
+  padding: 0.35rem 0.4rem;
+}
+.notebook-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-top: 1.4rem;
+}
+.btn-primary,
+.btn-secondary {
+  border: 1px solid #2c333f;
+  border-radius: 8px;
+  padding: 0.6rem 1.1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #e6e8ea;
+  background: #1a1e26;
+}
+.btn-primary {
+  background: #2f6db0;
+  border-color: #3f83c9;
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #3a7ec6;
+}
+.btn-secondary:hover {
+  background: #222833;
+}
