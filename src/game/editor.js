@@ -4,7 +4,7 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { buildScene } from './scene.js';
 import { buildModel } from './models.js';
 import { OBJECTS } from '../domain/data/index.js';
-import { FURNITURE_LAYOUT, COLOR_ARGS } from './furniture.js';
+import { furnitureFor, COLOR_ARGS } from './furniture.js';
 
 // Editor visual de ambiente. Reaproveita a cena do jogo (paredes/piso/mobília) e
 // adiciona os POIs, permitindo mover/girar/apagar objetos com o mouse e exportar
@@ -210,22 +210,22 @@ function fmtPois(pois) {
   return `  pois: [\n${lines.join('\n')}\n  ],`;
 }
 
-function fmtFurniture(items) {
+function fmtFurniture(items, mapId) {
   const lines = items.map((it) => {
     const parts = [`type: '${it.type}'`, `pos: [${it.pos.join(', ')}]`];
     if (it.ry !== undefined && it.ry !== 0) parts.push(`ry: ${round(it.ry, 4)}`);
     if (it.y !== undefined) parts.push(`y: ${it.y}`);
     if (it.args && it.args.length) parts.push(`args: [${fmtArgs(it.type, it.args)}]`);
-    return `  { ${parts.join(', ')} },`;
+    return `    { ${parts.join(', ')} },`;
   });
-  return `export const FURNITURE_LAYOUT = [\n${lines.join('\n')}\n];`;
+  return `  ${mapId}: [\n${lines.join('\n')}\n  ],`;
 }
 
 function showExport(map, removedPois, removedFurniture) {
   const pois = map.pois.filter((p) => !removedPois.has(p.id));
-  const furniture = FURNITURE_LAYOUT.filter((it) => !removedFurniture.has(it));
+  const furniture = furnitureFor(map.id).filter((it) => !removedFurniture.has(it));
   const poisText = fmtPois(pois);
-  const furnText = fmtFurniture(furniture);
+  const furnText = fmtFurniture(furniture, map.id);
 
   const overlay = document.createElement('div');
   overlay.className = 'ed-export';
@@ -234,7 +234,7 @@ function showExport(map, removedPois, removedFurniture) {
       <h2>Exportar ambiente</h2>
       <p>Cole em <code>src/domain/data/maps.js</code> (substitua o array <code>pois</code>):</p>
       <textarea readonly rows="8">${poisText.replace(/</g, '&lt;')}</textarea>
-      <p>Cole em <code>src/game/furniture.js</code> (substitua <code>FURNITURE_LAYOUT</code>):</p>
+      <p>Cole em <code>src/game/furniture.js</code> (substitua a entrada do mapa em <code>FURNITURE_BY_MAP</code>):</p>
       <textarea readonly rows="8">${furnText.replace(/</g, '&lt;')}</textarea>
       <div class="ed-export-actions">
         <button id="ed-download">Baixar .txt</button>

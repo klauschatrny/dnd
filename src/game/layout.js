@@ -1,12 +1,15 @@
-// Geometria das paredes do apartamento (dados puros, sem Three.js) para permitir
-// teste de conectividade. Os vãos das partições internas ficam FORA do cruzamento
-// central — caso contrário cada parede bloquearia o vão da outra e ilharia cômodos.
+// Geometria das paredes (dados puros, sem Three.js) para permitir teste de
+// conectividade. As paredes EXTERNAS são derivadas dos limites do mapa; as paredes
+// INTERNAS (partições com vãos de porta) vêm de `map.walls` — cada mapa declara as
+// suas, o que permite plantas diferentes por level. Os vãos devem ficar fora dos
+// cruzamentos entre partições, senão uma parede bloqueia o vão da outra e ilha o cômodo.
 
 export const PLAYER_RADIUS = 0.32;
-const T = 0.06; // meia-espessura das paredes
+export const WALL_T = 0.06; // meia-espessura padrão das paredes (para autorar map.walls)
+const T = WALL_T;
 
 /**
- * Retângulos das paredes {cx,cz,hx,hz} a partir dos limites do mapa.
+ * Retângulos das paredes {cx,cz,hx,hz}: externas (dos limites) + internas (map.walls).
  * @param {object} map
  */
 export function buildWalls(map) {
@@ -16,23 +19,14 @@ export function buildWalls(map) {
   const cx = (minX + maxX) / 2;
   const cz = (minZ + maxZ) / 2;
 
-  return [
-    // Paredes externas
+  const external = [
     { cx, cz: minZ, hx: w / 2, hz: T },
     { cx, cz: maxZ, hx: w / 2, hz: T },
     { cx: minX, cz, hx: T, hz: d / 2 },
     { cx: maxX, cz, hx: T, hz: d / 2 },
-
-    // Partição vertical (x=0), com dois vãos: z∈(-2.2,-1.0) e z∈(1.0,2.2)
-    { cx: 0, cz: -3.35, hx: T, hz: 1.15 },
-    { cx: 0, cz: 0, hx: T, hz: 1.0 },
-    { cx: 0, cz: 3.35, hx: T, hz: 1.15 },
-
-    // Partição horizontal (z=0), com dois vãos: x∈(-4.5,-3.3) e x∈(3.3,4.5)
-    { cx: -5.25, cz: 0, hx: 0.75, hz: T },
-    { cx: 0, cz: 0, hx: 3.3, hz: T },
-    { cx: 5.25, cz: 0, hx: 0.75, hz: T },
   ];
+
+  return external.concat(map.walls ?? []);
 }
 
 /** Converte um retângulo de parede em AABB {minX,maxX,minZ,maxZ}. */

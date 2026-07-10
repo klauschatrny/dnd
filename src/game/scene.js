@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { buildWalls, wallToAABB } from './layout.js';
-import { buildFurniture } from './furniture.js';
+import { buildFurniture, furnitureFor } from './furniture.js';
 
 // Constrói o ambiente 3D a partir dos dados do mapa (CDIS: o mapa é só o cenário).
 // Retorna a cena, a lista de colisores (paredes) e as luzes de teto por cômodo.
@@ -68,7 +68,7 @@ export function buildScene(map) {
   }
 
   // Mobília decorativa (não interativa, não colide).
-  scene.add(buildFurniture());
+  scene.add(buildFurniture(furnitureFor(map.id)));
 
   return { scene, colliders, ceilingLights, ambient };
 }

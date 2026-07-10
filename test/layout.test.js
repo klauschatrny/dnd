@@ -4,23 +4,24 @@ import { MAPS } from '../src/domain/data/index.js';
 
 // Flood-fill numa grade do piso para garantir que todos os cômodos são acessíveis
 // a partir do spawn, considerando o raio de colisão do jogador. Trava o bug de
-// vãos de porta mal posicionados que ilham cômodos.
+// vãos de porta mal posicionados que ilham cômodos. Roda para TODO mapa, então
+// qualquer level novo é validado automaticamente ao ser adicionado.
 
-const map = MAPS.apartment_01;
-const colliders = buildColliders(map);
 const R = PLAYER_RADIUS;
 const CELL = 0.1;
 
-function blocked(x, z) {
+function makeBlocked(map, colliders) {
   const { minX, maxX, minZ, maxZ } = map.bounds;
-  if (x < minX + R || x > maxX - R || z < minZ + R || z > maxZ - R) return true;
-  for (const c of colliders) {
-    if (x > c.minX - R && x < c.maxX + R && z > c.minZ - R && z < c.maxZ + R) return true;
-  }
-  return false;
+  return (x, z) => {
+    if (x < minX + R || x > maxX - R || z < minZ + R || z > maxZ - R) return true;
+    for (const c of colliders) {
+      if (x > c.minX - R && x < c.maxX + R && z > c.minZ - R && z < c.maxZ + R) return true;
+    }
+    return false;
+  };
 }
 
-function reachableFrom(sx, sz) {
+function reachableFrom(map, blocked, sx, sz) {
   const { minX, maxX, minZ, maxZ } = map.bounds;
   const cols = Math.round((maxX - minX) / CELL);
   const rows = Math.round((maxZ - minZ) / CELL);
@@ -53,22 +54,26 @@ function reachableFrom(sx, sz) {
   return visited;
 }
 
-describe('conectividade do apartamento', () => {
-  const [sx, , sz] = map.spawn.position;
+for (const map of Object.values(MAPS)) {
+  describe(`conectividade — ${map.id}`, () => {
+    const colliders = buildColliders(map);
+    const blocked = makeBlocked(map, colliders);
+    const [sx, , sz] = map.spawn.position;
 
-  it('o ponto de spawn é caminhável', () => {
-    expect(blocked(sx, sz)).toBe(false);
-  });
+    it('o ponto de spawn é caminhável', () => {
+      expect(blocked(sx, sz)).toBe(false);
+    });
 
-  it('o centro de todos os cômodos é alcançável a partir do spawn', () => {
-    const reachable = reachableFrom(sx, sz);
-    const { minX, minZ } = map.bounds;
-    const toKey = (x, z) => `${Math.round((x - minX) / CELL)},${Math.round((z - minZ) / CELL)}`;
-    for (const room of map.rooms) {
-      const rcx = (room.rect.minX + room.rect.maxX) / 2;
-      const rcz = (room.rect.minZ + room.rect.maxZ) / 2;
-      expect(blocked(rcx, rcz), `centro de ${room.id} está numa parede`).toBe(false);
-      expect(reachable.has(toKey(rcx, rcz)), `${room.id} inacessível do spawn`).toBe(true);
-    }
+    it('o centro de todos os cômodos é alcançável a partir do spawn', () => {
+      const reachable = reachableFrom(map, blocked, sx, sz);
+      const { minX, minZ } = map.bounds;
+      const toKey = (x, z) => `${Math.round((x - minX) / CELL)},${Math.round((z - minZ) / CELL)}`;
+      for (const room of map.rooms) {
+        const rcx = (room.rect.minX + room.rect.maxX) / 2;
+        const rcz = (room.rect.minZ + room.rect.maxZ) / 2;
+        expect(blocked(rcx, rcz), `centro de ${room.id} está numa parede`).toBe(false);
+        expect(reachable.has(toKey(rcx, rcz)), `${room.id} inacessível do spawn`).toBe(true);
+      }
+    });
   });
-});
+}

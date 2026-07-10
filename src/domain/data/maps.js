@@ -3,9 +3,15 @@
 // Cada POI diz ao gerador: tipo do objeto, posição, cômodo, peso e estados permitidos
 // (por padrão, todos os estados do tipo de objeto).
 //
-// Coordenadas em metros. Piso em y=0, teto em `height`. Partições internas em x=0 e
-// z=0. `facing` aponta para dentro do ambiente (usado pela camada 3D para orientar
-// objetos de parede/teto).
+// Coordenadas em metros. Piso em y=0, teto em `height`. `facing` aponta para dentro
+// do ambiente (usado pela camada 3D para orientar objetos de parede/teto).
+//
+// `walls` = partições INTERNAS do mapa (as externas são geradas dos `bounds`). Cada
+// parede é um retângulo {cx,cz,hx,hz} (centro + meia-largura/meia-profundidade). Os
+// vãos de porta são criados deixando lacunas entre segmentos. `T` é a meia-espessura
+// padrão. Mantenha os vãos fora dos cruzamentos entre partições, senão o cômodo ilha.
+
+const T = 0.06; // meia-espessura padrão das paredes internas
 
 /**
  * @typedef {Object} Poi
@@ -31,6 +37,16 @@ export const APARTMENT_01 = {
     { id: 'banheiro', label: 'Banheiro', rect: { minX: 0, maxX: 6, minZ: 0, maxZ: 4.5 } },
   ],
   spawn: { position: [-4.5, 1.6, -3.4], lookAt: [0, 1.6, 0] },
+  // Partição vertical (x=0) com vãos em z∈(-2.2,-1.0) e z∈(1.0,2.2);
+  // partição horizontal (z=0) com vãos em x∈(-4.5,-3.3) e x∈(3.3,4.5).
+  walls: [
+    { cx: 0, cz: -3.35, hx: T, hz: 1.15 },
+    { cx: 0, cz: 0, hx: T, hz: 1.0 },
+    { cx: 0, cz: 3.35, hx: T, hz: 1.15 },
+    { cx: -5.25, cz: 0, hx: 0.75, hz: T },
+    { cx: 0, cz: 0, hx: 3.3, hz: T },
+    { cx: 5.25, cz: 0, hx: 0.75, hz: T },
+  ],
   /** @type {Poi[]} */
   pois: [
     // --- Sala ---

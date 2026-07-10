@@ -200,9 +200,12 @@ export const COLOR_ARGS = {
   bookshelf: [0],
 };
 
-// Layout declarativo do apartamento. pos=[x,z] no piso; ry=giro em Y; args=parâmetros
-// do construtor (dimensões/cores). O editor edita pos/ry/y e exporta este array.
-export const FURNITURE_LAYOUT = [
+// Layout declarativo da mobília por mapa. pos=[x,z] no piso; ry=giro em Y; args=
+// parâmetros do construtor (dimensões/cores). A mobília é puramente decorativa (não
+// interage nem colide), por isso vive na camada de apresentação — não no domínio.
+// O editor edita pos/ry/y e exporta o array do mapa atual.
+export const FURNITURE_BY_MAP = {
+  apartment_01: [
   // --- Sala (x[-6,0], z[-4.5,0]) ---
   { type: 'rug', pos: [-3, -2.6], args: [3.4, 2.8, 0x2c313d] },
   { type: 'sofa', pos: [-3.2, -4], args: [1.8, 0x455066] },
@@ -232,7 +235,13 @@ export const FURNITURE_LAYOUT = [
   { type: 'toilet', pos: [4.8, 4.05], ry: Math.PI },
   { type: 'bathtub', pos: [1.55, 4] },
   { type: 'rug', pos: [1.6, 3], args: [1.3, 1, 0x33384a] },
-];
+  ],
+};
+
+/** Layout de mobília de um mapa (vazio se não houver). */
+export function furnitureFor(mapId) {
+  return FURNITURE_BY_MAP[mapId] ?? [];
+}
 
 /** Constrói o grupo de um item de mobília (com vínculo ao dado, para o editor). */
 export function buildFurnitureItem(item) {
@@ -243,10 +252,10 @@ export function buildFurnitureItem(item) {
   return m;
 }
 
-/** Grupo com toda a mobília decorativa do mapa. */
-export function buildFurniture() {
+/** Grupo com a mobília decorativa de um mapa (recebe o array de itens). */
+export function buildFurniture(items = []) {
   const g = new THREE.Group();
   g.name = 'furniture';
-  for (const item of FURNITURE_LAYOUT) g.add(buildFurnitureItem(item));
+  for (const item of items) g.add(buildFurnitureItem(item));
   return g;
 }
