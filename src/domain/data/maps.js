@@ -163,8 +163,77 @@ export const SUITE_HOTEL_03 = {
   ],
 };
 
+// Casa: planta maior com corredor central (banda z∈-0.5..0.5) ligando seis
+// cômodos — sala e cozinha ao norte; dois quartos e um banheiro ao sul.
+export const CASA_04 = {
+  id: 'casa_04',
+  label: 'Casa',
+  bounds: { minX: -7, maxX: 7, minZ: -5, maxZ: 5 },
+  height: 2.8,
+  rooms: [
+    { id: 'sala', label: 'Sala', rect: { minX: -7, maxX: 0, minZ: -5, maxZ: -0.5 } },
+    { id: 'cozinha', label: 'Cozinha', rect: { minX: 0, maxX: 7, minZ: -5, maxZ: -0.5 } },
+    { id: 'corredor', label: 'Corredor', rect: { minX: -7, maxX: 7, minZ: -0.5, maxZ: 0.5 } },
+    { id: 'quarto1', label: 'Quarto 1', rect: { minX: -7, maxX: -2, minZ: 0.5, maxZ: 5 } },
+    { id: 'banheiro', label: 'Banheiro', rect: { minX: -2, maxX: 2, minZ: 0.5, maxZ: 5 } },
+    { id: 'quarto2', label: 'Quarto 2', rect: { minX: 2, maxX: 7, minZ: 0.5, maxZ: 5 } },
+  ],
+  spawn: { position: [-6, 1.6, 0], lookAt: [0, 1.6, 0] },
+  // Duas paredes horizontais (z=-0.5 e z=0.5) delimitam o corredor central, cada
+  // uma com vãos para os cômodos; divisórias verticais separam os cômodos entre si.
+  walls: [
+    // Parede norte do corredor (z=-0.5): vãos p/ sala x∈-4.2..-2.8 e cozinha x∈2.8..4.2
+    { cx: -5.6, cz: -0.5, hx: 1.4, hz: T },
+    { cx: 0, cz: -0.5, hx: 2.8, hz: T },
+    { cx: 5.6, cz: -0.5, hx: 1.4, hz: T },
+    // Parede sul do corredor (z=0.5): vãos p/ quarto1, banheiro e quarto2
+    { cx: -6.1, cz: 0.5, hx: 0.9, hz: T },
+    { cx: -2.25, cz: 0.5, hx: 1.55, hz: T },
+    { cx: 2.25, cz: 0.5, hx: 1.55, hz: T },
+    { cx: 6.1, cz: 0.5, hx: 0.9, hz: T },
+    // Divisórias verticais
+    { cx: 0, cz: -2.75, hx: T, hz: 2.25 }, // sala | cozinha (norte)
+    { cx: -2, cz: 2.75, hx: T, hz: 2.25 }, // quarto1 | banheiro (sul)
+    { cx: 2, cz: 2.75, hx: T, hz: 2.25 }, // banheiro | quarto2 (sul)
+  ],
+  /** @type {Poi[]} */
+  pois: [
+    // --- Sala ---
+    { id: 'tv_sala', room: 'sala', objectType: 'tv', position: [-6.94, 1.3, -2.5], facing: [1, 0, 0], anchor: 'wall' },
+    { id: 'picture_sala', room: 'sala', objectType: 'picture', position: [-3.5, 1.6, -4.94], facing: [0, 0, 1], anchor: 'wall' },
+    { id: 'smoke_sala', room: 'sala', objectType: 'smokeDetector', position: [-3.5, 2.75, -2.5], facing: [0, -1, 0], anchor: 'ceiling' },
+    { id: 'router_sala', room: 'sala', objectType: 'router', position: [-6.5, 0.5, -4.4], facing: [1, 0, 0], anchor: 'surface' },
+    { id: 'outlet_sala', room: 'sala', objectType: 'outlet', position: [-6.94, 0.4, -0.9], facing: [1, 0, 0], anchor: 'wall' },
+    { id: 'plant_sala', room: 'sala', objectType: 'plant', position: [-0.7, 0.3, -4.4], facing: [0, 0, 1], anchor: 'floor' },
+
+    // --- Cozinha ---
+    { id: 'outlet_cozinha', room: 'cozinha', objectType: 'outlet', position: [6.94, 1.0, -3.0], facing: [-1, 0, 0], anchor: 'wall' },
+    { id: 'smoke_cozinha', room: 'cozinha', objectType: 'smokeDetector', position: [3.5, 2.75, -2.5], facing: [0, -1, 0], anchor: 'ceiling' },
+    { id: 'clock_cozinha', room: 'cozinha', objectType: 'clock', position: [3.0, 1.7, -4.94], facing: [0, 0, 1], anchor: 'wall' },
+
+    // --- Corredor ---
+    { id: 'smoke_corredor', room: 'corredor', objectType: 'smokeDetector', position: [0, 2.75, 0], facing: [0, -1, 0], anchor: 'ceiling' },
+
+    // --- Quarto 1 ---
+    { id: 'clock_quarto1', room: 'quarto1', objectType: 'clock', position: [-6.94, 1.7, 2.5], facing: [1, 0, 0], anchor: 'wall' },
+    { id: 'wardrobe_quarto1', room: 'quarto1', objectType: 'wardrobe', position: [-2.45, 1.0, 4.3], facing: [-1, 0, 0], anchor: 'floor' },
+    { id: 'lamp_quarto1', room: 'quarto1', objectType: 'lamp', position: [-6.5, 0.5, 4.5], facing: [0, 0, -1], anchor: 'surface' },
+
+    // --- Banheiro ---
+    { id: 'mirror_banheiro', room: 'banheiro', objectType: 'mirror', position: [0.0, 1.4, 4.94], facing: [0, 0, -1], anchor: 'wall' },
+    { id: 'outlet_banheiro', room: 'banheiro', objectType: 'outlet', position: [1.94, 1.0, 3.5], facing: [-1, 0, 0], anchor: 'wall' },
+
+    // --- Quarto 2 ---
+    { id: 'radio_quarto2', room: 'quarto2', objectType: 'radio', position: [6.5, 0.5, 4.5], facing: [0, 0, -1], anchor: 'surface' },
+    { id: 'mirror_quarto2', room: 'quarto2', objectType: 'mirror', position: [6.94, 1.4, 2.5], facing: [-1, 0, 0], anchor: 'wall' },
+    { id: 'usb_quarto2', room: 'quarto2', objectType: 'usbCharger', position: [2.5, 0.5, 4.94], facing: [0, 0, -1], anchor: 'wall' },
+    { id: 'wardrobe_quarto2', room: 'quarto2', objectType: 'wardrobe', position: [2.45, 1.0, 4.3], facing: [1, 0, 0], anchor: 'floor' },
+  ],
+};
+
 export const MAPS = {
   apartment_01: APARTMENT_01,
   studio_02: STUDIO_02,
   suite_hotel_03: SUITE_HOTEL_03,
+  casa_04: CASA_04,
 };

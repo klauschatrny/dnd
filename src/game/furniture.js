@@ -266,6 +266,35 @@ export const FURNITURE_BY_MAP = {
     { type: 'cabinet', pos: [-4.72, -1.4], ry: HALF, args: [1.4, 0.85, 0.4, 0x4a3b2a] },
     { type: 'bookshelf', pos: [-4.8, 2.6], ry: HALF },
   ],
+
+  // --- Casa (bounds x[-7,7] z[-5,5]) ---
+  casa_04: [
+    // sala
+    { type: 'rug', pos: [-3.6, -2.6], args: [4.2, 3.2, 0x2c313d] },
+    { type: 'sofa', pos: [-3.6, -1.0], ry: Math.PI, args: [2.0, 0x455066] },
+    { type: 'table', pos: [-3.6, -2.6], args: [1.1, 0.6, 0.4, 0x6b4f34] },
+    { type: 'cabinet', pos: [-6.72, -3.8], ry: HALF, args: [2.2, 0.4, 0.4, 0x4a3b2a] },
+    { type: 'bookshelf', pos: [-0.9, -4.4], args: [0x5a4632] },
+    // cozinha
+    { type: 'cabinet', pos: [6.72, -2.6], ry: -HALF, args: [3.6, 0.85, 0.55, 0x878d96, 0x2a2d33] },
+    { type: 'fridge', pos: [1.1, -4.5], ry: Math.PI },
+    { type: 'rug', pos: [3.6, -1.8], args: [2.0, 1.6, 0x2c313d] },
+    { type: 'table', pos: [3.6, -1.8], args: [1.2, 0.85, 0.75, 0x6b4f34] },
+    { type: 'chair', pos: [3.6, -2.7], args: [0x5a4632] },
+    { type: 'chair', pos: [3.6, -0.9], ry: Math.PI, args: [0x5a4632] },
+    // quarto 1
+    { type: 'rug', pos: [-4.6, 2.9], args: [3.4, 3.0, 0x2c313d] },
+    { type: 'bed', pos: [-4.4, 3.4] },
+    { type: 'cabinet', pos: [-6.5, 4.4], args: [0.55, 0.5, 0.4, 0x6b4f34] },
+    // quarto 2
+    { type: 'rug', pos: [4.6, 2.9], args: [3.4, 3.0, 0x2c313d] },
+    { type: 'bed', pos: [4.6, 3.4] },
+    { type: 'dresser', pos: [6.6, 1.3], ry: -HALF, args: [1.4, 0x6b4f34] },
+    // banheiro
+    { type: 'bathtub', pos: [0.0, 4.6] },
+    { type: 'toilet', pos: [-1.5, 4.5], ry: Math.PI },
+    { type: 'vanity', pos: [1.5, 4.6], ry: Math.PI },
+  ],
 };
 
 /** Layout de mobília de um mapa (vazio se não houver). */
