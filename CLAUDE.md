@@ -23,13 +23,19 @@ npm run test:watch
 
 Rodar um único teste: `npx vitest run test/caseGenerator.test.js` (ou `npx vitest -t "nome do teste"`).
 
+Estado: **MVP jogável e verificado em navegador** — fluxo completo menu → briefing → inspeção → caderneta → laudo (nota S/A/B/C/D) → próximo caso. 32 testes de domínio passando.
+
 Organização do código:
 
-- `src/domain/` — núcleo CDIS **sem dependência de Three.js**: RNG por seed, bibliotecas de dados (objetos/estados/evidências/denúncias/mapas/templates), gerador de casos e laudo. É aqui que vive o "conteúdo do jogo". Coberto por testes em `test/`.
-- `src/game/` — camada de apresentação web: cena procedural, player em 1ª pessoa, ferramentas, inspeção e UI.
-- `src/main.js` — bootstrap.
+- `src/domain/` — núcleo CDIS **sem dependência de Three.js**: `rng.js` (seed determinística), `data/` (objetos/estados/evidências/denúncias/mapas/templates + `validateData`), `caseGenerator.js` (`generateCase`), `report.js` (`evaluateReport`). É aqui que vive o "conteúdo do jogo". Coberto por testes em `test/`.
+- `src/game/` — camada de apresentação web (depende de Three.js): `scene.js` (apartamento + colisores + luzes), `objectSpawner.js` (instancia objetos do caso), `player.js` (1ª pessoa + colisão), `tools.js` (5 ferramentas), `inspection.js` (raycast + registro de evidências), `ui.js` (HUD, caderneta, menu, briefing, resultado).
+- `src/main.js` — controlador de fluxo (máquina de estados) e loop de render.
 
-Ao evoluir: mantenha `src/domain/` puro (nada de import de `three` nem de DOM) para preservar a portabilidade e a testabilidade.
+Controles: **WASD** mover · **mouse** olhar · **1–5** trocar ferramenta (Lanterna/Zoom/UV/RF/Térmico) · **E** ou clique esquerdo inspecionar · **TAB** caderneta/laudo · **ESC** pausar.
+
+Ao evoluir: mantenha `src/domain/` puro (nada de import de `three` nem de DOM) para preservar a portabilidade e a testabilidade. Novo objeto/evidência/estado/denúncia = editar dados em `src/domain/data/` (mais um prefab visual via `visual` no objeto); o gerador não muda.
+
+Verificação em navegador: dá para usar Playwright pontualmente (`npm i -D playwright && npx playwright install chromium`) para carregar a página, exercitar o fluxo e capturar erros de console/screenshots. Não fica como dependência fixa.
 
 ## Documentos de design (fonte da verdade)
 
