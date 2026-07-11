@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://cenas/mundo/mundo.tscn" id="1_mundo"]
+[ext_resource type="PackedScene" path="res://cenas/jogador/jogador.tscn" id="2_jogador"]
+[ext_resource type="PackedScene" path="res://cenas/menus/menu_pausa.tscn" id="3_pausa"]
+[ext_resource type="Script" path="res://scripts/mundo/som_ambiente.gd" id="4_ambiente"]
+
+[node name="Principal" type="Node3D"]
+
+[node name="Mundo" parent="." instance=ExtResource("1_mundo")]
+
+[node name="Jogador" parent="." instance=ExtResource("2_jogador")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 4)
+
+[node name="Interface" type="Node" parent="."]
+
+[node name="MenuPausa" parent="Interface" instance=ExtResource("3_pausa")]
+
+[node name="Audio" type="Node" parent="."]
+
+[node name="AmbienteSonoro" type="AudioStreamPlayer" parent="Audio"]
+bus = &"Ambiente"
+script = ExtResource("4_ambiente")

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bpausalab00001"]
 
 [ext_resource type="Script" path="res://scripts/interface/menu_pausa.gd" id="1_pausa"]
-[ext_resource type="PackedScene" path="res://cenas/interface/opcoes.tscn" id="2_opcoes"]
+[ext_resource type="PackedScene" path="res://cenas/menus/opcoes.tscn" id="2_opcoes"]
 
 [node name="MenuPausa" type="CanvasLayer"]
 layer = 10

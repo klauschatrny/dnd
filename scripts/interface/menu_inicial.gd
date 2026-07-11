@@ -3,7 +3,7 @@ extends Control
 ##
 ## Porta de entrada do jogo. Atmosfera melancólica e discreta, coerente com o
 ## GDD: nada de brilho ou ruído visual. As opções abrem sobre o menu, sem trocar
-## de cena.
+## de cena; a navegação entre telas passa pelo GerenciadorCenas.
 
 @onready var _menu: CenterContainer = $Centro
 @onready var _opcoes: Control = $Opcoes
@@ -31,4 +31,4 @@ func _fechar_opcoes() -> void:
 
 
 func _abrir_creditos() -> void:
-	get_tree().change_scene_to_file("res://cenas/interface/creditos.tscn")
+	GerenciadorCenas.trocar_cena(GerenciadorCenas.CENA_CREDITOS)

@@ -22,8 +22,8 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		# Sensibilidade vem do núcleo (configuração), aplicada ao vivo.
-		var sensibilidade := GerenciadorJogo.sensibilidade_mouse
+		# Sensibilidade vem das Configurações, aplicada ao vivo.
+		var sensibilidade := Configuracoes.sensibilidade_mouse
 		rotate_y(-event.relative.x * sensibilidade)
 		camera.rotate_x(-event.relative.y * sensibilidade)
 		var limite := deg_to_rad(limite_vertical)

@@ -1,11 +1,8 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://cenas/mundo/parede_sebe.tscn" id="1_sebe"]
 [ext_resource type="Material" path="res://assets/materiais/pedra_chao.tres" id="2_chao"]
 [ext_resource type="Material" path="res://assets/materiais/pedra.tres" id="3_pedra"]
-[ext_resource type="PackedScene" path="res://cenas/jogador/jogador.tscn" id="4_jogador"]
-[ext_resource type="PackedScene" path="res://cenas/interface/menu_pausa.tscn" id="5_pausa"]
-[ext_resource type="Script" path="res://scripts/mundo/som_ambiente.gd" id="6_ambiente"]
 
 [sub_resource type="ProceduralSkyMaterial" id="CeuMat_1"]
 sky_top_color = Color(0.55, 0.6, 0.64, 1)
@@ -55,7 +52,7 @@ size = Vector3(140, 2, 140)
 [sub_resource type="BoxShape3D" id="Chao_forma"]
 size = Vector3(140, 2, 140)
 
-[node name="LabirintoTeste" type="Node3D"]
+[node name="Mundo" type="Node3D"]
 
 [node name="Ambiente" type="WorldEnvironment" parent="."]
 environment = SubResource("Ambiente_1")
@@ -172,12 +169,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.5, -18.2)
 
 [node name="MazeB2" parent="Sebes" instance=ExtResource("1_sebe")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.5, -18.2)
-
-[node name="Jogador" parent="." instance=ExtResource("4_jogador")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 4)
-
-[node name="MenuPausa" parent="." instance=ExtResource("5_pausa")]
-
-[node name="AmbienteSonoro" type="AudioStreamPlayer" parent="."]
-bus = &"Ambiente"
-script = ExtResource("6_ambiente")
