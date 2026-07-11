@@ -5,7 +5,7 @@
 [node name="Entrada" type="Node3D"]
 script = ExtResource("1_carregador")
 tamanho_celula = 2.0
-altura_sebe = 1.5
+altura_sebe = 2.0
 mapa = "#########..##########
 #########..##########
 #########..##########
