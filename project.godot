@@ -7,7 +7,7 @@ config_version=5
 
 config/name="The Labyrinth"
 config/description="Jogo de exploração em primeira pessoa num jardim labiríntico abandonado."
-run/main_scene="res://cenas/mundo/labirinto_teste.tscn"
+run/main_scene="res://cenas/interface/menu_inicial.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 

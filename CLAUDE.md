@@ -90,8 +90,10 @@ só som ambiente durante a exploração; música pouquíssima (início/créditos
 ## Roadmap (GDD §34) — estado atual
 
 - **Fase 1 — Fundação** *(em andamento)*: projeto Godot, arquitetura inicial, sistema
-  modular, movimentação 1ª pessoa. ✅ base montada.
+  modular, movimentação 1ª pessoa. ✅ base montada. Casca do jogo pronta: menu inicial,
+  menu de pausa, opções (sensibilidade/volume/tela cheia, persistidas) e créditos.
 - **Fase 2 — Graybox**: todo o mapa em cubos, sem arte definitiva; testar exploração.
+  *(pendente decisão de direção com o usuário: método de construção e escopo — aguardando o PAD.)*
 - **Fase 3 — Vertical Slice**: primeira região completa (iluminação, vegetação, áudio, eventos raros).
 - **Fase 4 — Mundo Completo** (sem puzzles) → playtest.
 - **Fase 5 — Puzzles** (só após validar navegação).
@@ -105,11 +107,12 @@ icon.svg
 cenas/
   mundo/    labirinto_teste.tscn  (graybox atual) · parede_sebe.tscn (módulo de sebe)
   jogador/  jogador.tscn
-  interface/                       (menus — a fazer)
+  interface/  menu_inicial.tscn · menu_pausa.tscn · opcoes.tscn · creditos.tscn
 scripts/
-  nucleo/     gerenciador_jogo.gd  (autoload GerenciadorJogo: estado global + pausa)
+  nucleo/     gerenciador_jogo.gd  (autoload GerenciadorJogo: estado + pausa + config + navegação)
   jogador/    jogador.gd           (CharacterBody3D, 1ª pessoa: andar/olhar/interagir)
-  interface/  interagivel.gd       (base para objetos interativos: padrão interagir())
+  interface/  interagivel.gd (padrão interagir()) · menu_inicial.gd · menu_pausa.gd
+              · opcoes.gd (painel reutilizável) · creditos.gd
   mundo/                            (lógica de mundo/eventos raros — a fazer)
 assets/
   materiais/  sebe.tres · pedra_chao.tres · pedra.tres

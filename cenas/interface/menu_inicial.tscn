@@ -1,0 +1,75 @@
+[gd_scene load_steps=3 format=3 uid="uid://bmenulab00001"]
+
+[ext_resource type="Script" path="res://scripts/interface/menu_inicial.gd" id="1_menu"]
+[ext_resource type="PackedScene" path="res://cenas/interface/opcoes.tscn" id="2_opcoes"]
+
+[node name="MenuInicial" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Fundo" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05, 0.06, 0.05, 1)
+
+[node name="Centro" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Coluna" type="VBoxContainer" parent="Centro"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Titulo" type="Label" parent="Centro/Coluna"]
+layout_mode = 2
+text = "THE LABYRINTH"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 60
+theme_override_colors/font_color = Color(0.8, 0.84, 0.78, 1)
+
+[node name="Subtitulo" type="Label" parent="Centro/Coluna"]
+layout_mode = 2
+text = "um jardim que preferia ser esquecido"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.5, 0.54, 0.5, 1)
+
+[node name="Espaco" type="Control" parent="Centro/Coluna"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+
+[node name="Explorar" type="Button" parent="Centro/Coluna"]
+custom_minimum_size = Vector2(240, 44)
+layout_mode = 2
+text = "Explorar"
+
+[node name="Opcoes" type="Button" parent="Centro/Coluna"]
+custom_minimum_size = Vector2(240, 44)
+layout_mode = 2
+text = "Opções"
+
+[node name="Creditos" type="Button" parent="Centro/Coluna"]
+custom_minimum_size = Vector2(240, 44)
+layout_mode = 2
+text = "Créditos"
+
+[node name="Sair" type="Button" parent="Centro/Coluna"]
+custom_minimum_size = Vector2(240, 44)
+layout_mode = 2
+text = "Sair"
+
+[node name="Opcoes" parent="." instance=ExtResource("2_opcoes")]
+visible = false
+layout_mode = 1

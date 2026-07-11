@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://cenas/mundo/parede_sebe.tscn" id="1_sebe"]
 [ext_resource type="Material" path="res://assets/materiais/pedra_chao.tres" id="2_chao"]
 [ext_resource type="Material" path="res://assets/materiais/pedra.tres" id="3_pedra"]
 [ext_resource type="PackedScene" path="res://cenas/jogador/jogador.tscn" id="4_jogador"]
+[ext_resource type="PackedScene" path="res://cenas/interface/menu_pausa.tscn" id="5_pausa"]
 
 [sub_resource type="Environment" id="Ambiente_1"]
 background_mode = 1
@@ -138,3 +139,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.5, -18.2)
 
 [node name="Jogador" parent="." instance=ExtResource("4_jogador")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 4)
+
+[node name="MenuPausa" parent="." instance=ExtResource("5_pausa")]

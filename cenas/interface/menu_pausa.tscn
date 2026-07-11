@@ -1,0 +1,67 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpausalab00001"]
+
+[ext_resource type="Script" path="res://scripts/interface/menu_pausa.gd" id="1_pausa"]
+[ext_resource type="PackedScene" path="res://cenas/interface/opcoes.tscn" id="2_opcoes"]
+
+[node name="MenuPausa" type="CanvasLayer"]
+layer = 10
+process_mode = 3
+script = ExtResource("1_pausa")
+
+[node name="Painel" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Fundo" type="ColorRect" parent="Painel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.03, 0.04, 0.03, 0.7)
+
+[node name="Centro" type="CenterContainer" parent="Painel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Coluna" type="VBoxContainer" parent="Painel/Centro"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Titulo" type="Label" parent="Painel/Centro/Coluna"]
+layout_mode = 2
+text = "Pausa"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.8, 0.84, 0.78, 1)
+
+[node name="Espaco" type="Control" parent="Painel/Centro/Coluna"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Continuar" type="Button" parent="Painel/Centro/Coluna"]
+custom_minimum_size = Vector2(240, 44)
+layout_mode = 2
+text = "Continuar"
+
+[node name="Opcoes" type="Button" parent="Painel/Centro/Coluna"]
+custom_minimum_size = Vector2(240, 44)
+layout_mode = 2
+text = "Opções"
+
+[node name="SairMenu" type="Button" parent="Painel/Centro/Coluna"]
+custom_minimum_size = Vector2(240, 44)
+layout_mode = 2
+text = "Sair para o menu"
+
+[node name="Opcoes" parent="." instance=ExtResource("2_opcoes")]
+visible = false

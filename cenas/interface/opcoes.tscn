@@ -1,0 +1,88 @@
+[gd_scene load_steps=2 format=3 uid="uid://bopcoeslab001"]
+
+[ext_resource type="Script" path="res://scripts/interface/opcoes.gd" id="1_opcoes"]
+
+[node name="Opcoes" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_opcoes")
+
+[node name="Fundo" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05, 0.06, 0.05, 0.96)
+
+[node name="Centro" type="CenterContainer" parent="Fundo"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Coluna" type="VBoxContainer" parent="Fundo/Centro"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Titulo" type="Label" parent="Fundo/Centro/Coluna"]
+layout_mode = 2
+text = "Opções"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.78, 0.82, 0.76, 1)
+
+[node name="Sensibilidade" type="HBoxContainer" parent="Fundo/Centro/Coluna"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Rotulo" type="Label" parent="Fundo/Centro/Coluna/Sensibilidade"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+text = "Sensibilidade do mouse"
+theme_override_colors/font_color = Color(0.7, 0.74, 0.7, 1)
+
+[node name="Controle" type="HSlider" parent="Fundo/Centro/Coluna/Sensibilidade"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_vertical = 4
+min_value = 0.0005
+max_value = 0.006
+step = 0.0001
+value = 0.0022
+
+[node name="Volume" type="HBoxContainer" parent="Fundo/Centro/Coluna"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Rotulo" type="Label" parent="Fundo/Centro/Coluna/Volume"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+text = "Volume geral"
+theme_override_colors/font_color = Color(0.7, 0.74, 0.7, 1)
+
+[node name="Controle" type="HSlider" parent="Fundo/Centro/Coluna/Volume"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_vertical = 4
+min_value = 0.0
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="TelaCheia" type="CheckButton" parent="Fundo/Centro/Coluna"]
+layout_mode = 2
+text = "Tela cheia"
+theme_override_colors/font_color = Color(0.7, 0.74, 0.7, 1)
+
+[node name="Voltar" type="Button" parent="Fundo/Centro/Coluna"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+text = "Voltar"

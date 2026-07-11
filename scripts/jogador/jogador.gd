@@ -7,8 +7,6 @@ extends CharacterBody3D
 
 ## Velocidade de caminhada (m/s). Confortável, pensada para incentivar a observação.
 @export var velocidade_caminhada: float = 2.8
-## Sensibilidade do mouse (radianos por pixel).
-@export var sensibilidade_mouse: float = 0.0022
 ## Limite vertical do olhar, em graus.
 @export var limite_vertical: float = 89.0
 
@@ -24,8 +22,10 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		rotate_y(-event.relative.x * sensibilidade_mouse)
-		camera.rotate_x(-event.relative.y * sensibilidade_mouse)
+		# Sensibilidade vem do núcleo (configuração), aplicada ao vivo.
+		var sensibilidade := GerenciadorJogo.sensibilidade_mouse
+		rotate_y(-event.relative.x * sensibilidade)
+		camera.rotate_x(-event.relative.y * sensibilidade)
 		var limite := deg_to_rad(limite_vertical)
 		camera.rotation.x = clampf(camera.rotation.x, -limite, limite)
 
