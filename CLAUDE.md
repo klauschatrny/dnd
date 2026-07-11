@@ -99,9 +99,12 @@ Estado atual: ambiência de **vento procedural** (`som_ambiente.gd`) no barramen
 - **Fase 2 — Player**: input, movimento, câmera, colisão. ✅ (`jogador.gd`)
 - **Fase 3 — Interação**: raycast, sistema de interação, objetos interativos básicos.
   ✅ base (`interagivel.gd`) — faltam objetos interativos concretos.
-- **Fase 4 — Graybox** *(próxima frente principal)*: construir o labirinto em geometria
-  simples — regiões, caminhos, landmarks, navegação. Hoje só existe um graybox de teste
-  pequeno (`mundo.tscn`). Guiar-se pelo **LDD**.
+- **Fase 4 — Graybox** *(em andamento)*: construir o labirinto em geometria simples —
+  regiões, caminhos, landmarks, navegação. Guiado pelo **LDD** (10 regiões). Método
+  decidido: **mapa ASCII autorado por região + carregador de grid** (`carregador_labirinto.gd`
+  lê o mapa e instancia `sebe_bloco`). ✅ Sequência de abertura: **Entrance Garden** +
+  **Central Garden** (hub) com a Torre visível ao longe. Faltam as 8 regiões restantes,
+  loops/atalhos e transições.
 - **Fase 5 — Sistemas Base**: Save · Menu Principal · Menu de Pausa · Configurações.
   Menus e Configurações ✅ (adiantados). **Save pendente** — só há o esqueleto
   `gerenciador_save.gd` (implementar aqui).
@@ -124,7 +127,9 @@ default_bus_layout.tres       # barramentos: Master → Ambiente · Música
 icon.svg
 cenas/
   principal/  principal.tscn       (Main: Mundo/Jogador/Interface/Audio — cena de gameplay)
-  mundo/      mundo.tscn (World: ambiente, sol, chão, landmarks, sebes) · parede_sebe.tscn
+  mundo/      mundo.tscn           (World: ambiente, sol, chão, landmarks; instancia regiões)
+    regioes/  entrada.tscn · jardim_central.tscn   (uma cena por região; raiz = carregador)
+    modulos/  sebe_bloco.tscn      (bloco de sebe unitário, escalado pelo carregador)
   jogador/    jogador.tscn
   menus/      menu_inicial.tscn · menu_pausa.tscn · opcoes.tscn · creditos.tscn
 scripts/
@@ -137,6 +142,7 @@ scripts/
   interacao/  interagivel.gd       (base de objeto interativo: padrão interagir())
   interface/  menu_inicial.gd · menu_pausa.gd · opcoes.gd (painel reutilizável) · creditos.gd
   mundo/      som_ambiente.gd      (ambiência de vento procedural, sem asset)
+              carregador_labirinto.gd (lê mapa ASCII da região e instancia sebes no grid)
 assets/
   materiais/  sebe.tres · pedra_chao.tres · pedra.tres
 recursos/                          (dados .tres compartilhados — só dados, sem lógica)
