@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/mundo/carregador_labirinto.gd" id="1_carregador"]
+
+[node name="Roseiral" type="Node3D"]
+script = ExtResource("1_carregador")
+tamanho_celula = 2.0
+altura_sebe = 2.5
+mapa = "########...#######
+#................#
+#..###.....###...#
+#..###.....###...#
+#................#
+#................#
+....###....###...#
+....###....###...#
+.................#
+#................#
+#..###.....###...#
+#................#
+##################"
