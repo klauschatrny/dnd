@@ -34,7 +34,8 @@ GODOT="/c/Users/klaus/Downloads/Godot_v4.7-stable_win64.exe/Godot_v4.7.exe"
 
 Para jogar: abrir o projeto no editor e rodar (F5), ou `"$GODOT" --path "$(pwd)"`.
 
-Controles atuais: **WASD** andar · **mouse** olhar · **E** interagir · **ESC** pausar.
+Controles atuais: **WASD** andar · **mouse** olhar · **E** interagir · **Espaço** pular · **ESC** pausar.
+(Pular foi adicionado a pedido do dono; diverge da orientação de movimento do GDD §4.)
 
 ## Documentos de design (fonte da verdade)
 

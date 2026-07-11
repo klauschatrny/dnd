@@ -1,12 +1,13 @@
 extends CharacterBody3D
 ## Controlador do jogador em primeira pessoa.
 ##
-## Segue o GDD: apenas andar, olhar ao redor e interagir.
-## Sem correr, agachar, pular, escalar ou deslizar — quanto menos comandos,
-## maior a imersão. Ritmo contemplativo, sem head bob.
+## Ações: andar, olhar ao redor, interagir e pular. Ritmo contemplativo, sem head bob.
+## Nota: o GDD (pilar §4) desaconselha pular; adicionado a pedido do dono do projeto.
 
 ## Velocidade de caminhada (m/s). Confortável, pensada para incentivar a observação.
 @export var velocidade_caminhada: float = 2.8
+## Velocidade vertical inicial do pulo (m/s).
+@export var velocidade_pulo: float = 4.5
 ## Limite vertical do olhar, em graus.
 @export var limite_vertical: float = 89.0
 
@@ -33,6 +34,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	if is_on_floor():
 		velocity.y = 0.0
+		if Input.is_action_just_pressed("pular"):
+			velocity.y = velocidade_pulo
 	else:
 		velocity.y -= _gravidade * delta
 
