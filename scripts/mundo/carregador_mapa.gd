@@ -570,8 +570,174 @@ func _render_arcos() -> void:
 		_caixa_solida(arco, "Lintel", Vector3(6.6, 0.6, 0.6), Vector3(0.0, 4.7, 0.0), material_pedra)
 
 
+## Preenche as células SEBE restantes com um labirinto (spec §7.2) e instancia
+## as sebes por setor.
 func _montar_labirinto() -> void:
-	pass
+	if _mascara.is_empty():
+		return
+	var semente: int = int(dados.get("generation", {}).get("seed", 20260711))
+	var braid: float = float(dados.get("generation", {}).get("braid_ratio", 0.70))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = semente
+	_gerar_maze_rb(rng)
+	_braid_maze(rng, braid)
+	_abrir_para_arterial(rng, 0.18)
+	_render_sebes(rng)
+
+
+## Recursive Backtracker com paridade: "salas" nas células (par, par) que são
+## SEBE; corredores carvam a parede (célula ímpar) entre salas vizinhas.
+func _gerar_maze_rb(rng: RandomNumberGenerator) -> void:
+	var dirs: Array[Vector2i] = [Vector2i(2, 0), Vector2i(-2, 0), Vector2i(0, 2), Vector2i(0, -2)]
+	for cz0 in range(0, UtilidadesGrade.GRADE_A, 2):
+		for cx0 in range(0, UtilidadesGrade.GRADE_L, 2):
+			if _mascara[_idx(cx0, cz0)] != M_SEBE:
+				continue
+			# Só inicia se houver ao menos uma direção carvável (evita erodir muros soltos).
+			if not _tem_opcao_rb(cx0, cz0, dirs):
+				continue
+			var pilha: Array[Vector2i] = [Vector2i(cx0, cz0)]
+			_mascara[_idx(cx0, cz0)] = M_CAMINHO
+			while not pilha.is_empty():
+				var cur: Vector2i = pilha[-1]
+				var opcoes: Array = []
+				for d in dirs:
+					var nx := cur.x + d.x
+					var nz := cur.y + d.y
+					var wx := cur.x + d.x / 2
+					var wz := cur.y + d.y / 2
+					if UtilidadesGrade.celula_valida(nx, nz) and _mascara[_idx(nx, nz)] == M_SEBE and _mascara[_idx(wx, wz)] == M_SEBE:
+						opcoes.append(d)
+				if opcoes.is_empty():
+					pilha.pop_back()
+					continue
+				var d: Vector2i = opcoes[rng.randi() % opcoes.size()]
+				_mascara[_idx(cur.x + d.x / 2, cur.y + d.y / 2)] = M_CAMINHO
+				_mascara[_idx(cur.x + d.x, cur.y + d.y)] = M_CAMINHO
+				pilha.append(Vector2i(cur.x + d.x, cur.y + d.y))
+
+
+func _tem_opcao_rb(cx: int, cz: int, dirs: Array[Vector2i]) -> bool:
+	for d in dirs:
+		var nx: int = cx + d.x
+		var nz: int = cz + d.y
+		var wx: int = cx + d.x / 2
+		var wz: int = cz + d.y / 2
+		if UtilidadesGrade.celula_valida(nx, nz) and _mascara[_idx(nx, nz)] == M_SEBE and _mascara[_idx(wx, wz)] == M_SEBE:
+			return true
+	return false
+
+
+## Braid: remove parte dos becos abrindo uma parede extra, criando ciclos
+## (labirinto imperfeito — essencial para exploração/horror).
+func _braid_maze(rng: RandomNumberGenerator, razao: float) -> void:
+	var dirs: Array[Vector2i] = [Vector2i(2, 0), Vector2i(-2, 0), Vector2i(0, 2), Vector2i(0, -2)]
+	for cz in range(0, UtilidadesGrade.GRADE_A, 2):
+		for cx in range(0, UtilidadesGrade.GRADE_L, 2):
+			if _mascara[_idx(cx, cz)] != M_CAMINHO:
+				continue
+			# Conta saídas (paredes já abertas) e coleta paredes fechadas com sala além.
+			var saidas := 0
+			var fechadas: Array = []
+			for d in dirs:
+				var wx := cx + d.x / 2
+				var wz := cz + d.y / 2
+				var nx := cx + d.x
+				var nz := cz + d.y
+				if not UtilidadesGrade.celula_valida(nx, nz):
+					continue
+				if _mascara[_idx(wx, wz)] == M_CAMINHO:
+					saidas += 1
+				elif _mascara[_idx(wx, wz)] == M_SEBE and _mascara[_idx(nx, nz)] == M_CAMINHO:
+					fechadas.append(Vector2i(wx, wz))
+			if saidas <= 1 and not fechadas.is_empty() and rng.randf() < razao:
+				var p: Vector2i = fechadas[rng.randi() % fechadas.size()]
+				_mascara[_idx(p.x, p.y)] = M_CAMINHO
+
+
+## Abre passagens do labirinto para as alamedas (ARTERIAL), conectando os
+## bolsões de sebe à rede principal. Cada parede entre CAMINHO e ARTERIAL tem
+## chance `prob` de virar passagem.
+func _abrir_para_arterial(rng: RandomNumberGenerator, prob: float) -> void:
+	var dirs: Array[Vector2i] = [Vector2i(2, 0), Vector2i(-2, 0), Vector2i(0, 2), Vector2i(0, -2)]
+	for cz in range(0, UtilidadesGrade.GRADE_A, 2):
+		for cx in range(0, UtilidadesGrade.GRADE_L, 2):
+			if _mascara[_idx(cx, cz)] != M_CAMINHO:
+				continue
+			for d in dirs:
+				var wx := cx + d.x / 2
+				var wz := cz + d.y / 2
+				var nx := cx + d.x
+				var nz := cz + d.y
+				if not UtilidadesGrade.celula_valida(nx, nz):
+					continue
+				if _mascara[_idx(wx, wz)] == M_SEBE and _mascara[_idx(nx, nz)] == M_ARTERIAL and rng.randf() < prob:
+					_mascara[_idx(wx, wz)] = M_CAMINHO
+
+
+## Instancia as sebes (células ainda SEBE) agrupadas por setor: 1 MultiMesh
+## visual por setor (altura própria) + 1 corpo de colisão por setor.
+func _render_sebes(rng: RandomNumberGenerator) -> void:
+	var raiz := Node3D.new()
+	raiz.name = "Sebes"
+	add_child(raiz)
+	# Agrupa células SEBE por setor.
+	var baldes: Dictionary = {}  # id_setor -> { altura, celulas: Array[Vector2i] }
+	for cz in UtilidadesGrade.GRADE_A:
+		for cx in UtilidadesGrade.GRADE_L:
+			if _mascara[_idx(cx, cz)] != M_SEBE:
+				continue
+			var setor := _setor_da_celula(cx, cz)
+			var id: String = setor[0]
+			if not baldes.has(id):
+				baldes[id] = { "altura": setor[1], "celulas": [] }
+			baldes[id]["celulas"].append(Vector2i(cx, cz))
+
+	for id in baldes:
+		var balde: Dictionary = baldes[id]
+		var altura: float = balde["altura"]
+		var celulas: Array = balde["celulas"]
+		if celulas.is_empty():
+			continue
+		# Visual: MultiMesh (1 draw call por setor).
+		var malha := BoxMesh.new()
+		malha.size = Vector3(1.8, altura, 1.8)
+		if material_sebe:
+			malha.material = material_sebe
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.mesh = malha
+		mm.instance_count = celulas.size()
+		# Colisão: 1 corpo por setor com uma BoxShape por célula.
+		var corpo := StaticBody3D.new()
+		corpo.name = "ColisaoSebe_%s" % id
+		raiz.add_child(corpo)
+		var forma := BoxShape3D.new()
+		forma.size = Vector3(2.0, altura, 2.0)
+		for i in celulas.size():
+			var c: Vector2i = celulas[i]
+			var p := UtilidadesGrade.celula_para_centro(c.x, c.y)
+			var giro := (rng.randi() % 4) * (PI * 0.5)
+			var base := Basis(Vector3.UP, giro)
+			mm.set_instance_transform(i, Transform3D(base, Vector3(p.x, altura * 0.5, p.z)))
+			var col := CollisionShape3D.new()
+			col.shape = forma
+			col.position = Vector3(p.x, altura * 0.5, p.z)
+			corpo.add_child(col)
+		var mmi := MultiMeshInstance3D.new()
+		mmi.name = "Sebe_%s" % id
+		mmi.multimesh = mm
+		raiz.add_child(mmi)
+
+
+## Retorna [id_setor, altura_sebe] para a célula (cx, cz). Fora de todos → 3 m.
+func _setor_da_celula(cx: int, cz: int) -> Array:
+	for s_v in dados.get("sectors", []):
+		var s: Dictionary = s_v
+		var cl: Array = s.get("cells", [])
+		if cl.size() == 4 and cx >= int(cl[0]) and cx <= int(cl[2]) and cz >= int(cl[1]) and cz <= int(cl[3]):
+			return [s.get("id", "SEC"), float(s.get("hedge_height", 3.0))]
+	return ["SEC_X", 3.0]
 
 
 # ---------------------------------------------------------------------------

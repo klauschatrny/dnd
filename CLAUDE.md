@@ -50,6 +50,12 @@ Em `Documentos de referência/` (conjunto completo desde 2026-07-11):
   landmarks, fluxo de exploração, loops, colocação de puzzles.
 - `O labirinto - README.pdf` — visão geral, filosofia de desenvolvimento, workflow.
 - `O Labirinto - TASKS.pdf` — backlog de desenvolvimento (tarefas, prioridades, milestones).
+- `MAPSPECS/ESPEC_MAPA_O_Labirinto_v1.md` + `MAPSPECS/labirinto_map.json` — **Especificação
+  Técnica de Mapa**: layout completo do labirinto em coordenadas (grade 240×192 m, 120×96
+  células de 2 m, origem NO, +Z sul), os 13 locais + Alameda dos Ciprestes, grafo de
+  caminhos, becos, atalhos, arcos, setores, eventos raros e convenções de implementação.
+  **É a fonte da verdade do mapa** (desde 2026-07-11). O JSON está copiado em
+  `recursos/labirinto/labirinto_map.json` e é lido em runtime pelo `carregador_mapa.gd`.
 
 O TDD (§10) manda: sempre que uma decisão técnica mudar a arquitetura, atualizar a doc.
 
@@ -101,14 +107,17 @@ Estado atual: ambiência de **vento procedural** (`som_ambiente.gd`) no barramen
 - **Fase 2 — Player**: input, movimento, câmera, colisão. ✅ (`jogador.gd`)
 - **Fase 3 — Interação**: raycast, sistema de interação, objetos interativos básicos.
   ✅ base (`interagivel.gd`) — faltam objetos interativos concretos.
-- **Fase 4 — Graybox** *(em andamento)*: construir o labirinto em geometria simples —
-  regiões, caminhos, landmarks, navegação. Guiado pelo **LDD** (10 regiões). Método
-  decidido: **mapa ASCII autorado por região + carregador de grid** (`carregador_labirinto.gd`
-  lê o mapa e instancia `sebe_bloco`). ✅ **5 de 10 regiões**, dispostas em cruz ao redor do
-  hub: **Central Garden** (hub) · **Entrance Garden** (sul) · **Roseiral** (leste, pergolado) ·
-  **Jardim das Estátuas** (oeste, estátuas) · **Labirinto de Sebes** (norte, serpentina 3,5 m,
-  rumo à Torre). Faltam 5 regiões (Dead Forest, Greenhouse, Reflection Lake, Old Cemetery,
-  Clock Tower), loops/atalhos e transições entre regiões.
+- **Fase 4 — Graybox** *(mapa completo montado)*: construir o labirinto em geometria simples.
+  **Decisão do dono (2026-07-11):** o antigo método de regiões ASCII improvisadas foi
+  **descartado** e substituído pela **Especificação Técnica de Mapa (MAPSPEC)** como fonte
+  única da verdade. O mundo inteiro é montado **em runtime** a partir de
+  `recursos/labirinto/labirinto_map.json` pelo `carregador_mapa.gd`, sobre a grade de
+  240×192 m. ✅ Já montados: terreno + muro perimetral (4,5 m, com aberturas Entrada/Saída) ·
+  os **13 locais + Alameda dos Ciprestes** nas coordenadas exatas · o **grafo de caminhos**
+  (alamedas CP/CS, becos, atalhos), marcos e arcos de setor · o **labirinto** (recursive
+  backtracker seed 20260711 + braid, sebes por setor via MultiMesh + colisão). Falta
+  (Fase 7/8): arte final das sebes/landmarks, névoa por setor, navmesh, streaming de chunks,
+  eventos raros, atalhos reveláveis, becos com props.
 - **Fase 5 — Sistemas Base**: Save · Menu Principal · Menu de Pausa · Configurações.
   Menus e Configurações ✅ (adiantados). **Save pendente** — só há o esqueleto
   `gerenciador_save.gd` (implementar aqui).
@@ -118,7 +127,8 @@ Estado atual: ambiência de **vento procedural** (`som_ambiente.gd`) no barramen
 - **Fase 8 — Polimento**: bugs, ajustes, otimização, balanceamento, melhorias visuais.
 
 Obs.: menus, configurações, atmosfera e áudio foram feitos **fora de ordem** (antes do
-Graybox). A lacuna real do MVP é a **Fase 4 (Graybox)** e o **Save (Fase 5)**.
+Graybox). Com o mapa da MAPSPEC montado, as lacunas do MVP passam a ser o **acabamento da
+Fase 4** (navmesh, névoa por setor, eventos raros, streaming) e o **Save (Fase 5)**.
 
 ## Organização do código
 
@@ -131,10 +141,8 @@ default_bus_layout.tres       # barramentos: Master → Ambiente · Música
 icon.svg
 cenas/
   principal/  principal.tscn       (Main: Mundo/Jogador/Interface/Audio — cena de gameplay)
-  mundo/      mundo.tscn           (World: ambiente, sol, chão, landmarks; instancia regiões)
-    regioes/  entrada · jardim_central · roseiral · jardim_estatuas · labirinto_sebes
-              (uma cena .tscn por região; raiz = carregador)
-    modulos/  sebe_bloco.tscn      (bloco de sebe unitário, escalado pelo carregador)
+  mundo/      mundo.tscn           (World: ambiente, sol; raiz "Mapa" = CarregadorMapa)
+    modulos/  sebe_bloco.tscn      (bloco de sebe unitário — módulo de referência)
   jogador/    jogador.tscn
   menus/      menu_inicial.tscn · menu_pausa.tscn · opcoes.tscn · creditos.tscn
 scripts/
@@ -147,10 +155,13 @@ scripts/
   interacao/  interagivel.gd       (base de objeto interativo: padrão interagir())
   interface/  menu_inicial.gd · menu_pausa.gd · opcoes.gd (painel reutilizável) · creditos.gd
   mundo/      som_ambiente.gd      (ambiência de vento procedural, sem asset)
-              carregador_labirinto.gd (lê mapa ASCII da região e instancia sebes no grid)
+              utilidades_grade.gd  (conversões célula↔world; grade 240×192, célula 2 m)
+              carregador_mapa.gd   (lê labirinto_map.json e monta o mundo inteiro em runtime:
+                                    terreno, muro, landmarks, grafo de caminhos, labirinto)
 assets/
   materiais/  sebe.tres · pedra_chao.tres · pedra.tres
-recursos/                          (dados .tres compartilhados — só dados, sem lógica)
+recursos/                          (dados .tres/.json compartilhados — só dados, sem lógica)
+  labirinto/  labirinto_map.json   (cópia da MAPSPEC lida pelo carregador_mapa em runtime)
 ```
 
 Ordem dos autoloads (importa): `GerenciadorAudio` → `GerenciadorCenas` → `GerenciadorSave`
