@@ -14,6 +14,14 @@ class_name CarregadorMapa
 
 const CAMINHO_JSON := "res://recursos/labirinto/labirinto_map.json"
 
+# Valores da máscara da grade (spec §7.1).
+const M_VAZIO := 0     # muro perimetral / fora do playfield
+const M_SEBE := 1      # sebe (bloqueia)
+const M_CAMINHO := 2   # caminho livre gerado pelo labirinto
+const M_ARTERIAL := 3  # reservado pelo grafo (o gerador não toca)
+const M_LANDMARK := 4  # reservado por bounding box de landmark
+const M_PORTAL := 5    # abertura
+
 @export_group("Etapas de montagem")
 @export var montar_terreno_flag: bool = true
 @export var montar_muro_flag: bool = true
@@ -29,6 +37,8 @@ const CAMINHO_JSON := "res://recursos/labirinto/labirinto_map.json"
 
 # Dados do JSON, carregados em _ready.
 var dados: Dictionary = {}
+# Máscara da grade (120×96), índice = cz * GRADE_L + cx. Preenchida em _montar_caminhos.
+var _mascara: PackedByteArray = PackedByteArray()
 
 
 func _ready() -> void:
@@ -418,7 +428,146 @@ func _lm_ciprestes(cont: Node3D, lm: Dictionary) -> void:
 
 
 func _montar_caminhos() -> void:
-	pass
+	_construir_mascara()
+	_render_pavimento()
+	_render_marcos()
+	_render_arcos()
+
+
+func _idx(cx: int, cz: int) -> int:
+	return cz * UtilidadesGrade.GRADE_L + cx
+
+
+## Constrói a máscara da grade: VAZIO (muro), LANDMARK (bboxes) e ARTERIAL
+## (grafo de caminhos + becos + atalhos). O restante fica SEBE, para o gerador.
+func _construir_mascara() -> void:
+	_mascara = PackedByteArray()
+	_mascara.resize(UtilidadesGrade.GRADE_L * UtilidadesGrade.GRADE_A)
+	_mascara.fill(M_SEBE)
+
+	# Anel perimetral (2 células) → VAZIO.
+	for cz in UtilidadesGrade.GRADE_A:
+		for cx in UtilidadesGrade.GRADE_L:
+			if cx < 2 or cx > UtilidadesGrade.GRADE_L - 3 or cz < 2 or cz > UtilidadesGrade.GRADE_A - 3:
+				_mascara[_idx(cx, cz)] = M_VAZIO
+
+	# Landmarks → LANDMARK (reservado).
+	for lm_v in dados.get("landmarks", []):
+		var lm: Dictionary = lm_v
+		var bb: Dictionary = lm.get("bbox_cells", {})
+		if not bb.has("cx"):
+			continue
+		var xr: Array = bb["cx"]
+		var zr: Array = bb["cz"]
+		for cz in range(int(zr[0]), int(zr[1]) + 1):
+			for cx in range(int(xr[0]), int(xr[1]) + 1):
+				if UtilidadesGrade.celula_valida(cx, cz):
+					_mascara[_idx(cx, cz)] = M_LANDMARK
+
+	# Grafo de caminhos (arestas) → ARTERIAL.
+	for e_v in dados.get("edges", []):
+		var e: Dictionary = e_v
+		_marcar_polilinha(e.get("polyline", []), float(e.get("width", 4.0)), M_ARTERIAL)
+	# Becos sem saída → ARTERIAL.
+	for bc_v in dados.get("dead_ends", []):
+		var bc: Dictionary = bc_v
+		_marcar_polilinha(_polilinha_beco(bc), 2.0, M_ARTERIAL)
+	# Atalhos → ARTERIAL (reservados; arte da sebe rala vem depois).
+	for at_v in dados.get("shortcuts", []):
+		var at: Dictionary = at_v
+		_marcar_polilinha(at.get("polyline", []), float(at.get("width", 2.0)), M_ARTERIAL)
+
+
+## Constrói a polilinha de um beco a partir de entry + dir + depth.
+func _polilinha_beco(bc: Dictionary) -> Array:
+	var ent: Array = bc.get("entry", [0, 0])
+	var prof: float = float(bc.get("depth", 8.0))
+	var d := Vector2.ZERO
+	match bc.get("dir", "N"):
+		"N": d = Vector2(0, -1)
+		"S": d = Vector2(0, 1)
+		"E": d = Vector2(1, 0)
+		"W": d = Vector2(-1, 0)
+	var p0 := Vector2(float(ent[0]), float(ent[1]))
+	var p1 := p0 + d * prof
+	return [[p0.x, p0.y], [p1.x, p1.y]]
+
+
+## Marca na máscara todas as células a ≤ largura/2 da polilinha (só sobre SEBE).
+func _marcar_polilinha(pts: Array, largura_m: float, valor: int) -> void:
+	if pts.size() < 2:
+		return
+	var r := largura_m * 0.5 + 0.3
+	for i in range(pts.size() - 1):
+		var a := Vector2(float(pts[i][0]), float(pts[i][1]))
+		var b := Vector2(float(pts[i + 1][0]), float(pts[i + 1][1]))
+		var comp := a.distance_to(b)
+		var passos := int(ceil(comp / 0.5)) + 1
+		for s in passos:
+			var p := a.lerp(b, float(s) / float(maxi(passos - 1, 1)))
+			var cx0 := int(floor((p.x - r) / UtilidadesGrade.CELULA))
+			var cx1 := int(floor((p.x + r) / UtilidadesGrade.CELULA))
+			var cz0 := int(floor((p.y - r) / UtilidadesGrade.CELULA))
+			var cz1 := int(floor((p.y + r) / UtilidadesGrade.CELULA))
+			for cz in range(cz0, cz1 + 1):
+				for cx in range(cx0, cx1 + 1):
+					if UtilidadesGrade.celula_valida(cx, cz) and _mascara[_idx(cx, cz)] == M_SEBE:
+						_mascara[_idx(cx, cz)] = valor
+
+
+## Pavimento (MultiMesh, só visual) sobre as células ARTERIAL/CAMINHO.
+func _render_pavimento() -> void:
+	var celulas: Array = []
+	for cz in UtilidadesGrade.GRADE_A:
+		for cx in UtilidadesGrade.GRADE_L:
+			var v := _mascara[_idx(cx, cz)]
+			if v == M_ARTERIAL or v == M_CAMINHO:
+				celulas.append(Vector2i(cx, cz))
+	if celulas.is_empty():
+		return
+	var malha := BoxMesh.new()
+	malha.size = Vector3(UtilidadesGrade.CELULA, 0.06, UtilidadesGrade.CELULA)
+	if material_pavimento:
+		malha.material = material_pavimento
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.mesh = malha
+	mm.instance_count = celulas.size()
+	for i in celulas.size():
+		var c: Vector2i = celulas[i]
+		var p := UtilidadesGrade.celula_para_centro(c.x, c.y)
+		mm.set_instance_transform(i, Transform3D(Basis(), Vector3(p.x, 0.03, p.z)))
+	var mmi := MultiMeshInstance3D.new()
+	mmi.name = "Pavimento"
+	mmi.multimesh = mm
+	add_child(mmi)
+
+
+## Marcos de pedra (PR_MARKER) nos cruzamentos-chave (ancoragem cognitiva).
+func _render_marcos() -> void:
+	var raiz := Node3D.new()
+	raiz.name = "Marcos"
+	add_child(raiz)
+	for m_v in dados.get("markers", []):
+		var m: Array = m_v
+		_cilindro_solido(raiz, "Marco", 0.4, 2.2, Vector3(float(m[0]), 0.0, float(m[1])), material_pedra)
+
+
+## Arcos de conexão entre setores (2 pilares + lintel), nas fronteiras das alamedas.
+func _render_arcos() -> void:
+	var raiz := Node3D.new()
+	raiz.name = "Arcos"
+	add_child(raiz)
+	for a_v in dados.get("arches", []):
+		var a: Dictionary = a_v
+		var pos: Array = a.get("pos", [0, 0])
+		var arco := Node3D.new()
+		arco.position = Vector3(float(pos[0]), 0.0, float(pos[1]))
+		arco.rotation.y = deg_to_rad(float(a.get("rot_y", 0)))
+		raiz.add_child(arco)
+		_caixa_solida(arco, "PilarO", Vector3(0.6, 5.0, 0.6), Vector3(-3.0, 2.5, 0.0), material_pedra)
+		_caixa_solida(arco, "PilarL", Vector3(0.6, 5.0, 0.6), Vector3(3.0, 2.5, 0.0), material_pedra)
+		_caixa_solida(arco, "Lintel", Vector3(6.6, 0.6, 0.6), Vector3(0.0, 4.7, 0.0), material_pedra)
 
 
 func _montar_labirinto() -> void:
