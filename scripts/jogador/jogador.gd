@@ -1,12 +1,15 @@
 extends CharacterBody3D
 ## Controlador do jogador em primeira pessoa.
 ##
-## Ações: andar, olhar ao redor, interagir e pular. Ritmo contemplativo, sem head bob.
-## Nota: o GDD (pilar §4) desaconselha pular; adicionado a pedido do dono do projeto.
+## Ações: andar, correr, olhar ao redor, interagir e pular. Sem head bob.
+## Nota: o GDD (pilar §4) prega ritmo contemplativo, sem sprint nem pulo; correr e
+## pular foram adicionados a pedido do dono do projeto.
 ## Inclui um noclip TEMPORÁRIO (tecla N) só para teste/depuração — remover antes do MVP.
 
 ## Velocidade de caminhada (m/s). Confortável, pensada para incentivar a observação.
 @export var velocidade_caminhada: float = 2.8
+## Velocidade ao correr (segurando o comando de correr), em m/s.
+@export var velocidade_corrida: float = 5.0
 ## Velocidade vertical inicial do pulo (m/s).
 @export var velocidade_pulo: float = 4.5
 ## Velocidade do noclip de teste (m/s).
@@ -53,8 +56,9 @@ func _physics_process(delta: float) -> void:
 		"mover_esquerda", "mover_direita", "mover_frente", "mover_tras"
 	)
 	var direcao := (transform.basis * Vector3(entrada.x, 0.0, entrada.y)).normalized()
-	velocity.x = direcao.x * velocidade_caminhada
-	velocity.z = direcao.z * velocidade_caminhada
+	var velocidade := velocidade_corrida if Input.is_action_pressed("correr") else velocidade_caminhada
+	velocity.x = direcao.x * velocidade
+	velocity.z = direcao.z * velocidade
 
 	move_and_slide()
 
