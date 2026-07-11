@@ -28,6 +28,7 @@ const M_PORTAL := 5    # abertura
 @export var montar_landmarks_flag: bool = true
 @export var montar_caminhos_flag: bool = true
 @export var montar_labirinto_flag: bool = true
+@export var montar_nevoa_flag: bool = true
 
 @export_group("Materiais")
 @export var material_chao: Material
@@ -56,6 +57,8 @@ func _ready() -> void:
 		_montar_caminhos()
 	if montar_labirinto_flag:
 		_montar_labirinto()
+	if montar_nevoa_flag:
+		_montar_nevoa()
 
 
 func _carregar_json() -> Dictionary:
@@ -728,6 +731,46 @@ func _render_sebes(rng: RandomNumberGenerator) -> void:
 		mmi.name = "Sebe_%s" % id
 		mmi.multimesh = mm
 		raiz.add_child(mmi)
+
+
+# ---------------------------------------------------------------------------
+# Névoa por setor (spec §3, §11.1) — um FogVolume por setor sobre a névoa
+# volumétrica base do WorldEnvironment (base = densidade mais baixa, a da
+# entrada). Cada setor adiciona a diferença até sua densidade-alvo, deixando
+# Bosque/Sombras nitidamente mais fechados que a Praça/entrada.
+# ---------------------------------------------------------------------------
+
+## Densidade base assumida no WorldEnvironment (mundo.tscn: volumetric_fog_density).
+const NEVOA_BASE := 0.010
+## Altura da coluna de névoa de cada setor (do chão para cima).
+const NEVOA_ALTURA := 16.0
+
+func _montar_nevoa() -> void:
+	var raiz := Node3D.new()
+	raiz.name = "Nevoa"
+	add_child(raiz)
+	for s_v in dados.get("sectors", []):
+		var s: Dictionary = s_v
+		var cl: Array = s.get("cells", [])
+		if cl.size() != 4:
+			continue
+		var densidade: float = float(s.get("fog_density", NEVOA_BASE))
+		var delta := densidade - NEVOA_BASE
+		if delta <= 0.0005:
+			continue  # setor já na densidade base (ex.: entrada) — sem volume extra.
+		var x0 := int(cl[0]) * UtilidadesGrade.CELULA
+		var x1 := (int(cl[2]) + 1) * UtilidadesGrade.CELULA
+		var z0 := int(cl[1]) * UtilidadesGrade.CELULA
+		var z1 := (int(cl[3]) + 1) * UtilidadesGrade.CELULA
+		var fv := FogVolume.new()
+		fv.name = "Nevoa_%s" % s.get("id", "SEC")
+		fv.shape = RenderingServer.FOG_VOLUME_SHAPE_BOX
+		fv.size = Vector3(x1 - x0, NEVOA_ALTURA, z1 - z0)
+		fv.position = Vector3((x0 + x1) * 0.5, NEVOA_ALTURA * 0.5, (z0 + z1) * 0.5)
+		var fm := FogMaterial.new()
+		fm.density = delta
+		fv.material = fm
+		raiz.add_child(fv)
 
 
 ## Retorna [id_setor, altura_sebe] para a célula (cx, cz). Fora de todos → 3 m.
