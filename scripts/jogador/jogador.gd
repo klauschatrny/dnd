@@ -3,13 +3,19 @@ extends CharacterBody3D
 ##
 ## Ações: andar, olhar ao redor, interagir e pular. Ritmo contemplativo, sem head bob.
 ## Nota: o GDD (pilar §4) desaconselha pular; adicionado a pedido do dono do projeto.
+## Inclui um noclip TEMPORÁRIO (tecla N) só para teste/depuração — remover antes do MVP.
 
 ## Velocidade de caminhada (m/s). Confortável, pensada para incentivar a observação.
 @export var velocidade_caminhada: float = 2.8
 ## Velocidade vertical inicial do pulo (m/s).
 @export var velocidade_pulo: float = 4.5
+## Velocidade do noclip de teste (m/s).
+@export var velocidade_noclip: float = 8.0
 ## Limite vertical do olhar, em graus.
 @export var limite_vertical: float = 89.0
+
+# Ferramenta temporária de teste: voar atravessando a geometria.
+var _noclip: bool = false
 
 @onready var camera: Camera3D = $Camera3D
 @onready var raio_interacao: RayCast3D = $Camera3D/RaioInteracao
@@ -32,6 +38,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _noclip:
+		_mover_noclip(delta)
+		return
+
 	if is_on_floor():
 		velocity.y = 0.0
 		if Input.is_action_just_pressed("pular"):
@@ -49,9 +59,25 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
+## Noclip de teste: voa na direção do olhar (WASD) e sobe com pular, ignorando
+## colisão (move a posição direto, sem move_and_slide). Temporário — remover no MVP.
+func _mover_noclip(delta: float) -> void:
+	velocity = Vector3.ZERO
+	var entrada := Input.get_vector(
+		"mover_esquerda", "mover_direita", "mover_frente", "mover_tras"
+	)
+	var direcao := camera.global_transform.basis * Vector3(entrada.x, 0.0, entrada.y)
+	if Input.is_action_pressed("pular"):
+		direcao.y += 1.0
+	if direcao.length() > 0.0:
+		global_position += direcao.normalized() * velocidade_noclip * delta
+
+
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("interagir"):
 		_tentar_interagir()
+	if Input.is_action_just_pressed("noclip"):
+		_noclip = not _noclip
 
 
 ## Interação padrão do GDD: olhar para o objeto e apertar um único botão.

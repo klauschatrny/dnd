@@ -36,6 +36,7 @@ Para jogar: abrir o projeto no editor e rodar (F5), ou `"$GODOT" --path "$(pwd)"
 
 Controles atuais: **WASD** andar · **mouse** olhar · **E** interagir · **Espaço** pular · **ESC** pausar.
 (Pular foi adicionado a pedido do dono; diverge da orientação de movimento do GDD §4.)
+Teste/depuração: **N** alterna **noclip** (voa atravessando a geometria) — temporário, remover no MVP.
 
 ## Documentos de design (fonte da verdade)
 
