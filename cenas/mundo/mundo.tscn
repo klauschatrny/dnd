@@ -1,10 +1,12 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Material" path="res://assets/materiais/pedra_chao.tres" id="2_chao"]
 [ext_resource type="Material" path="res://assets/materiais/pedra.tres" id="3_pedra"]
 [ext_resource type="PackedScene" path="res://cenas/mundo/regioes/entrada.tscn" id="4_entrada"]
 [ext_resource type="PackedScene" path="res://cenas/mundo/regioes/jardim_central.tscn" id="5_central"]
 [ext_resource type="PackedScene" path="res://cenas/mundo/regioes/roseiral.tscn" id="6_rose"]
+[ext_resource type="PackedScene" path="res://cenas/mundo/regioes/jardim_estatuas.tscn" id="7_estatuas"]
+[ext_resource type="PackedScene" path="res://cenas/mundo/regioes/labirinto_sebes.tscn" id="8_maze"]
 
 [sub_resource type="ProceduralSkyMaterial" id="CeuMat_1"]
 sky_top_color = Color(0.55, 0.6, 0.64, 1)
@@ -80,7 +82,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -14)
 shape = SubResource("Chao_forma")
 
 [node name="TorreDoRelogio" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, -55)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, -68)
 use_collision = true
 size = Vector3(5, 24, 5)
 material = ExtResource("3_pedra")
@@ -95,6 +97,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -36)
 
 [node name="Roseiral" parent="Regioes" instance=ExtResource("6_rose")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, -34)
+
+[node name="JardimEstatuas" parent="Regioes" instance=ExtResource("7_estatuas")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -69, 0, -34)
+
+[node name="LabirintoSebes" parent="Regioes" instance=ExtResource("8_maze")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0, -60)
 
 [node name="Landmarks" type="Node3D" parent="."]
 
@@ -211,4 +219,64 @@ material = ExtResource("3_pedra")
 [node name="Viga2" type="CSGBox3D" parent="Landmarks/Pergola"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.9, 1.5)
 size = Vector3(3.4, 0.3, 0.4)
+material = ExtResource("3_pedra")
+
+[node name="EstatuaJardim1" type="Node3D" parent="Landmarks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 0, -16)
+
+[node name="Pedestal" type="CSGBox3D" parent="Landmarks/EstatuaJardim1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+use_collision = true
+size = Vector3(1.2, 1, 1.2)
+material = ExtResource("3_pedra")
+
+[node name="Figura" type="CSGBox3D" parent="Landmarks/EstatuaJardim1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+use_collision = true
+size = Vector3(0.6, 2, 0.6)
+material = ExtResource("3_pedra")
+
+[node name="EstatuaJardim2" type="Node3D" parent="Landmarks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44, 0, -16)
+
+[node name="Pedestal" type="CSGBox3D" parent="Landmarks/EstatuaJardim2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+use_collision = true
+size = Vector3(1.2, 1, 1.2)
+material = ExtResource("3_pedra")
+
+[node name="Figura" type="CSGBox3D" parent="Landmarks/EstatuaJardim2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+use_collision = true
+size = Vector3(0.6, 2, 0.6)
+material = ExtResource("3_pedra")
+
+[node name="EstatuaJardim3" type="Node3D" parent="Landmarks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 0, -26)
+
+[node name="Pedestal" type="CSGBox3D" parent="Landmarks/EstatuaJardim3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+use_collision = true
+size = Vector3(1.2, 1, 1.2)
+material = ExtResource("3_pedra")
+
+[node name="Figura" type="CSGBox3D" parent="Landmarks/EstatuaJardim3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+use_collision = true
+size = Vector3(0.6, 2, 0.6)
+material = ExtResource("3_pedra")
+
+[node name="EstatuaJardim4" type="Node3D" parent="Landmarks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44, 0, -26)
+
+[node name="Pedestal" type="CSGBox3D" parent="Landmarks/EstatuaJardim4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+use_collision = true
+size = Vector3(1.2, 1, 1.2)
+material = ExtResource("3_pedra")
+
+[node name="Figura" type="CSGBox3D" parent="Landmarks/EstatuaJardim4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+use_collision = true
+size = Vector3(0.6, 2, 0.6)
 material = ExtResource("3_pedra")

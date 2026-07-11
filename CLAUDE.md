@@ -103,10 +103,11 @@ Estado atual: ambiência de **vento procedural** (`som_ambiente.gd`) no barramen
 - **Fase 4 — Graybox** *(em andamento)*: construir o labirinto em geometria simples —
   regiões, caminhos, landmarks, navegação. Guiado pelo **LDD** (10 regiões). Método
   decidido: **mapa ASCII autorado por região + carregador de grid** (`carregador_labirinto.gd`
-  lê o mapa e instancia `sebe_bloco`). ✅ **Entrance Garden** + **Central Garden** (hub,
-  com a Torre visível ao longe) + **Roseiral** (Rose Garden, saída leste do hub, pergolado).
-  Faltam 7 regiões (Dead Forest, Greenhouse, Statue Garden, Reflection Lake, Hedge Maze,
-  Old Cemetery, Clock Tower), loops/atalhos e transições.
+  lê o mapa e instancia `sebe_bloco`). ✅ **5 de 10 regiões**, dispostas em cruz ao redor do
+  hub: **Central Garden** (hub) · **Entrance Garden** (sul) · **Roseiral** (leste, pergolado) ·
+  **Jardim das Estátuas** (oeste, estátuas) · **Labirinto de Sebes** (norte, serpentina 3,5 m,
+  rumo à Torre). Faltam 5 regiões (Dead Forest, Greenhouse, Reflection Lake, Old Cemetery,
+  Clock Tower), loops/atalhos e transições entre regiões.
 - **Fase 5 — Sistemas Base**: Save · Menu Principal · Menu de Pausa · Configurações.
   Menus e Configurações ✅ (adiantados). **Save pendente** — só há o esqueleto
   `gerenciador_save.gd` (implementar aqui).
@@ -130,7 +131,8 @@ icon.svg
 cenas/
   principal/  principal.tscn       (Main: Mundo/Jogador/Interface/Audio — cena de gameplay)
   mundo/      mundo.tscn           (World: ambiente, sol, chão, landmarks; instancia regiões)
-    regioes/  entrada.tscn · jardim_central.tscn · roseiral.tscn   (raiz = carregador)
+    regioes/  entrada · jardim_central · roseiral · jardim_estatuas · labirinto_sebes
+              (uma cena .tscn por região; raiz = carregador)
     modulos/  sebe_bloco.tscn      (bloco de sebe unitário, escalado pelo carregador)
   jogador/    jogador.tscn
   menus/      menu_inicial.tscn · menu_pausa.tscn · opcoes.tscn · creditos.tscn
