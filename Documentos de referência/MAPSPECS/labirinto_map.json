@@ -1,0 +1,461 @@
+{
+  "meta": {
+    "name": "The Labyrinth",
+    "version": "1.0",
+    "engine": "Godot 4.x",
+    "unit": "meter",
+    "axis": { "x": "east", "y": "up", "z": "south", "player_forward": "-Z" },
+    "seed": 20260711
+  },
+  "grid": {
+    "cell_size": 2.0,
+    "width_cells": 120,
+    "height_cells": 96,
+    "width_m": 240.0,
+    "height_m": 192.0,
+    "origin": [0.0, 0.0, 0.0],
+    "origin_corner": "northwest",
+    "mask_enum": { "VOID": 0, "HEDGE": 1, "PATH": 2, "ARTERIAL": 3, "LANDMARK": 4, "PORTAL": 5 }
+  },
+  "heights": {
+    "hedge_entrance": 2.0,
+    "hedge_default": 3.0,
+    "hedge_thin_shortcut": 3.0,
+    "perimeter_wall": 4.5,
+    "rose_garden_wall": 2.5,
+    "hedge_thickness": 2.0,
+    "hedge_mesh_size": 1.8,
+    "clock_tower": 28.0
+  },
+  "path_types": {
+    "CP": { "name": "Caminho Principal", "cells": 2, "width_m": 4.0, "material": "pavimento_claro" },
+    "CS": { "name": "Caminho Secundario", "cells": 1, "width_m": 2.0, "material": "cascalho" },
+    "BC": { "name": "Beco / Sem Saida", "cells": 1, "width_m": 2.0, "material": "cascalho" },
+    "AT": { "name": "Atalho / Conexao", "cells": 1, "width_m": 2.0, "material": "terra" }
+  },
+  "sectors": [
+    { "id": "SEC_A", "name": "Entrada Sul",        "cells": [2, 80, 35, 94],  "hedge_height": 2.0, "fog_density": 0.010 },
+    { "id": "SEC_B", "name": "Mausoleu Oeste",     "cells": [2, 60, 35, 79],  "hedge_height": 3.0, "fog_density": 0.018 },
+    { "id": "SEC_C", "name": "Claustro",           "cells": [2, 36, 35, 59],  "hedge_height": 3.0, "fog_density": 0.015 },
+    { "id": "SEC_D", "name": "Lago Norte",         "cells": [2, 2, 35, 35],   "hedge_height": 3.0, "fog_density": 0.015 },
+    { "id": "SEC_E", "name": "Ciprestes",          "cells": [36, 2, 70, 29],  "hedge_height": 3.0, "fog_density": 0.020 },
+    { "id": "SEC_F", "name": "Rosas e Bosque",     "cells": [71, 2, 117, 35], "hedge_height": 3.0, "fog_density": 0.030 },
+    { "id": "SEC_G", "name": "Praca Central",      "cells": [36, 30, 70, 65], "hedge_height": 3.0, "fog_density": 0.012 },
+    { "id": "SEC_H", "name": "Gazebo e Estufa",    "cells": [71, 36, 117, 70],"hedge_height": 3.0, "fog_density": 0.016 },
+    { "id": "SEC_I", "name": "Fonte e Sombras",    "cells": [36, 66, 70, 94], "hedge_height": 3.0, "fog_density": 0.035 },
+    { "id": "SEC_J", "name": "Labirinto Sudeste",  "cells": [71, 71, 117, 94],"hedge_height": 3.0, "fog_density": 0.022 }
+  ],
+  "landmarks": [
+    {
+      "id": "LM_01", "num": 1, "name": "Entrada (Portao)", "sector": "SEC_A",
+      "center": [28.0, 0.0, 188.0], "cell": [14, 94],
+      "bbox_m": { "x": [22, 34], "z": [178, 190] }, "bbox_cells": { "cx": [11, 17], "cz": [89, 94] },
+      "footprint": [12.0, 10.0], "max_height": 4.8,
+      "player_spawn": { "position": [28.0, 0.0, 186.5], "rotation_y_deg": 180.0 },
+      "wall_opening": { "axis": "south", "x": 28.0, "z": 190.0, "width": 4.0 },
+      "elements": [
+        { "prop": "PR_PILLAR_GATE", "size": [1.2, 1.2, 4.0], "positions": [[25.4, 0, 188], [30.6, 0, 188]] },
+        { "prop": "PR_LINTEL", "size": [6.4, 0.8, 0.8], "positions": [[28, 4.0, 188]] },
+        { "prop": "PR_GATE_IRON_S", "size": [2.0, 3.2, 0.08], "positions": [[27.0, 0, 188], [29.0, 0, 188]] },
+        { "prop": "PR_LANTERN", "size": [0.3, 0.55, 0.3], "positions": [[25.4, 2.2, 188], [30.6, 2.2, 188]] },
+        { "prop": "PR_SIGN", "size": [1.0, 1.6, 0.05], "positions": [[33.0, 0, 184.0]], "rotation_y_deg": -20 }
+      ]
+    },
+    {
+      "id": "LM_02", "num": 2, "name": "Praca das Quatro Estatuas", "sector": "SEC_G",
+      "center": [104.0, 0.0, 72.0], "cell": [52, 36],
+      "bbox_m": { "x": [88, 120], "z": [56, 88] }, "bbox_cells": { "cx": [44, 59], "cz": [28, 43] },
+      "shape": "circle", "radius_pavement": 14.0, "radius_hedge_outer": 16.0, "max_height": 3.6,
+      "openings": [
+        { "dir": "N",  "angle": 0,   "pos": [104.0, 56.0],   "width": 4.0 },
+        { "dir": "NE", "angle": 45,  "pos": [115.3, 60.7],   "width": 4.0 },
+        { "dir": "E",  "angle": 90,  "pos": [120.0, 72.0],   "width": 4.0 },
+        { "dir": "SE", "angle": 135, "pos": [115.3, 83.3],   "width": 4.0 },
+        { "dir": "S",  "angle": 180, "pos": [104.0, 88.0],   "width": 4.0 },
+        { "dir": "SW", "angle": 225, "pos": [92.7, 83.3],    "width": 4.0 },
+        { "dir": "W",  "angle": 270, "pos": [88.0, 72.0],    "width": 4.0 },
+        { "dir": "NW", "angle": 315, "pos": [92.7, 60.7],    "width": 4.0 }
+      ],
+      "elements": [
+        { "prop": "PR_PEDESTAL", "size": [1.6, 1.2, 1.6], "positions": [[109.66, 0, 66.34], [109.66, 0, 77.66], [98.34, 0, 77.66], [98.34, 0, 66.34]] },
+        { "prop": "PR_STATUE_HOOD", "size": [0.9, 2.4, 0.9], "ids": ["ST_NE","ST_SE","ST_SO","ST_NO"], "positions": [[109.66, 1.2, 66.34], [109.66, 1.2, 77.66], [98.34, 1.2, 77.66], [98.34, 1.2, 66.34]], "look_at": [104.0, 1.2, 72.0] },
+        { "prop": "PR_SUNDIAL", "size": [2.4, 0.4, 2.4], "gnomon_height": 1.6, "positions": [[104, 0, 72]] },
+        { "prop": "PR_BENCH_STONE", "size": [1.8, 0.45, 0.5], "positions": [[104, 0, 61], [115, 0, 72], [104, 0, 83], [93, 0, 72]] },
+        { "prop": "PR_LAMP_POST", "size": [0.18, 3.2, 0.18], "positions": [[112.8, 0, 63.2], [112.8, 0, 80.8], [95.2, 0, 80.8], [95.2, 0, 63.2]] }
+      ]
+    },
+    {
+      "id": "LM_03", "num": 3, "name": "Lago Seco", "sector": "SEC_D",
+      "center": [48.0, 0.0, 46.0], "cell": [24, 23],
+      "bbox_m": { "x": [28, 68], "z": [26, 66] }, "bbox_cells": { "cx": [14, 33], "cz": [13, 32] },
+      "basin": { "shape": "ellipse", "size_x": 28.0, "size_z": 22.0, "depth": 1.8, "floor_y": -1.8, "slope_deg": 60 },
+      "balustrade": { "shape": "ellipse", "size_x": 32.0, "size_z": 26.0, "thickness": 0.3, "height": 0.9, "gaps": 4, "gap_width": 3.0 },
+      "bridge": { "name": "Ponte Seca", "size": [30.0, 0.35, 3.0], "axis": "EW", "y": 0.05, "position": [48, 0.05, 46] },
+      "stairs": { "size": [3.0, 1.8, 2.0], "steps": 6, "step_height": 0.3, "position": [48, 0, 55] },
+      "ring_path": { "type": "CS", "radius": 19.0, "width": 2.0 },
+      "openings": [
+        { "dir": "N", "pos": [48.0, 26.0] }, { "dir": "S", "pos": [48.0, 66.0] },
+        { "dir": "E", "pos": [68.0, 46.0] }, { "dir": "W", "pos": [28.0, 46.0] }
+      ],
+      "max_height": 0.9
+    },
+    {
+      "id": "LM_04", "num": 4, "name": "Jardim das Rosas", "sector": "SEC_F",
+      "center": [166.0, 0.0, 30.0], "cell": [83, 15],
+      "bbox_m": { "x": [150, 182], "z": [18, 42] }, "bbox_cells": { "cx": [75, 90], "cz": [9, 20] },
+      "footprint": [32.0, 24.0], "max_height": 2.6,
+      "wall": { "thickness": 0.4, "height": 2.5, "material": "tijolo" },
+      "gate": { "pos": [166.0, 42.0], "width": 3.0, "arch_height": 3.2, "dir": "S", "unique_entrance": true },
+      "elements": [
+        { "prop": "PR_PLANTER_BED", "size": [8.0, 0.3, 8.0], "positions": [[159.5, 0, 24.5], [172.5, 0, 24.5], [159.5, 0, 35.5], [172.5, 0, 35.5]] },
+        { "prop": "PR_PERGOLA", "size": [6.0, 2.6, 6.0], "columns": 12, "column_d": 0.2, "positions": [[166, 0, 30]] },
+        { "prop": "PR_ROSE_BUSH", "size": [0.9, 1.2, 0.9], "count": 36, "layout": "3x3 por canteiro, passo 2.4" },
+        { "prop": "PR_BENCH_IRON", "size": [1.5, 0.9, 0.45], "positions": [[166, 0, 21], [166, 0, 39]] }
+      ],
+      "breach": { "id": "AT-02", "pos": [150.0, 26.0], "size": [1.2, 2.0], "wall": "west" }
+    },
+    {
+      "id": "LM_05", "num": 5, "name": "Bosque Morto", "sector": "SEC_F",
+      "center": [208.0, 0.0, 38.0], "cell": [104, 19],
+      "bbox_m": { "x": [186, 230], "z": [14, 62] }, "bbox_cells": { "cx": [93, 114], "cz": [7, 30] },
+      "footprint": [44.0, 48.0], "max_height": 9.0, "no_hedges": true, "navmesh": "free_bake",
+      "scatter": [
+        { "prop": "PR_TREE_DEAD_A", "count": 48, "poisson_radius": 2.6, "height_range": [6.0, 7.5], "trunk_d": [0.35, 0.45] },
+        { "prop": "PR_TREE_DEAD_B", "count": 18, "poisson_radius": 4.0, "height_range": [8.0, 9.0], "trunk_d": [0.55, 0.65] }
+      ],
+      "elements": [
+        { "prop": "PR_LOG", "size": [5.0, 0.5, 0.5], "count": 3 },
+        { "prop": "PR_STONE_FALLEN", "size": [2.4, 0.6, 1.2], "positions": [[208, 0, 38]] }
+      ],
+      "crow_spawns": 8, "crow_height_range": [4.0, 7.0],
+      "trails": { "count": 3, "width": [1.5, 2.0], "type": "spline" },
+      "fog_multiplier": 1.5,
+      "entrances": [[186.0, 50.0], [190.0, 62.0]]
+    },
+    {
+      "id": "LM_06", "num": 6, "name": "Gazebo Antigo", "sector": "SEC_H",
+      "center": [190.0, 0.0, 78.0], "cell": [95, 39],
+      "bbox_m": { "x": [175, 205], "z": [63, 93] }, "bbox_cells": { "cx": [87, 102], "cz": [31, 46] },
+      "shape": "circle", "radius_pavement": 13.0, "radius_hedge_outer": 15.0,
+      "max_height": 5.65, "floor_y": 0.45,
+      "gazebo": { "shape": "octagon", "circumscribed_d": 8.0, "side": 3.06, "deck_height": 0.45, "columns": 8, "column_d": 0.25, "column_h": 3.0, "roof": { "d": 9.2, "h": 2.2, "base_y": 3.45, "top_y": 5.65 } },
+      "openings": [
+        { "dir": "N", "pos": [190.0, 63.0], "width": 3.0 },
+        { "dir": "S", "pos": [190.0, 93.0], "width": 3.0 },
+        { "dir": "E", "pos": [205.0, 78.0], "width": 3.0 },
+        { "dir": "W", "pos": [175.0, 78.0], "width": 3.0 }
+      ],
+      "elements": [
+        { "prop": "PR_WICKER_CHAIR", "size": [0.6, 1.0, 0.6], "positions": [[191.4, 0.45, 78.8]], "rare_event_target": true },
+        { "prop": "PR_TABLE_IRON", "size": [0.8, 0.72, 0.8], "positions": [[190, 0.45, 78]] },
+        { "prop": "PR_BENCH_PERIMETER", "size": [3.06, 0.45, 0.4], "count": 7 }
+      ]
+    },
+    {
+      "id": "LM_07", "num": 7, "name": "Estufa", "sector": "SEC_H",
+      "center": [162.0, 0.0, 110.0], "cell": [81, 55],
+      "bbox_m": { "x": [146, 178], "z": [88, 134] }, "bbox_cells": { "cx": [73, 88], "cz": [44, 66] },
+      "building": { "size": [24.0, 32.0], "x": [150, 174], "z": [94, 126], "wall_height": 5.0, "ridge_height": 9.0 },
+      "max_height": 9.0,
+      "structure": { "ribs": 16, "rib_profile": [0.15, 0.15], "rib_spacing_z": 2.0, "glass_panels": 240, "panel_size": [1.2, 2.0, 0.01], "broken_pct": 0.30 },
+      "doors": [
+        { "id": "north_double", "pos": [162.0, 94.0], "width": 2.4, "height": 3.0 },
+        { "id": "south_service", "pos": [162.0, 126.0], "width": 1.0, "height": 2.2 }
+      ],
+      "elements": [
+        { "prop": "PR_BENCH_TABLE", "size": [6.0, 0.9, 1.2], "count": 6, "layout": "3 por lado, passo Z = 9.0" },
+        { "prop": "PR_PLANTER", "size": [0.35, 0.4, 0.35], "count": 40 },
+        { "prop": "PR_FERN_DEAD", "size": [0.6, 0.7, 0.6], "count": 24 }
+      ],
+      "aprons": [ { "id": "north", "size": [12.0, 6.0], "center": [162.0, 91.0] }, { "id": "south", "size": [8.0, 4.0], "center": [162.0, 130.0] } ],
+      "gameplay": { "ai_hearing_multiplier": 0.6, "volumetric_light": true }
+    },
+    {
+      "id": "LM_08", "num": 8, "name": "Claustro Verde", "sector": "SEC_C",
+      "center": [40.0, 0.0, 104.0], "cell": [20, 52],
+      "bbox_m": { "x": [25, 55], "z": [89, 119] }, "bbox_cells": { "cx": [12, 27], "cz": [44, 59] },
+      "footprint": [30.0, 30.0], "max_height": 4.4,
+      "arcade": { "depth": 5.0, "clear_height": 3.8, "roof_height": 4.4, "columns_per_side": 10, "column_d": 0.35, "column_h": 2.8, "arch_h": 1.0, "spacing": 2.5 },
+      "garth": { "size": [20.0, 20.0], "cross_path_width": 1.5, "beds": 4, "bed_size": [8.5, 8.5] },
+      "well": { "shape": "octagon", "d": 1.6, "height": 0.8, "iron_arch_h": 2.2, "position": [40, 0, 104] },
+      "candles": { "niches": 12, "niche_size": [0.3, 0.45, 0.2], "niche_y": 1.4, "candle_size": [0.05, 0.18, 0.05] },
+      "entrances": [
+        { "dir": "N", "pos": [40.0, 89.0], "width": 2.5 },
+        { "dir": "S", "pos": [40.0, 119.0], "width": 2.5 },
+        { "dir": "E", "pos": [55.0, 104.0], "width": 2.5 }
+      ]
+    },
+    {
+      "id": "LM_09", "num": 9, "name": "Fonte Principal", "sector": "SEC_I",
+      "center": [104.0, 0.0, 118.0], "cell": [52, 59],
+      "bbox_m": { "x": [90, 118], "z": [104, 132] }, "bbox_cells": { "cx": [45, 58], "cz": [52, 65] },
+      "shape": "circle", "radius_pavement": 12.0, "radius_hedge_outer": 14.0, "max_height": 4.2,
+      "fountain": { "basin_d": 7.0, "rim_width": 0.5, "rim_height": 0.6, "pedestal": [1.2, 1.2], "upper_bowl_d": 2.4, "upper_bowl_y": 2.4, "statue_h": 1.8, "top_y": 4.2, "dry": true },
+      "openings": [
+        { "dir": "N",  "pos": [104.0, 104.0], "width": 4.0 },
+        { "dir": "NE", "pos": [113.9, 108.1], "width": 4.0 },
+        { "dir": "E",  "pos": [118.0, 118.0], "width": 2.0 },
+        { "dir": "S",  "pos": [104.0, 132.0], "width": 4.0 },
+        { "dir": "SW", "pos": [94.1, 127.9],  "width": 4.0 }
+      ],
+      "elements": [ { "prop": "PR_LAMP_POST", "size": [0.18, 3.2, 0.18], "count": 5, "radius": 10.5 } ]
+    },
+    {
+      "id": "LM_10", "num": 10, "name": "Mausoleu", "sector": "SEC_B",
+      "center": [54.0, 0.0, 154.0], "cell": [27, 77],
+      "bbox_m": { "x": [41, 67], "z": [140, 162] }, "bbox_cells": { "cx": [20, 33], "cz": [70, 80] },
+      "building": { "size": [22.0, 16.0], "x": [43, 65], "z": [146, 162], "wall_height": 5.0 },
+      "stylobate": { "size": [26.0, 20.0], "height": 0.6 },
+      "dome": { "d": 8.0, "top_y": 9.0, "center": [54, 156] },
+      "max_height": 9.0, "floor_y": 0.6,
+      "portico": { "columns": 6, "column_d": 0.7, "column_h": 4.5, "spacing": 3.6, "face": "north" },
+      "stairs": { "width": 8.0, "steps": 3, "step_height": 0.2 },
+      "door": { "id": "bronze", "pos": [54.0, 146.0], "size": [2.0, 3.2], "leaves": 2, "rare_event_target": true },
+      "forecourt": { "size": [26.0, 6.0], "center": [54.0, 143.0] },
+      "elements": [
+        { "prop": "PR_GRAVE", "size": [0.6, 1.1, 0.15], "count": 6 },
+        { "prop": "PR_URN", "size": [0.7, 1.1, 0.7], "count": 2 },
+        { "prop": "PR_BRAZIER", "size": [0.8, 1.1, 0.8], "count": 2 }
+      ],
+      "interior_scene": { "nave": [14.0, 8.0, 4.5], "niches": 12, "niche_size": [0.8, 2.0, 0.5] }
+    },
+    {
+      "id": "LM_11", "num": 11, "name": "Torre do Relogio", "sector": "SEC_E",
+      "center": [114.0, 0.0, 6.0], "cell": [57, 3],
+      "bbox_m": { "x": [107, 121], "z": [0, 21] }, "bbox_cells": { "cx": [53, 60], "cz": [0, 10] },
+      "shaft": { "size": [10.0, 10.0], "height": 22.0, "x": [109, 119], "z": [1, 11] },
+      "belfry": { "size": [8.0, 8.0], "height": 4.0, "y": 22.0 },
+      "spire": { "d": 3.0, "height": 2.0, "top_y": 28.0 },
+      "max_height": 28.0,
+      "clock_face": { "d": 3.6, "thickness": 0.2, "face": "south", "center_y": 20.0, "hour_hand": [1.3, 0.12], "minute_hand": [1.7, 0.08] },
+      "door": { "pos": [114.0, 11.0], "size": [1.2, 2.4], "locked": true, "key": "KEY_TOWER" },
+      "stairs": { "type": "spiral", "radius": 1.8, "landings_y": [6, 12, 18, 22] },
+      "viewpoint": { "size": [6.0, 6.0], "y": 22.0, "railing_h": 1.1 },
+      "bell": { "d": 1.4, "h": 1.6, "y": 23.5 },
+      "plaza": { "size": [14.0, 10.0], "center": [114.0, 16.0] },
+      "render": { "pinned_chunk": true, "lod_fade": false, "always_cast_shadow": true, "role": "global_compass" }
+    },
+    {
+      "id": "LM_12", "num": 12, "name": "Jardim das Sombras", "sector": "SEC_I",
+      "center": [114.0, 0.0, 158.0], "cell": [57, 79],
+      "bbox_m": { "x": [96, 132], "z": [144, 172] }, "bbox_cells": { "cx": [48, 65], "cz": [72, 85] },
+      "footprint": [36.0, 28.0], "max_height": 3.2,
+      "topiaries": { "prop": "PR_TOPIARY", "size": [1.8, 2.5, 1.8], "count": 8,
+        "positions": [[105,0,149],[114,0,149],[123,0,149],[105,0,158],[123,0,158],[105,0,167],[114,0,167],[123,0,167]] },
+      "statue": { "prop": "PR_STATUE_HOOD", "size": [1.0, 2.6, 1.0], "pedestal_h": 0.6, "top_y": 3.2, "position": [114, 0, 158] },
+      "elements": [ { "prop": "PR_BENCH_STONE", "positions": [[104, 0, 166], [124, 0, 150]] } ],
+      "ambience": { "ambient_light_mult": 0.6, "fog_density": 0.035, "view_distance": 16.0 },
+      "entrances": [
+        { "dir": "N", "pos": [114.0, 144.0] }, { "dir": "S", "pos": [114.0, 172.0] },
+        { "dir": "W", "pos": [96.0, 158.0] },  { "dir": "E", "pos": [132.0, 158.0] }
+      ]
+    },
+    {
+      "id": "LM_13", "num": 13, "name": "Portao Final (Saida)", "sector": "SEC_I",
+      "center": [114.0, 0.0, 188.0], "cell": [57, 94],
+      "bbox_m": { "x": [104, 124], "z": [176, 190] }, "bbox_cells": { "cx": [52, 61], "cz": [88, 94] },
+      "footprint": [20.0, 12.0], "max_height": 6.5,
+      "wall_opening": { "axis": "south", "x": 114.0, "z": 190.0, "width": 6.0 },
+      "elements": [
+        { "prop": "PR_PILLAR_GATE_L", "size": [1.6, 5.5, 1.6], "positions": [[110.2, 0, 188], [117.8, 0, 188]] },
+        { "prop": "PR_GATE_IRON_L", "size": [3.0, 4.0, 0.1], "positions": [[112.5, 0, 188], [115.5, 0, 188]] },
+        { "prop": "PR_ARCH_ORNATE", "span": 6.0, "top_y": 6.5, "positions": [[114, 5.5, 188]] },
+        { "prop": "PR_BRAZIER", "size": [0.8, 1.1, 0.8], "positions": [[106, 0, 180], [122, 0, 180], [106, 0, 188], [122, 0, 188]] },
+        { "prop": "PR_KEYSLOT", "size": [0.4, 0.1, 0.4], "positions": [[117.8, 1.2, 187.2], [117.8, 1.6, 187.2], [117.8, 2.0, 187.2]] }
+      ],
+      "plaza": { "size": [20.0, 12.0], "center": [114.0, 184.0] },
+      "win_trigger": { "shape": "box", "size": [8.0, 4.0, 5.0], "center": [114.0, 2.0, 186.0] },
+      "unlock_condition": { "keys_required": 3, "keys": ["KEY_MAUSOLEUM", "KEY_GREENHOUSE", "KEY_TOWER"] }
+    },
+    {
+      "id": "LM_A", "num": null, "name": "Alameda dos Ciprestes", "sector": "SEC_E",
+      "center": [80.0, 0.0, 26.0], "cell": [40, 13],
+      "bbox_m": { "x": [74, 86], "z": [6, 48] },
+      "avenue": { "type": "CP", "width": 4.0, "axis": "NS", "x": 80.0, "z_from": 6.0, "z_to": 48.0, "length": 42.0 },
+      "cypress": { "prop": "PR_CYPRESS", "size": [1.6, 8.0, 1.6], "count": 14,
+        "positions": [[76,0,9],[76,0,15],[76,0,21],[76,0,27],[76,0,33],[76,0,39],[76,0,45],
+                      [84,0,9],[84,0,15],[84,0,21],[84,0,27],[84,0,33],[84,0,39],[84,0,45]] },
+      "marker": { "prop": "PR_MARKER", "size": [0.8, 2.2, 0.8], "position": [80, 0, 26] },
+      "max_height": 8.0
+    }
+  ],
+  "nodes": [
+    { "id": "J_ENT", "pos": [28, 188],   "type": "gate" },
+    { "id": "J01",   "pos": [28, 168],   "type": "bend" },
+    { "id": "J02",   "pos": [28, 138],   "type": "tee" },
+    { "id": "J03",   "pos": [40, 138],   "type": "tee" },
+    { "id": "J04",   "pos": [54, 140],   "type": "forecourt" },
+    { "id": "J05",   "pos": [78, 138],   "type": "cross" },
+    { "id": "J06",   "pos": [84, 138],   "type": "fork" },
+    { "id": "J07",   "pos": [104, 138],  "type": "cross" },
+    { "id": "J08",   "pos": [114, 138],  "type": "tee" },
+    { "id": "J09",   "pos": [162, 138],  "type": "tee" },
+    { "id": "J10",   "pos": [40, 86],    "type": "bend" },
+    { "id": "J11",   "pos": [48, 72],    "type": "cross" },
+    { "id": "J12",   "pos": [48, 66],    "type": "mouth" },
+    { "id": "J13",   "pos": [58, 94],    "type": "bend" },
+    { "id": "J14",   "pos": [82, 94],    "type": "cross" },
+    { "id": "J15",   "pos": [92.7, 83.3],"type": "mouth" },
+    { "id": "J16",   "pos": [115.3, 83.3],"type": "mouth" },
+    { "id": "J17",   "pos": [126, 95],   "type": "plazita" },
+    { "id": "J18",   "pos": [150, 72],   "type": "cross" },
+    { "id": "J19",   "pos": [150, 88],   "type": "bend" },
+    { "id": "J20",   "pos": [140, 118],  "type": "bend" },
+    { "id": "J21",   "pos": [126, 50],   "type": "cross" },
+    { "id": "J22",   "pos": [166, 50],   "type": "tee" },
+    { "id": "J23",   "pos": [186, 50],   "type": "mouth" },
+    { "id": "J24",   "pos": [82, 50],    "type": "cross" },
+    { "id": "J25",   "pos": [68, 50],    "type": "bend" },
+    { "id": "J26",   "pos": [68, 46],    "type": "mouth" },
+    { "id": "J27",   "pos": [104, 32],   "type": "bend" },
+    { "id": "J28",   "pos": [114, 22],   "type": "bend" },
+    { "id": "J29",   "pos": [48, 26],    "type": "tee" },
+    { "id": "J30",   "pos": [80, 26],    "type": "marker" },
+    { "id": "J31",   "pos": [28, 46],    "type": "mouth" },
+    { "id": "J32",   "pos": [10, 46],    "type": "tee" },
+    { "id": "J33",   "pos": [190, 110],  "type": "tee" },
+    { "id": "J34",   "pos": [190, 150],  "type": "bend" },
+    { "id": "J35",   "pos": [150, 150],  "type": "end" },
+    { "id": "J_FIM", "pos": [114, 188],  "type": "gate" }
+  ],
+  "edges": [
+    { "id": "CP-01", "name": "Alameda da Entrada", "type": "CP", "width": 4.0, "from": "J_ENT", "to": "J01", "polyline": [[28,188],[28,168]], "length": 20.0 },
+    { "id": "CP-02", "name": "Alameda do Cemiterio", "type": "CP", "width": 4.0, "from": "J01", "to": "J02", "polyline": [[28,168],[28,138]], "length": 30.0 },
+    { "id": "CP-03", "name": "Travessa do Sul", "type": "CP", "width": 4.0, "from": "J02", "to": "J09", "polyline": [[28,138],[162,138]], "length": 134.0, "passes": ["J03","J04","J05","J06","J07","J08"] },
+    { "id": "CP-04", "name": "Rampa da Fonte", "type": "CP", "width": 4.0, "from": "J06", "to": "LM_09:SW", "polyline": [[84,138],[94.1,127.9]], "length": 14.3, "diagonal_45": true },
+    { "id": "CP-05", "name": "Avenida Central", "type": "CP", "width": 4.0, "from": "LM_02:S", "to": "LM_09:N", "polyline": [[104,88],[104,104]], "length": 16.0 },
+    { "id": "CP-06a", "name": "Alameda do Norte", "type": "CP", "width": 4.0, "from": "LM_02:N", "to": "J27", "polyline": [[104,56],[104,32]], "length": 24.0 },
+    { "id": "CP-06b", "name": "Rampa da Torre", "type": "CP", "width": 4.0, "from": "J27", "to": "J28", "polyline": [[104,32],[114,22]], "length": 14.1, "diagonal_45": true },
+    { "id": "CP-06c", "name": "Acesso a Torre", "type": "CP", "width": 4.0, "from": "J28", "to": "LM_11:door", "polyline": [[114,22],[114,11]], "length": 11.0 },
+    { "id": "CP-07", "name": "Alameda do Lago", "type": "CP", "width": 4.0, "from": "LM_02:W", "to": "J11", "polyline": [[88,72],[48,72]], "length": 40.0 },
+    { "id": "CP-08", "name": "Ramal do Claustro N", "type": "CP", "width": 4.0, "from": "J11", "to": "LM_08:N", "polyline": [[48,72],[48,86],[40,86],[40,89]], "length": 25.0 },
+    { "id": "CP-09", "name": "Ramal do Claustro S", "type": "CP", "width": 4.0, "from": "LM_08:S", "to": "J03", "polyline": [[40,119],[40,138]], "length": 19.0 },
+    { "id": "CP-10", "name": "Alameda do Leste", "type": "CP", "width": 4.0, "from": "LM_02:E", "to": "LM_06:W", "polyline": [[120,72],[150,72],[175,78]], "length": 55.0, "passes": ["J18"] },
+    { "id": "CP-11", "name": "Ramal da Estufa N", "type": "CP", "width": 4.0, "from": "J18", "to": "LM_07:N_apron", "polyline": [[150,72],[150,88],[162,88]], "length": 28.0, "passes": ["J19"] },
+    { "id": "CP-12", "name": "Ramal da Estufa S", "type": "CP", "width": 4.0, "from": "LM_07:S_apron", "to": "J09", "polyline": [[162,130],[162,138]], "length": 8.0 },
+    { "id": "CP-13", "name": "Alameda da Saida", "type": "CP", "width": 4.0, "from": "LM_12:S", "to": "J_FIM", "polyline": [[114,172],[114,188]], "length": 16.0 },
+    { "id": "CP-14", "name": "Ramal Sul da Fonte", "type": "CP", "width": 4.0, "from": "LM_09:S", "to": "J07", "polyline": [[104,132],[104,138]], "length": 6.0 },
+    { "id": "CP-15", "name": "Alameda das Sombras", "type": "CP", "width": 4.0, "from": "J08", "to": "LM_12:N", "polyline": [[114,138],[114,144]], "length": 6.0 },
+    { "id": "CP-16", "name": "Radial SO da Praca", "type": "CP", "width": 4.0, "from": "J15", "to": "J14", "polyline": [[92.7,83.3],[82,94]], "length": 15.1, "diagonal_45": true },
+    { "id": "CP-17", "name": "Contorno do Claustro L", "type": "CP", "width": 4.0, "from": "J14", "to": "LM_08:E", "polyline": [[82,94],[58,94],[58,104],[55,104]], "length": 37.0, "passes": ["J13"] },
+    { "id": "CP-18", "name": "Radial SE da Praca", "type": "CP", "width": 4.0, "from": "J16", "to": "J17", "polyline": [[115.3,83.3],[126,94]], "length": 15.1, "diagonal_45": true },
+    { "id": "CP-19", "name": "Diagonal da Fonte NE", "type": "CP", "width": 4.0, "from": "J17", "to": "LM_09:NE", "polyline": [[126,96],[113.9,108.1]], "length": 17.1, "diagonal_45": true },
+    { "id": "CP-20", "name": "Radial NE da Praca", "type": "CP", "width": 4.0, "from": "LM_02:NE", "to": "J21", "polyline": [[115.3,60.7],[126,50]], "length": 15.1, "diagonal_45": true },
+    { "id": "CP-21", "name": "Alameda das Rosas", "type": "CP", "width": 4.0, "from": "J21", "to": "LM_04:gate", "polyline": [[126,50],[166,50],[166,42]], "length": 48.0, "passes": ["J22"] },
+    { "id": "CP-22", "name": "Trilha do Bosque", "type": "CS", "width": 2.0, "from": "J22", "to": "J23", "polyline": [[166,50],[186,50]], "length": 20.0 },
+    { "id": "CP-23", "name": "Radial NO da Praca", "type": "CP", "width": 4.0, "from": "LM_02:NW", "to": "J24", "polyline": [[92.7,60.7],[82,50]], "length": 15.1, "diagonal_45": true },
+    { "id": "CP-24", "name": "Ramal do Lago L", "type": "CP", "width": 4.0, "from": "J24", "to": "J26", "polyline": [[82,50],[68,50],[68,46]], "length": 18.0, "passes": ["J25"] },
+    { "id": "CP-25", "name": "Alameda dos Ciprestes", "type": "CP", "width": 4.0, "from": "J24", "to": "AP-00", "polyline": [[80,48],[80,6]], "length": 42.0, "passes": ["J30"] },
+    { "id": "CS-01", "name": "Ligacao Ciprestes-Lago", "type": "CS", "width": 2.0, "from": "J29", "to": "J30", "polyline": [[48,26],[80,26]], "length": 32.0 },
+    { "id": "CS-02", "name": "Ramal Norte do Lago", "type": "CS", "width": 2.0, "from": "J29", "to": "AP-00", "polyline": [[48,26],[48,12]], "length": 14.0 },
+    { "id": "CS-03", "name": "Ramal Oeste do Lago", "type": "CS", "width": 2.0, "from": "J31", "to": "J32", "polyline": [[28,46],[10,46]], "length": 18.0 },
+    { "id": "CS-04", "name": "Fonte Leste", "type": "CS", "width": 2.0, "from": "LM_09:E", "to": "J20", "polyline": [[118,118],[140,118]], "length": 22.0 },
+    { "id": "CS-05", "name": "Contorno da Estufa O", "type": "CS", "width": 2.0, "from": "J20", "to": "J19", "polyline": [[140,118],[140,88],[150,88]], "length": 40.0 },
+    { "id": "CS-06", "name": "Gazebo-Bosque", "type": "CS", "width": 2.0, "from": "LM_06:N", "to": "LM_05", "polyline": [[190,63],[190,62]], "length": 1.0 },
+    { "id": "CS-07", "name": "Gazebo Leste", "type": "CS", "width": 2.0, "from": "LM_06:E", "to": "AP-00", "polyline": [[205,78],[228,78]], "length": 23.0 },
+    { "id": "CS-08", "name": "Gazebo Sul", "type": "CS", "width": 2.0, "from": "LM_06:S", "to": "J33", "polyline": [[190,93],[190,110]], "length": 17.0 },
+    { "id": "CS-09", "name": "Ramal Sudeste", "type": "CS", "width": 2.0, "from": "J33", "to": "J35", "polyline": [[190,110],[190,150],[150,150]], "length": 80.0, "passes": ["J34"] },
+    { "id": "CS-10", "name": "Contorno do Claustro O", "type": "CS", "width": 2.0, "from": "LM_08", "to": "AP-00", "polyline": [[25,104],[10,104]], "length": 15.0 },
+    { "id": "CS-11", "name": "Ligacao Sombras L", "type": "CS", "width": 2.0, "from": "LM_12:E", "to": "J35", "polyline": [[132,158],[150,158]], "length": 18.0 },
+    { "id": "CS-12", "name": "Ligacao Sombras O", "type": "CS", "width": 2.0, "from": "LM_12:W", "to": "maze", "polyline": [[96,158],[78,158]], "length": 18.0 },
+    { "id": "AP-00", "name": "Anel Perimetral", "type": "CS", "width": 2.0, "closed_loop": true,
+      "polyline": [[5,5],[107,5],[107,13],[121,13],[121,5],[235,5],[235,187],[5,187],[5,5]], "length": 830.0,
+      "note": "desvia a base da Torre do Relogio pelo sul" }
+  ],
+  "shortcuts": [
+    { "id": "AT-01", "name": "Brecha do Lago", "width": 2.0, "polyline": [[60,60],[72,64],[80,68]], "discovery": "visual", "saves_m": 40 },
+    { "id": "AT-02", "name": "Brecha das Rosas", "width": 1.2, "polyline": [[150,26],[140,30],[128,36]], "discovery": "interact", "saves_m": 30, "note": "furo no muro oeste do jardim" },
+    { "id": "AT-03", "name": "Passagem do Gazebo", "width": 2.0, "polyline": [[177,90],[170,96],[162,91]], "discovery": "visual", "saves_m": 35 },
+    { "id": "AT-04", "name": "Tunel do Claustro", "width": 1.5, "height": 2.2, "polyline": [[25,110],[10,110]], "discovery": "item:lanterna", "saves_m": 25 },
+    { "id": "AT-05", "name": "Brecha do Mausoleu", "width": 2.0, "polyline": [[66,152],[78,152],[86,152]], "discovery": "visual", "saves_m": 28 },
+    { "id": "AT-06", "name": "Trilha das Sombras", "width": 2.0, "polyline": [[132,158],[142,154],[150,150]], "discovery": "interact", "saves_m": 32 },
+    { "id": "AT-07", "name": "Escada da Torre", "width": 1.5, "polyline": [[104,20],[110,14],[114,11]], "discovery": "item:KEY_TOWER", "saves_m": 20 }
+  ],
+  "dead_ends": [
+    { "id": "BC-01", "entry": [16, 174], "dir": "N", "depth": 12, "loot": "Carrinho de jardinagem" },
+    { "id": "BC-02", "entry": [66, 118], "dir": "E", "depth": 16, "loot": "Pilha de vasos" },
+    { "id": "BC-03", "entry": [92, 40],  "dir": "W", "depth": 14, "loot": "Estatua quebrada" },
+    { "id": "BC-04", "entry": [140, 28], "dir": "S", "depth": 10, "loot": "Banco com diario" },
+    { "id": "BC-05", "entry": [196, 62], "dir": "S", "depth": 12, "loot": "Poco seco" },
+    { "id": "BC-06", "entry": [222, 100],"dir": "W", "depth": 18, "loot": "Sino caido" },
+    { "id": "BC-07", "entry": [176, 170],"dir": "N", "depth": 14, "loot": "Colmeia abandonada" },
+    { "id": "BC-08", "entry": [84, 178], "dir": "E", "depth": 12, "loot": "Espantalho" },
+    { "id": "BC-09", "entry": [30, 128], "dir": "W", "depth": 10, "loot": "Portao enferrujado" },
+    { "id": "BC-10", "entry": [60, 76],  "dir": "S", "depth": 8,  "loot": "Relogio de sol caido" },
+    { "id": "BC-11", "entry": [44, 136], "dir": "W", "depth": 10, "loot": "Cripta menor" },
+    { "id": "BC-12", "entry": [100, 178],"dir": "N", "depth": 8,  "loot": "Lanterna acesa" }
+  ],
+  "arches": [
+    { "pos": [28, 160],  "rot_y": 0,  "from": "SEC_A", "to": "SEC_B" },
+    { "pos": [28, 120],  "rot_y": 0,  "from": "SEC_B", "to": "SEC_C" },
+    { "pos": [48, 72],   "rot_y": 0,  "from": "SEC_C", "to": "SEC_D" },
+    { "pos": [72, 72],   "rot_y": 90, "from": "SEC_C", "to": "SEC_G" },
+    { "pos": [104, 60],  "rot_y": 0,  "from": "SEC_G", "to": "SEC_E" },
+    { "pos": [142, 72],  "rot_y": 90, "from": "SEC_G", "to": "SEC_H" },
+    { "pos": [142, 50],  "rot_y": 90, "from": "SEC_E", "to": "SEC_F" },
+    { "pos": [104, 132], "rot_y": 0,  "from": "SEC_G", "to": "SEC_I" },
+    { "pos": [142, 138], "rot_y": 90, "from": "SEC_I", "to": "SEC_H" },
+    { "pos": [72, 138],  "rot_y": 90, "from": "SEC_B", "to": "SEC_I" },
+    { "pos": [114, 30],  "rot_y": 0,  "from": "SEC_E", "to": "LM_11" },
+    { "pos": [114, 176], "rot_y": 0,  "from": "SEC_I", "to": "LM_13" }
+  ],
+  "markers": [
+    [28,168],[28,138],[78,138],[114,138],[48,72],[82,94],[126,95],
+    [150,72],[126,50],[82,50],[80,26],[190,110],[140,118],[58,94]
+  ],
+  "rare_events": [
+    { "id": "RE_01", "landmark": "LM_01", "name": "Nevoa leve",              "trigger": { "center": [28,4,180],  "size": [24,8,24] },  "visibility": "visible", "effect": "fog_density 0.010 -> 0.022 em 6s" },
+    { "id": "RE_02", "landmark": "LM_02", "name": "Estatua muda de direcao","trigger": { "center": [104,4,72],  "size": [40,8,40] },  "visibility": "hidden",  "effect": "rot_y +-90 em 1 das 4 estatuas" },
+    { "id": "RE_03", "landmark": "LM_03", "name": "Ondas no lago seco",      "trigger": { "center": [48,3,46],   "size": [44,6,44] },  "visibility": "visible", "effect": "shader ripple 3s + SFX agua" },
+    { "id": "RE_04", "landmark": "LM_04", "name": "Petalas murcham",         "trigger": { "center": [166,3,30],  "size": [32,6,24] },  "visibility": "visible", "effect": "material swap 36 roseiras + particulas" },
+    { "id": "RE_05", "landmark": "LM_05", "name": "Corvos aparecem",         "trigger": { "center": [208,6,38],  "size": [44,12,48] }, "visibility": "visible", "effect": "8 corvos levantam voo 4s + SFX" },
+    { "id": "RE_06", "landmark": "LM_06", "name": "Cadeira se move",         "trigger": { "center": [190,4,78],  "size": [30,8,30] },  "visibility": "hidden",  "effect": "cadeira translada 1.2m + rot 35" },
+    { "id": "RE_07", "landmark": "LM_07", "name": "Vidros quebram",          "trigger": { "center": [162,5,110], "size": [28,10,36] }, "visibility": "visible", "effect": "3-6 paineis quebram + shards + SFX" },
+    { "id": "RE_08", "landmark": "LM_08", "name": "Vela acende",             "trigger": { "center": [40,3,104],  "size": [32,6,32] },  "visibility": "visible", "effect": "OmniLight3D energia 0.6 alcance 4m" },
+    { "id": "RE_09", "landmark": "LM_09", "name": "Agua comeca a pingar",    "trigger": { "center": [104,4,118], "size": [28,8,28] },  "visibility": "visible", "effect": "SFX gota loop 12s + decal molhado" },
+    { "id": "RE_10", "landmark": "LM_10", "name": "Porta entreaberta",       "trigger": { "center": [54,4,148],  "size": [30,8,20] },  "visibility": "hidden",  "effect": "porta bronze rot 0 -> 15 + SFX" },
+    { "id": "RE_11", "landmark": "LM_11", "name": "Horario do relogio muda", "trigger": { "type": "line_of_sight", "target": "LM_11" },  "visibility": "hidden",  "effect": "ponteiros -> 03:33 + badalada" },
+    { "id": "RE_12", "landmark": "LM_12", "name": "Sussurros ao longe",      "trigger": { "center": [114,4,158], "size": [36,8,28] },  "visibility": "visible", "effect": "AudioStreamPlayer3D movel spline r=18, 10s" },
+    { "id": "RE_13", "landmark": "LM_13", "name": "Portao range sozinho",    "trigger": { "center": [114,4,184], "size": [24,8,16] },  "visibility": "visible", "effect": "folhas oscilam +-4 + SFX ranger" }
+  ],
+  "rare_event_rules": {
+    "base_chance_on_enter": 0.12,
+    "global_cooldown_s": 180,
+    "per_event_cooldown_s": 600,
+    "tension_increment": 1,
+    "hidden_requires_out_of_frustum": true
+  },
+  "generation": {
+    "algorithm": "recursive_backtracker",
+    "seed": 20260711,
+    "braid_ratio": 0.70,
+    "post_steps": ["connect_isolated_pockets", "bfs_validate_entrance_to_exit", "export_packed_byte_array"],
+    "budget_cells": { "VOID": 856, "LANDMARK": 1912, "ARTERIAL": 1180, "PATH": 2740, "HEDGE": 4832, "total": 11520 }
+  },
+  "runtime": {
+    "chunk_size_cells": 8,
+    "chunk_size_m": 16.0,
+    "chunk_grid": [15, 12],
+    "load_radius_chunks": 3,
+    "unload_radius_chunks": 5,
+    "pinned_chunks": ["LM_11"],
+    "fog_end_m": 45.0,
+    "collision_layers": {
+      "WORLD": 1, "HEDGE": 2, "PLAYER": 3, "ENTITY": 4,
+      "INTERACTABLE": 5, "TRIGGER": 6, "OCCLUDER": 7, "RAYCAST": 8
+    },
+    "navigation": { "agent_radius": 0.4, "agent_height": 1.8, "max_slope_deg": 20 },
+    "player": {
+      "capsule_radius": 0.35, "capsule_height": 1.8, "eye_height": 1.65,
+      "speed_walk": 2.2, "speed_run": 4.0, "speed_crouch": 1.1,
+      "stamina_s": 8.0, "fov": 75, "interact_range": 2.2
+    }
+  },
+  "metrics": {
+    "optimal_route_m": 318, "optimal_route_s": 145,
+    "optimal_route_with_shortcuts_m": 264,
+    "full_tour_m": 1410,
+    "longest_sightline_m": 76,
+    "avg_landmark_spacing_m": 46
+  }
+}

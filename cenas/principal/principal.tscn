@@ -10,7 +10,7 @@
 [node name="Mundo" parent="." instance=ExtResource("1_mundo")]
 
 [node name="Jogador" parent="." instance=ExtResource("2_jogador")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.1, 31)
+transform = Transform3D(-1, 0, 1.2246e-16, 0, 1, 0, -1.2246e-16, 0, -1, 28, 0.1, 186.5)
 
 [node name="Interface" type="Node" parent="."]
 
