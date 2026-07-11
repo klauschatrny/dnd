@@ -86,6 +86,8 @@ Fim de tarde, luz suave, sombras longas, neblina discreta — **nunca noite comp
 Sempre nublado, sem chuva/sol forte. Paleta: verdes dessaturados, cinzas frios, marrons
 envelhecidos, pedra com musgo, ferro oxidado. **Silêncio é o principal instrumento**:
 só som ambiente durante a exploração; música pouquíssima (início/créditos).
+Estado atual: ambiência de **vento procedural** (`som_ambiente.gd`) no barramento
+`Ambiente` — cama discreta, gerada em tempo real, sem arquivo de áudio.
 
 ## Roadmap (GDD §34) — estado atual
 
@@ -102,7 +104,8 @@ só som ambiente durante a exploração; música pouquíssima (início/créditos
 ## Organização do código
 
 ```
-project.godot                 # configuração do projeto, input map, autoloads
+project.godot                 # configuração do projeto, input map, autoloads, barramentos de áudio
+default_bus_layout.tres       # barramentos: Master → Ambiente · Música
 icon.svg
 cenas/
   mundo/    labirinto_teste.tscn  (graybox atual) · parede_sebe.tscn (módulo de sebe)
@@ -113,10 +116,10 @@ scripts/
   jogador/    jogador.gd           (CharacterBody3D, 1ª pessoa: andar/olhar/interagir)
   interface/  interagivel.gd (padrão interagir()) · menu_inicial.gd · menu_pausa.gd
               · opcoes.gd (painel reutilizável) · creditos.gd
-  mundo/                            (lógica de mundo/eventos raros — a fazer)
+  mundo/      som_ambiente.gd       (ambiência de vento procedural, sem asset)
 assets/
   materiais/  sebe.tres · pedra_chao.tres · pedra.tres
-  modelos/  audio/                  (a fazer)
+  modelos/                          (a fazer)
 recursos/                           (recursos .tres compartilhados)
 ```
 
