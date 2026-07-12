@@ -23,6 +23,7 @@ GerenciadorCenas="*res://scripts/nucleo/gerenciador_cenas.gd"
 GerenciadorSave="*res://scripts/save/gerenciador_save.gd"
 Configuracoes="*res://scripts/nucleo/configuracoes.gd"
 GerenciadorJogo="*res://scripts/nucleo/gerenciador_jogo.gd"
+GerenciadorEventosRaros="*res://scripts/nucleo/gerenciador_eventos_raros.gd"
 
 [display]
 

@@ -59,6 +59,10 @@ func _ready() -> void:
 		_montar_labirinto()
 	if montar_nevoa_flag:
 		_montar_nevoa()
+	# Registra o WorldEnvironment para os eventos raros (ex.: RE_01 névoa).
+	var amb := get_parent().get_node_or_null("Ambiente")
+	if amb:
+		amb.add_to_group("ambiente_mundo")
 
 
 func _carregar_json() -> Dictionary:
@@ -194,6 +198,7 @@ func _lm_praca(cont: Node3D, lm: Dictionary) -> void:
 	_cilindro_solido(cont, "RelogioSol", 1.2, 0.4, Vector3(c.x, 0.0, c.y), material_pedra)
 	_cilindro_solido(cont, "Gnomon", 0.08, 1.6, Vector3(c.x, 0.4, c.y), material_pedra)
 	_colocar_elementos(cont, lm)  # pedestais, estátuas, bancos, lampiões
+	_tag_grupo(cont, "PR_STATUE_HOOD", "ev_estatua_praca")  # alvo do RE_02
 
 
 # 03 · Lago Seco ---------------------------------------------------------------
@@ -281,6 +286,7 @@ func _lm_gazebo(cont: Node3D, lm: Dictionary) -> void:
 	var roof: Dictionary = g.get("roof", {})
 	_cilindro_solido(cont, "Telhado", float(roof.get("d", 9.2)) * 0.5, 0.4, Vector3(c.x, float(roof.get("base_y", 3.45)), c.y), material_pedra)
 	_colocar_elementos(cont, lm)
+	_tag_grupo(cont, "PR_WICKER_CHAIR", "ev_cadeira_gazebo")  # alvo do RE_06
 
 
 # 07 · Estufa ------------------------------------------------------------------
@@ -362,6 +368,17 @@ func _lm_mausoleu(cont: Node3D, lm: Dictionary) -> void:
 		_cilindro_solido(cont, "ColMaus%d" % i, float(por.get("column_d", 0.7)) * 0.5, float(por.get("column_h", 4.5)), Vector3(x, floor_y, z_col), material_pedra)
 	_piso_ret(cont, "Adro", Vector2(26.0, 6.0), Vector2(c.x, c.y - 11.0), material_pavimento)
 	_colocar_elementos(cont, lm)
+	# Porta de bronze (face norte) com dobradiça à esquerda — alvo do RE_10.
+	var porta: Dictionary = lm.get("door", {})
+	var dp: Array = porta.get("pos", [c.x, 146.0])
+	var dsz: Array = porta.get("size", [2.0, 3.2])
+	var largura: float = float(dsz[0])
+	var pivo := Node3D.new()
+	pivo.name = "PortaMausoleu"
+	pivo.position = Vector3(float(dp[0]) - largura * 0.5, floor_y, float(dp[1]))
+	cont.add_child(pivo)
+	pivo.add_to_group("ev_porta_mausoleu")
+	_caixa_solida(pivo, "Folha", Vector3(largura, float(dsz[1]), 0.15), Vector3(largura * 0.5, float(dsz[1]) * 0.5, 0.0), material_pedra)
 
 
 # 11 · Torre do Relógio (marco global) ----------------------------------------
@@ -382,6 +399,31 @@ func _lm_torre(cont: Node3D, lm: Dictionary) -> void:
 	var cy_face: float = float(cf.get("center_y", 20.0))
 	var mostrador := _cilindro_solido(cont, "Mostrador", float(cf.get("d", 3.6)) * 0.5, float(cf.get("thickness", 0.2)), Vector3(c.x, cy_face - float(cf.get("thickness", 0.2)) * 0.5, c.y + float(ss[1]) * 0.5), material_pedra)
 	mostrador.rotate_x(PI * 0.5)
+	# Ponteiros (hora/minuto) sobre a face sul — alvos do RE_11. Pivô no centro
+	# do mostrador; o ponteiro aponta para "cima" (+Y) na posição inicial.
+	var z_face := c.y + float(ss[1]) * 0.5 + 0.15
+	var hh: Array = cf.get("hour_hand", [1.3, 0.12])
+	var mh: Array = cf.get("minute_hand", [1.7, 0.08])
+	_ponteiro(cont, "PonteiroHora", Vector3(c.x, cy_face, z_face), float(hh[1]), float(hh[0]))
+	_ponteiro(cont, "PonteiroMinuto", Vector3(c.x, cy_face, z_face), float(mh[1]), float(mh[0]))
+
+
+## Cria um ponteiro de relógio: pivô em `centro_face`, com uma barra fina que
+## se estende para +Y (comprimento `comp`). Marcado no grupo ev_ponteiros_torre.
+func _ponteiro(cont: Node3D, nome: String, centro_face: Vector3, largura: float, comp: float) -> void:
+	var pivo := Node3D.new()
+	pivo.name = nome
+	pivo.position = centro_face
+	cont.add_child(pivo)
+	pivo.add_to_group("ev_ponteiros_torre")
+	var barra := MeshInstance3D.new()
+	var caixa := BoxMesh.new()
+	caixa.size = Vector3(largura, comp, 0.06)
+	barra.mesh = caixa
+	barra.position = Vector3(0.0, comp * 0.5, 0.0)
+	if material_pedra:
+		barra.material_override = material_pedra
+	pivo.add_child(barra)
 
 
 # 12 · Jardim das Sombras ------------------------------------------------------
@@ -410,6 +452,7 @@ func _lm_saida(cont: Node3D, lm: Dictionary) -> void:
 	var c := _centro2d(lm)
 	_piso_ret(cont, "PracaSaida", Vector2(20.0, 12.0), Vector2(c.x, c.y - 4.0), material_pavimento)
 	_colocar_elementos(cont, lm)  # pilares, portão, arco, braseiros, encaixes
+	_tag_grupo(cont, "PR_GATE_IRON_L", "ev_portao_saida")  # alvo do RE_13
 
 
 # LM-A · Alameda dos Ciprestes -------------------------------------------------
@@ -900,9 +943,21 @@ func _colocar_elementos(pai: Node3D, lm: Dictionary) -> void:
 		var s: Array = el["size"]
 		var tam := Vector3(float(s[0]), float(s[1]), float(s[2]))
 		var prop: String = el.get("prop", "PROP")
-		for p_v in el["positions"]:
-			var p: Array = p_v
-			_colocar_prop(pai, prop, tam, Vector3(float(p[0]), float(p[1]), float(p[2])))
+		var posicoes: Array = el["positions"]
+		for i in posicoes.size():
+			var p: Array = posicoes[i]
+			# Nome único por instância: a Godot renomeia duplicatas para
+			# @Classe@N (perde o prop no nome), o que quebraria o _tag_grupo.
+			_colocar_prop(pai, "%s_%d" % [prop, i], tam, Vector3(float(p[0]), float(p[1]), float(p[2])))
+
+
+## Adiciona ao grupo `grupo` todos os filhos diretos de `pai` cujo nome contém
+## `prefixo` (usado para marcar alvos de eventos raros). Usa `contains` porque a
+## Godot renomeia nós duplicados como `@Prefixo@2`, `@Prefixo@3`…
+func _tag_grupo(pai: Node3D, prefixo: String, grupo: String) -> void:
+	for filho in pai.get_children():
+		if filho.name.contains(prefixo):
+			filho.add_to_group(grupo)
 
 
 ## Anel de sebe (circular) com aberturas. `aberturas` = lista de dicts com "pos"

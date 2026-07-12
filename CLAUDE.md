@@ -122,13 +122,20 @@ Estado atual: ambiência de **vento procedural** (`som_ambiente.gd`) no barramen
   Menus e Configurações ✅ (adiantados). **Save pendente** — só há o esqueleto
   `gerenciador_save.gd` (implementar aqui).
 - **Fase 6 — Gameplay**: framework de puzzles, eventos raros, objetos especiais.
+  **Eventos raros ✅ (adiantados):** `GerenciadorEventosRaros` (autoload) dispara os 13
+  eventos da spec §10 (chance 12%, cooldown 180 s global / 600 s por evento, tensão, e
+  `hidden` só com alvo fora do frustum). Efeitos geométricos concretos (estátua vira, porta
+  entreabre, portão range, cadeira move, relógio 03:33, névoa, vela, corvos); os que pedem
+  áudio/shader/partículas (ondas, pétalas, vidros, pingos, sussurros) ficam registrados
+  (tensão/cooldown) para a Fase 7.
 - **Fase 7 — Arte**: modelos low poly, materiais, vegetação, iluminação, sons ambientes.
   Atmosfera/áudio de exploração ✅ parcialmente adiantados.
 - **Fase 8 — Polimento**: bugs, ajustes, otimização, balanceamento, melhorias visuais.
 
 Obs.: menus, configurações, atmosfera e áudio foram feitos **fora de ordem** (antes do
-Graybox). Com o mapa da MAPSPEC montado, as lacunas do MVP passam a ser o **acabamento da
-Fase 4** (navmesh, névoa por setor, eventos raros, streaming) e o **Save (Fase 5)**.
+Graybox). Com o mapa da MAPSPEC montado (incl. névoa por setor e eventos raros), as lacunas
+do MVP passam a ser o **acabamento da Fase 4** (navmesh, streaming de chunks, atalhos
+reveláveis, props dos becos) e o **Save (Fase 5)**.
 
 ## Organização do código
 
@@ -150,6 +157,7 @@ scripts/
               gerenciador_cenas.gd (SceneManager: transições)
               gerenciador_audio.gd (AudioManager: volumes/sons)
               configuracoes.gd     (Configurações persistidas: sensib./volume/tela cheia)
+              gerenciador_eventos_raros.gd (RareEventManager: dispara os 13 eventos raros)
   save/       gerenciador_save.gd  (SaveManager: esqueleto — implementar na Fase 5)
   jogador/    jogador.gd           (CharacterBody3D, 1ª pessoa: andar/olhar/interagir)
   interacao/  interagivel.gd       (base de objeto interativo: padrão interagir())
@@ -165,7 +173,7 @@ recursos/                          (dados .tres/.json compartilhados — só dad
 ```
 
 Ordem dos autoloads (importa): `GerenciadorAudio` → `GerenciadorCenas` → `GerenciadorSave`
-→ `Configuracoes` (usa o Áudio ao aplicar) → `GerenciadorJogo`.
+→ `Configuracoes` (usa o Áudio ao aplicar) → `GerenciadorJogo` → `GerenciadorEventosRaros`.
 
 ## Convenções (TDD §9, adaptadas para PT)
 

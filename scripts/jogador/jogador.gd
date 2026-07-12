@@ -28,6 +28,7 @@ var _gravidade: float = ProjectSettings.get_setting("physics/3d/default_gravity"
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	add_to_group("jogador")
 
 
 func _unhandled_input(event: InputEvent) -> void:
