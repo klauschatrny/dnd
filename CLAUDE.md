@@ -132,7 +132,11 @@ Estado atual: ambiência de **vento procedural** (`som_ambiente.gd`) no barramen
   procedurais** (badalada, rangido, pingo, sussurro, vidro, asas, água — `sons_eventos.gd`,
   sem asset, barramento Ambiente). Só as pétalas (RE_04, partículas) ficam para a Fase 7.
 - **Fase 7 — Arte**: modelos low poly, materiais, vegetação, iluminação, sons ambientes.
-  Atmosfera/áudio de exploração ✅ parcialmente adiantados.
+  Atmosfera/áudio de exploração ✅ parcialmente adiantados. **Passada procedural feita**
+  (sem asset de mesh/textura): variação por instância das sebes (cor/escala/jitter), paleta
+  de materiais (sebe/pedra/chão + ferro oxidado), cues sonoros dos eventos (`sons_eventos.gd`)
+  e chão variado por shader (`chao.gdshader`). Falta a **arte com assets reais** (modelos
+  low-poly, texturas, vegetação) — precisa de ferramenta de modelagem externa.
 - **Fase 8 — Polimento**: bugs, ajustes, otimização, balanceamento, melhorias visuais.
 
 Obs.: menus, configurações, atmosfera e áudio foram feitos **fora de ordem** (antes do
