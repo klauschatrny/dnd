@@ -119,9 +119,11 @@ Estado atual: ambiência de **vento procedural** (`som_ambiente.gd`) no barramen
   por setor** (FogVolume) · os **7 atalhos ocultos** (sebe rala revelável por interação,
   `AtalhoSebe`) · os **12 becos** com prop de interesse no cul-de-sac. Falta (Fase 7/8):
   arte final das sebes/landmarks, navmesh, streaming de chunks, gate por item dos atalhos.
-- **Fase 5 — Sistemas Base**: Save · Menu Principal · Menu de Pausa · Configurações.
-  Menus e Configurações ✅ (adiantados). **Save pendente** — só há o esqueleto
-  `gerenciador_save.gd` (implementar aqui).
+- **Fase 5 — Sistemas Base**: Save · Menu Principal · Menu de Pausa · Configurações. ✅
+  Save implementado (`gerenciador_save.gd`): grava JSON em `user://progresso.save` com
+  posição/orientação do jogador, atalhos revelados e tensão. Auto-save ao pausar e ao voltar
+  ao menu; botão **Continuar** no menu inicial (visível só se há save); carregamento adiado
+  (o `CarregadorMapa` chama `aplicar_pendente` quando o mundo fica pronto).
 - **Fase 6 — Gameplay**: framework de puzzles, eventos raros, objetos especiais.
   **Eventos raros ✅ (adiantados):** `GerenciadorEventosRaros` (autoload) dispara os 13
   eventos da spec §10 (chance 12%, cooldown 180 s global / 600 s por evento, tensão, e

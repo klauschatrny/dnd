@@ -72,6 +72,9 @@ func _ready() -> void:
 	var amb := get_parent().get_node_or_null("Ambiente")
 	if amb:
 		amb.add_to_group("ambiente_mundo")
+	# Mundo pronto: aplica um save pendente (se o jogador escolheu "Continuar").
+	# Adiado para o jogador e o restante da cena já estarem no lugar.
+	GerenciadorSave.aplicar_pendente.call_deferred()
 
 
 func _carregar_json() -> Dictionary:

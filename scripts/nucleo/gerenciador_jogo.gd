@@ -31,6 +31,8 @@ func alternar_pausa() -> void:
 	if pausar:
 		estado = Estado.PAUSADO
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		# Pausar é um ponto natural de auto-save.
+		GerenciadorSave.salvar()
 	else:
 		estado = Estado.EXPLORANDO
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -44,6 +46,9 @@ func iniciar_exploracao() -> void:
 
 
 func ir_para_menu() -> void:
+	# Salva antes de sair da exploração (o jogador ainda está na cena).
+	if estado != Estado.MENU:
+		GerenciadorSave.salvar()
 	estado = Estado.MENU
 	GerenciadorCenas.trocar_cena(GerenciadorCenas.CENA_MENU)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

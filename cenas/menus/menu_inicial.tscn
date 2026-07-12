@@ -50,6 +50,11 @@ theme_override_colors/font_color = Color(0.5, 0.54, 0.5, 1)
 custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 
+[node name="Continuar" type="Button" parent="Centro/Coluna"]
+custom_minimum_size = Vector2(240, 44)
+layout_mode = 2
+text = "Continuar"
+
 [node name="Explorar" type="Button" parent="Centro/Coluna"]
 custom_minimum_size = Vector2(240, 44)
 layout_mode = 2

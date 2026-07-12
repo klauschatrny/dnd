@@ -14,10 +14,22 @@ func _ready() -> void:
 	_opcoes.visible = false
 	_opcoes.fechado.connect(_fechar_opcoes)
 
-	$Centro/Coluna/Explorar.pressed.connect(GerenciadorJogo.iniciar_exploracao)
+	# "Continuar" só fica disponível se há um save; senão, oculto.
+	var continuar: Button = $Centro/Coluna/Continuar
+	continuar.visible = GerenciadorSave.existe_save()
+	continuar.pressed.connect(GerenciadorSave.carregar_partida)
+
+	$Centro/Coluna/Explorar.pressed.connect(_explorar_novo)
 	$Centro/Coluna/Opcoes.pressed.connect(_abrir_opcoes)
 	$Centro/Coluna/Creditos.pressed.connect(_abrir_creditos)
 	$Centro/Coluna/Sair.pressed.connect(GerenciadorJogo.sair_do_jogo)
+
+
+## Jogo novo: começa do zero (a tensão acumulada de uma sessão anterior é
+## zerada). O save existente será sobrescrito no próximo auto-save.
+func _explorar_novo() -> void:
+	GerenciadorEventosRaros.tensao = 0
+	GerenciadorJogo.iniciar_exploracao()
 
 
 func _abrir_opcoes() -> void:

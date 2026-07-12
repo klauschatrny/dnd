@@ -26,3 +26,7 @@ func revelar() -> void:
 	for c in get_children():
 		if c is CollisionShape3D:
 			(c as CollisionShape3D).disabled = true
+
+
+func esta_revelado() -> bool:
+	return _revelado
