@@ -37,6 +37,7 @@ const M_PORTAL := 5    # abertura
 @export var material_pedra: Material
 @export var material_sebe: Material
 @export var material_pavimento: Material
+@export var material_ferro: Material
 
 # Dados do JSON, carregados em _ready.
 var dados: Dictionary = {}
@@ -764,6 +765,7 @@ func _render_sebes(rng: RandomNumberGenerator) -> void:
 			malha.material = material_sebe
 		var mm := MultiMesh.new()
 		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.use_colors = true  # variação de tom por instância (spec §2)
 		mm.mesh = malha
 		mm.instance_count = celulas.size()
 		# Colisão: 1 corpo por setor com uma BoxShape por célula.
@@ -775,9 +777,17 @@ func _render_sebes(rng: RandomNumberGenerator) -> void:
 		for i in celulas.size():
 			var c: Vector2i = celulas[i]
 			var p := UtilidadesGrade.celula_para_centro(c.x, c.y)
+			# Variação procedural por instância: giro Y, escala Y e jitter XZ.
 			var giro := (rng.randi() % 4) * (PI * 0.5)
-			var base := Basis(Vector3.UP, giro)
-			mm.set_instance_transform(i, Transform3D(base, Vector3(p.x, altura * 0.5, p.z)))
+			var escala_y := rng.randf_range(0.90, 1.07)
+			var jx := rng.randf_range(-0.08, 0.08)
+			var jz := rng.randf_range(-0.08, 0.08)
+			var base := Basis(Vector3.UP, giro).scaled(Vector3(1.0, escala_y, 1.0))
+			mm.set_instance_transform(i, Transform3D(base, Vector3(p.x + jx, altura * escala_y * 0.5, p.z + jz)))
+			# Tom: leve variação de brilho + manchas amareladas/secas.
+			var brilho := rng.randf_range(0.82, 1.12)
+			var seco := rng.randf_range(0.0, 0.14)
+			mm.set_instance_color(i, Color(brilho * (1.0 + seco), brilho, brilho * (1.0 - seco * 0.7)))
 			var col := CollisionShape3D.new()
 			col.shape = forma
 			col.position = Vector3(p.x, altura * 0.5, p.z)
@@ -1046,6 +1056,8 @@ func _prop_e_cilindro(nome: String) -> bool:
 func _mat_prop(nome: String) -> Material:
 	if nome.contains("HEDGE") or nome.contains("TOPIARY") or nome.contains("ROSE") or nome.contains("CYPRESS") or nome.contains("TREE") or nome.contains("FERN"):
 		return material_sebe
+	if material_ferro and (nome.contains("GATE") or nome.contains("BRAZIER") or nome.contains("LANTERN") or nome.contains("LAMP") or nome.contains("URN") or nome.contains("KEYSLOT")):
+		return material_ferro
 	return material_pedra
 
 

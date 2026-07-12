@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Material" path="res://assets/materiais/pedra_chao.tres" id="2_chao"]
 [ext_resource type="Material" path="res://assets/materiais/pedra.tres" id="3_pedra"]
 [ext_resource type="Material" path="res://assets/materiais/sebe.tres" id="4_sebe"]
 [ext_resource type="Script" path="res://scripts/mundo/carregador_mapa.gd" id="5_carregador"]
+[ext_resource type="Material" path="res://assets/materiais/ferro.tres" id="6_ferro"]
 
 [sub_resource type="ProceduralSkyMaterial" id="CeuMat_1"]
 sky_top_color = Color(0.55, 0.6, 0.64, 1)
@@ -67,3 +68,4 @@ material_chao = ExtResource("2_chao")
 material_pedra = ExtResource("3_pedra")
 material_sebe = ExtResource("4_sebe")
 material_pavimento = ExtResource("2_chao")
+material_ferro = ExtResource("6_ferro")

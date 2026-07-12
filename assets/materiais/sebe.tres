@@ -2,6 +2,7 @@
 
 [resource]
 resource_name = "Sebe"
-albedo_color = Color(0.22, 0.29, 0.2, 1)
+albedo_color = Color(0.2, 0.27, 0.17, 1)
+vertex_color_use_as_albedo = true
 metallic = 0.0
-roughness = 0.97
+roughness = 0.98

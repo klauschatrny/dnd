@@ -2,6 +2,6 @@
 
 [resource]
 resource_name = "PedraChao"
-albedo_color = Color(0.35, 0.34, 0.3, 1)
+albedo_color = Color(0.32, 0.31, 0.26, 1)
 metallic = 0.0
 roughness = 1.0
