@@ -35,6 +35,7 @@ var _rng := RandomNumberGenerator.new()
 
 var _jogador: Node3D = null
 var _camera: Camera3D = null
+var _cues: Dictionary = {}  # nome -> AudioStreamWAV
 
 
 func _ready() -> void:
@@ -50,6 +51,16 @@ func _ready() -> void:
 		var e: Dictionary = e_v
 		_dentro[e["id"]] = false
 		_ultimo_evento[e["id"]] = -100000.0
+	# Gera os cues sonoros procedurais uma única vez.
+	_cues = {
+		"badalada": SonsEventos.badalada(),
+		"rangido": SonsEventos.rangido(),
+		"pingo": SonsEventos.pingo(),
+		"sussurro": SonsEventos.sussurro(),
+		"vidro": SonsEventos.vidro(),
+		"asas": SonsEventos.asas(),
+		"agua": SonsEventos.agua(),
+	}
 
 
 func _carregar_json() -> Dictionary:
@@ -149,19 +160,45 @@ func _nos(grupo: String) -> Array:
 # ---------------------------------------------------------------------------
 
 func _executar(e: Dictionary) -> void:
+	var centro := _alvo(e)
 	match e["id"]:
 		"RE_01": _ef_nevoa()
 		"RE_02": _ef_estatua_vira()
-		"RE_05": _ef_corvos(e)
+		"RE_03": _tocar("agua", centro)
+		"RE_05":
+			_ef_corvos(e)
+			_tocar("asas", centro)
 		"RE_06": _ef_cadeira()
+		"RE_07": _tocar("vidro", centro)
 		"RE_08": _ef_vela()
+		"RE_09": _tocar("pingo", centro)
 		"RE_10": _ef_porta_mausoleu()
-		"RE_11": _ef_relogio()
-		"RE_13": _ef_portao_range()
+		"RE_11":
+			_ef_relogio()
+			_tocar("badalada", Vector3(114.0, 20.0, 8.0))
+		"RE_12": _tocar("sussurro", centro, -3.0)
+		"RE_13":
+			_ef_portao_range()
+			_tocar("rangido", centro)
 		_:
-			# RE_03 ondas · RE_04 pétalas · RE_07 vidros · RE_09 pingos ·
-			# RE_12 sussurros — dependem de áudio/shader/partículas (Fase 7).
+			# RE_04 pétalas murcham — efeito visual (partículas) fica p/ a Fase 7.
 			pass
+
+
+## Reproduz um cue posicional no barramento Ambiente; libera ao terminar.
+func _tocar(nome: String, pos: Vector3, volume_db: float = 0.0) -> void:
+	if not _cues.has(nome) or get_tree().current_scene == null:
+		return
+	var som := AudioStreamPlayer3D.new()
+	som.stream = _cues[nome]
+	som.bus = &"Ambiente"
+	som.unit_size = 6.0
+	som.max_distance = 60.0
+	som.volume_db = volume_db
+	som.position = pos
+	get_tree().current_scene.add_child(som)
+	som.finished.connect(som.queue_free)
+	som.play()
 
 
 ## RE_01 — a névoa adensa por alguns segundos e volta.

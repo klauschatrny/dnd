@@ -128,9 +128,9 @@ Estado atual: ambiência de **vento procedural** (`som_ambiente.gd`) no barramen
   **Eventos raros ✅ (adiantados):** `GerenciadorEventosRaros` (autoload) dispara os 13
   eventos da spec §10 (chance 12%, cooldown 180 s global / 600 s por evento, tensão, e
   `hidden` só com alvo fora do frustum). Efeitos geométricos concretos (estátua vira, porta
-  entreabre, portão range, cadeira move, relógio 03:33, névoa, vela, corvos); os que pedem
-  áudio/shader/partículas (ondas, pétalas, vidros, pingos, sussurros) ficam registrados
-  (tensão/cooldown) para a Fase 7.
+  entreabre, portão range, cadeira move, relógio 03:33, névoa, vela, corvos) + **cues sonoros
+  procedurais** (badalada, rangido, pingo, sussurro, vidro, asas, água — `sons_eventos.gd`,
+  sem asset, barramento Ambiente). Só as pétalas (RE_04, partículas) ficam para a Fase 7.
 - **Fase 7 — Arte**: modelos low poly, materiais, vegetação, iluminação, sons ambientes.
   Atmosfera/áudio de exploração ✅ parcialmente adiantados.
 - **Fase 8 — Polimento**: bugs, ajustes, otimização, balanceamento, melhorias visuais.
