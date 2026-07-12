@@ -115,9 +115,10 @@ Estado atual: ambiência de **vento procedural** (`som_ambiente.gd`) no barramen
   240×192 m. ✅ Já montados: terreno + muro perimetral (4,5 m, com aberturas Entrada/Saída) ·
   os **13 locais + Alameda dos Ciprestes** nas coordenadas exatas · o **grafo de caminhos**
   (alamedas CP/CS, becos, atalhos), marcos e arcos de setor · o **labirinto** (recursive
-  backtracker seed 20260711 + braid, sebes por setor via MultiMesh + colisão). Falta
-  (Fase 7/8): arte final das sebes/landmarks, névoa por setor, navmesh, streaming de chunks,
-  eventos raros, atalhos reveláveis, becos com props.
+  backtracker seed 20260711 + braid, sebes por setor via MultiMesh + colisão) · a **névoa
+  por setor** (FogVolume) · os **7 atalhos ocultos** (sebe rala revelável por interação,
+  `AtalhoSebe`) · os **12 becos** com prop de interesse no cul-de-sac. Falta (Fase 7/8):
+  arte final das sebes/landmarks, navmesh, streaming de chunks, gate por item dos atalhos.
 - **Fase 5 — Sistemas Base**: Save · Menu Principal · Menu de Pausa · Configurações.
   Menus e Configurações ✅ (adiantados). **Save pendente** — só há o esqueleto
   `gerenciador_save.gd` (implementar aqui).
@@ -134,8 +135,8 @@ Estado atual: ambiência de **vento procedural** (`som_ambiente.gd`) no barramen
 
 Obs.: menus, configurações, atmosfera e áudio foram feitos **fora de ordem** (antes do
 Graybox). Com o mapa da MAPSPEC montado (incl. névoa por setor e eventos raros), as lacunas
-do MVP passam a ser o **acabamento da Fase 4** (navmesh, streaming de chunks, atalhos
-reveláveis, props dos becos) e o **Save (Fase 5)**.
+do MVP passam a ser o **acabamento da Fase 4** (navmesh, streaming de chunks) e o
+**Save (Fase 5)**.
 
 ## Organização do código
 

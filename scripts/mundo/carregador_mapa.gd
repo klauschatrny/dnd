@@ -29,6 +29,8 @@ const M_PORTAL := 5    # abertura
 @export var montar_caminhos_flag: bool = true
 @export var montar_labirinto_flag: bool = true
 @export var montar_nevoa_flag: bool = true
+@export var montar_becos_flag: bool = true
+@export var montar_atalhos_flag: bool = true
 
 @export_group("Materiais")
 @export var material_chao: Material
@@ -40,6 +42,9 @@ const M_PORTAL := 5    # abertura
 var dados: Dictionary = {}
 # Máscara da grade (120×96), índice = cz * GRADE_L + cx. Preenchida em _montar_caminhos.
 var _mascara: PackedByteArray = PackedByteArray()
+# Materiais graybox criados sob demanda (props de interesse e sebe rala).
+var _mat_interesse: Material = null
+var _mat_rala: Material = null
 
 
 func _ready() -> void:
@@ -57,6 +62,10 @@ func _ready() -> void:
 		_montar_caminhos()
 	if montar_labirinto_flag:
 		_montar_labirinto()
+	if montar_becos_flag:
+		_montar_becos()
+	if montar_atalhos_flag:
+		_montar_atalhos()
 	if montar_nevoa_flag:
 		_montar_nevoa()
 	# Registra o WorldEnvironment para os eventos raros (ex.: RE_01 névoa).
@@ -774,6 +783,119 @@ func _render_sebes(rng: RandomNumberGenerator) -> void:
 		mmi.name = "Sebe_%s" % id
 		mmi.multimesh = mm
 		raiz.add_child(mmi)
+
+
+# ---------------------------------------------------------------------------
+# Becos sem saída (spec §6.4) — os 12 ⭐ Locais de Interesse. O corredor já foi
+# reservado como ARTERIAL; aqui só se coloca 1 prop de interesse no fim do beco.
+# ---------------------------------------------------------------------------
+
+func _montar_becos() -> void:
+	var raiz := Node3D.new()
+	raiz.name = "Becos"
+	add_child(raiz)
+	for bc_v in dados.get("dead_ends", []):
+		var bc: Dictionary = bc_v
+		var ent: Array = bc.get("entry", [0, 0])
+		var prof: float = float(bc.get("depth", 8.0))
+		var d := Vector2.ZERO
+		match bc.get("dir", "N"):
+			"N": d = Vector2(0, -1)
+			"S": d = Vector2(0, 1)
+			"E": d = Vector2(1, 0)
+			"W": d = Vector2(-1, 0)
+		# Fim do beco, recuado 1,5 m da parede final para o prop caber no cul-de-sac.
+		var fim := Vector2(float(ent[0]), float(ent[1])) + d * (prof - 1.5)
+		var corpo := _caixa_solida(raiz, bc.get("id", "BC"), Vector3(1.2, 1.2, 1.2), Vector3(fim.x, 0.6, fim.y), _material_interesse())
+		corpo.set_meta("loot", bc.get("loot", ""))
+
+
+## Material graybox dos props de interesse (tom enferrujado, destaca da pedra).
+func _material_interesse() -> Material:
+	if _mat_interesse == null:
+		var m := StandardMaterial3D.new()
+		m.albedo_color = Color(0.42, 0.3, 0.2)
+		m.roughness = 0.9
+		_mat_interesse = m
+	return _mat_interesse
+
+
+# ---------------------------------------------------------------------------
+# Atalhos ocultos (spec §6.3) — "sebe rala" que bloqueia o caminho reservado até
+# ser revelada por interação. Cada bloco é um AtalhoSebe (Interagivel).
+# ---------------------------------------------------------------------------
+
+func _montar_atalhos() -> void:
+	var raiz := Node3D.new()
+	raiz.name = "Atalhos"
+	add_child(raiz)
+	for at_v in dados.get("shortcuts", []):
+		var at: Dictionary = at_v
+		var pai := Node3D.new()
+		pai.name = at.get("id", "AT")
+		raiz.add_child(pai)
+		var largura: float = float(at.get("width", 2.0))
+		var descoberta: String = at.get("discovery", "visual")
+		for cel in _celulas_polilinha(at.get("polyline", []), largura):
+			_bloco_rala(pai, cel, descoberta)
+
+
+## Cria um bloco de sebe rala (AtalhoSebe) na célula, com colisão até revelar.
+func _bloco_rala(pai: Node3D, cel: Vector2i, descoberta: String) -> void:
+	var altura: float = float(_setor_da_celula(cel.x, cel.y)[1])
+	var p := UtilidadesGrade.celula_para_centro(cel.x, cel.y)
+	var bloco := AtalhoSebe.new()
+	bloco.name = "SebeRala"
+	bloco.descoberta = descoberta
+	bloco.position = Vector3(p.x, altura * 0.5, p.z)
+	pai.add_child(bloco)
+	var malha := MeshInstance3D.new()
+	var caixa := BoxMesh.new()
+	caixa.size = Vector3(1.4, altura, 1.4)  # mais fino que a sebe densa (1,8) → "rala"
+	malha.mesh = caixa
+	malha.material_override = _material_rala()
+	bloco.add_child(malha)
+	var col := CollisionShape3D.new()
+	var forma := BoxShape3D.new()
+	forma.size = Vector3(2.0, altura, 2.0)
+	col.shape = forma
+	bloco.add_child(col)
+
+
+## Material graybox da sebe rala (mais clara/amarelada — sinaliza passagem).
+func _material_rala() -> Material:
+	if _mat_rala == null:
+		var m := StandardMaterial3D.new()
+		m.albedo_color = Color(0.5, 0.52, 0.34)
+		m.roughness = 0.95
+		_mat_rala = m
+	return _mat_rala
+
+
+## Células (Vector2i) cobertas por uma polilinha de dada largura (para atalhos).
+func _celulas_polilinha(pts: Array, largura_m: float) -> Array:
+	var vistos: Dictionary = {}
+	var resultado: Array = []
+	if pts.size() < 2:
+		return resultado
+	var r := largura_m * 0.5 + 0.2
+	for i in range(pts.size() - 1):
+		var a := Vector2(float(pts[i][0]), float(pts[i][1]))
+		var b := Vector2(float(pts[i + 1][0]), float(pts[i + 1][1]))
+		var passos := int(ceil(a.distance_to(b) / 0.5)) + 1
+		for s in passos:
+			var q := a.lerp(b, float(s) / float(maxi(passos - 1, 1)))
+			var cx0 := int(floor((q.x - r) / UtilidadesGrade.CELULA))
+			var cx1 := int(floor((q.x + r) / UtilidadesGrade.CELULA))
+			var cz0 := int(floor((q.y - r) / UtilidadesGrade.CELULA))
+			var cz1 := int(floor((q.y + r) / UtilidadesGrade.CELULA))
+			for cz in range(cz0, cz1 + 1):
+				for cx in range(cx0, cx1 + 1):
+					var chave := cz * UtilidadesGrade.GRADE_L + cx
+					if not vistos.has(chave) and UtilidadesGrade.celula_valida(cx, cz):
+						vistos[chave] = true
+						resultado.append(Vector2i(cx, cz))
+	return resultado
 
 
 # ---------------------------------------------------------------------------
